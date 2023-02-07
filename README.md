@@ -1,28 +1,19 @@
-# Create T3 App
+# Hospitality
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+TODO: A brief description of the project
 
-## What's next? How do I make an app with this?
+# Developer Environment
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Node
+This project uses npm for package management, we recommend installing nvm for managing nodejs and npm versions. More details on how to install and setup nvm can be found [here](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Sonar
+Sonar scans the repository to check for potential bugs, formatting issues, coverage, and much more. The sonar utility can be run using `npm run scan` which is just an alias for the `sonar-scanner` command. Sonar requires manual configuration to setup at this time.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+**To Setup:**
+1. Install the scanner cli from [here](https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner/)
+2. Add the bin directory from within the sonarscanner download to your local path.
+3. Create a copy of the file labeled *sonar-project.example* and rename it to *sonar-project.properties*
+4. Add your login key to the sonar.login property
 
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+**Note:** The *sonar-project.properties* example file is a just a template, you can change this to use any sonarQube/projectKey you'd like. If using the University of Iowa's provided URL you'll need to be using a [VPN](https://its.uiowa.edu/vpn) or on the schools network in order to use sonar-scanner.

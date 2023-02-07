@@ -1,0 +1,5 @@
+sonar.projectKey=hospitality-cs5800
+sonar.qualitygate.wait=true
+sonar.sources=.
+sonar.host.url=https://sonarqube.cs.uiowa.edu
+sonar.login=<enter login key>
