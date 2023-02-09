@@ -6,6 +6,12 @@ import { defineConfig, devices } from '@playwright/test';
  */
 // require('dotenv').config();
 
+// Use process.env.PORT by default and fallback to port 3000
+const PORT = process.env.PORT || 3000
+
+// Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
+const baseURL = `http://localhost:${PORT}`
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -31,7 +37,14 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  webServer: {
+    command: 'npm run dev',
+    url: baseURL,
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
+  },
   use: {
+    baseURL,
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */

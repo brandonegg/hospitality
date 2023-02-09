@@ -1,18 +1,17 @@
 import { test, expect } from '@playwright/test';
 
-test('has example page', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe('demo app test', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+  test('has demo page title', async ({ page }) => {
+    await expect(page).toHaveTitle(/Create T3 App/);
+  });
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects the URL to contain intro.
-  await expect(page).toHaveURL(/.*intro/);
+  test('has example page title', async ({ page }) => {
+    // Expect the page to contact the Create T3 App template text
+    const contents = page.locator('h1');
+    await expect(contents).toHaveText(/Create T3 App/);
+  });
 });
