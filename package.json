@@ -10,7 +10,9 @@
     "lint-fix": "next lint --fix",
     "start": "next start",
     "scan": "sonar-scanner",
-    "test": "playwright test",
+    "test": "npm run test:pw && npm run test:jest",
+    "test:pw": "playwright test",
+    "test:jest": "jest",
     "prepare": "husky install"
   },
   "dependencies": {
