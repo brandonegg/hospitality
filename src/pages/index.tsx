@@ -5,6 +5,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "../utils/api";
 
+/**
+ * Main homepage react component.
+ * @returns JSX
+ */
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
@@ -58,6 +62,10 @@ const Home: NextPage = () => {
 
 export default Home;
 
+/**
+ * Authnet example.
+ * @returns JSX
+ */
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
