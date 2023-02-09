@@ -4,6 +4,12 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+env:
+  DATABASE_URL: "file:./db.sqlite"
+  NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
+  NEXTAUTH_URL: "http://localhost:3000"
+  DISCORD_CLIENT_ID: ""
+  DISCORD_CLIENT_SECRET: ""
 jobs:
   test:
     timeout-minutes: 60
