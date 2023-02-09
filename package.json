@@ -8,7 +8,8 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "scan": "sonar-scanner"
+    "scan": "sonar-scanner",
+    "test": "playwright test"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",
