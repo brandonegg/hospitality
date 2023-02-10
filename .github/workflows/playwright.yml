@@ -20,8 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         project: [chromium, webkit, firefox]
-        shardIndex: [1, 2, 3, 4, 5, 6, 7, 8]
-        shardTotal: [8]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v2
@@ -33,7 +31,7 @@ jobs:
       id: playwright-version
       run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
     - name: Run Playwright tests
-      run: npx playwright test --project=${{ matrix.project }} --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      run: npx playwright test --project=${{ matrix.project }}
     - uses: actions/upload-artifact@v2
       if: always()
       with:
