@@ -38,6 +38,9 @@ jobs:
   test-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./
     container:
       image: mcr.microsoft.com/playwright:v1.30.0-focal
     strategy:
@@ -60,4 +63,4 @@ jobs:
       if: always()
       with:
         name: playwright-test-results
-        path: test-results/
+        path: ./test-results/
