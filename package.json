@@ -14,7 +14,11 @@
     "test:pw": "playwright test",
     "test:jest": "jest",
     "prepare": "husky install",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "docker:up": "docker-compose up",
+    "docker:up-build": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.5",
