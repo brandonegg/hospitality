@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3300:3306"
+    restart: always
+    environment:
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
+      - MYSQL_ROOT_PASSWORD
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
