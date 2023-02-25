@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import * as argon2 from "argon2";
 import { z } from "zod";
 
 import { prisma } from "../../db";
@@ -60,13 +61,16 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      // hash the password
+      const hashPassword = await argon2.hash(input.password);
+
       // format the user data
       const newUser = {
         name: `${input.firstName} ${input.lastName}`,
         dateOfBirth: new Date(input.dateOfBirth),
         username: input.username,
         email: input.email,
-        password: input.password,
+        password: hashPassword,
       };
 
       // Create the user
