@@ -49,8 +49,12 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    name          String
+    username      String?   @unique
+    email         String    @unique
+    password      String
+    dateOfBirth   DateTime?
+    phoneNumber   String?
     emailVerified DateTime?
     image         String?
     accounts      Account[]
