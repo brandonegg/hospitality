@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../utils/api";
 import { api } from "../utils/api";
+import { classNames } from "../utils/text";
 
 type SignUpInput = RouterInputs["user"]["signup"];
 
@@ -14,10 +16,38 @@ type SignUpOutput = RouterOutputs["user"]["signup"];
 /**
  * Error message react component.
  * @param children Error message.
- * @returns
+ * @returns JSX
  */
 function ErrorMessage({ children }: { children: string | undefined }) {
-  return <span className="text-red-500">{children}</span>;
+  return <span className="text-sm text-red-500">{children}</span>;
+}
+
+/**
+ * Alert react component.
+ * @param type Alert type.
+ * @param children Alert message.
+ * @returns JSX
+ */
+function Alert({
+  type,
+  children,
+}: {
+  type: string;
+  children: string | undefined;
+}) {
+  return (
+    <div
+      className={classNames(
+        "rounded border px-4 py-3",
+        type === "success"
+          ? "border-green-400 bg-green-100 text-green-700"
+          : "border-red-400 bg-red-100 text-red-700"
+      )}
+      role="alert"
+    >
+      <span className="block sm:inline">{children}</span>
+    </div>
+  );
 }
 
 /**
@@ -25,13 +55,22 @@ function ErrorMessage({ children }: { children: string | undefined }) {
  * @returns JSX
  */
 const SignUp: NextPage = () => {
+  const [serverError, setServerError] = useState<string | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<SignUpOutput | undefined>(
+    undefined
+  );
+
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<SignUpInput>();
 
-  const { mutate } = api.user.signup.useMutation();
+  const { mutate } = api.user.signup.useMutation({
+    onSuccess: (data: SignUpOutput) => setServerResult(data),
+    onError: (error) => setServerError(error.message),
+  });
 
   /**
    * Form submit handler.
@@ -50,95 +89,172 @@ const SignUp: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mx-auto flex min-h-screen max-w-lg flex-col">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-2 rounded-lg border border-gray-500 p-2"
-        >
-          <span className="text-center text-3xl font-bold">Sign Up</span>
+        <div className="space-y-2 rounded-lg border border-gray-500 p-2">
+          <div className="relative">
+            <Link
+              href="/"
+              className="absolute rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
+            >
+              Back
+            </Link>
+            <span className="flex justify-center text-3xl font-bold">
+              Sign Up
+            </span>
+          </div>
 
-          <div className="flex items-stretch gap-2">
-            <div className="flex flex-grow flex-col">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                type="text"
-                placeholder="John"
-                className="rounded border border-gray-300 p-2"
-                {...register("firstName", {})}
-              />
+          {serverResult ? (
+            <div className="space-y-2">
+              <Alert type="success">Successfully created account!</Alert>
+              <button className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
+                <Link href="/login">Login</Link>
+              </button>
             </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-2"
+            >
+              {/* server response error */}
+              {serverError && <Alert type="error">{serverError}</Alert>}
 
-            <div className="flex flex-grow flex-col">
-              <label htmlFor="lastName">Last Name</label>
+              <div className="flex items-stretch gap-2">
+                <div className="flex flex-grow flex-col">
+                  <label htmlFor="firstName">First Name</label>
+                  <input
+                    type="text"
+                    placeholder="John"
+                    className={classNames(
+                      "rounded border border-gray-300 p-2",
+                      errors.firstName ? "border-red-500" : ""
+                    )}
+                    {...register("firstName", {
+                      required: "First name is required",
+                    })}
+                  />
+                  {errors.firstName && (
+                    <ErrorMessage>{errors.firstName.message}</ErrorMessage>
+                  )}
+                </div>
+
+                <div className="flex flex-grow flex-col">
+                  <label htmlFor="lastName">Last Name</label>
+                  <input
+                    type="text"
+                    placeholder="Doe"
+                    className={classNames(
+                      "rounded border border-gray-300 p-2",
+                      errors.lastName ? "border-red-500" : ""
+                    )}
+                    {...register("lastName", {
+                      required: "Last name is required",
+                    })}
+                  />
+                  {errors.lastName && (
+                    <ErrorMessage>{errors.lastName.message}</ErrorMessage>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="dateOfBirth">Date of Birth</label>
+                <input
+                  type="date"
+                  className={classNames(
+                    "rounded border border-gray-300 p-2",
+                    errors.dateOfBirth ? "border-red-500" : ""
+                  )}
+                  {...register("dateOfBirth", {
+                    required: "Date of birth is required",
+                  })}
+                />
+                {errors.dateOfBirth && (
+                  <ErrorMessage>{errors.dateOfBirth.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="username">Username</label>
+                <input
+                  type="text"
+                  placeholder="johndoe"
+                  className={classNames(
+                    "rounded border border-gray-300 p-2",
+                    errors.username ? "border-red-500" : ""
+                  )}
+                  {...register("username", {
+                    required: "Username is required",
+                  })}
+                />
+                {errors.username && (
+                  <ErrorMessage>{errors.username.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  placeholder="johndoe@example.com"
+                  className={classNames(
+                    "rounded border border-gray-300 p-2",
+                    errors.email ? "border-red-500" : ""
+                  )}
+                  {...register("email", {
+                    required: "Email is required",
+                  })}
+                />
+                {errors.email && (
+                  <ErrorMessage>{errors.email.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className={classNames(
+                    "rounded border border-gray-300 p-2",
+                    errors.password ? "border-red-500" : ""
+                  )}
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                />
+                {errors.password && (
+                  <ErrorMessage>{errors.password.message}</ErrorMessage>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  className={classNames(
+                    "rounded border border-gray-300 p-2",
+                    errors.confirmPassword ? "border-red-500" : ""
+                  )}
+                  {...register("confirmPassword", {
+                    required: "Confirm password is required",
+                    validate: (value) =>
+                      value === getValues("password") ||
+                      "Passwords do not match",
+                  })}
+                />
+                {errors.confirmPassword && (
+                  <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+                )}
+              </div>
+
               <input
-                type="text"
-                placeholder="Doe"
-                className="rounded border border-gray-300 p-2"
-                {...register("lastName", {})}
+                type="submit"
+                value="Sign Up"
+                className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
               />
-            </div>
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="dateOfBirth">Date of Birth</label>
-            <input
-              type="date"
-              className="rounded border border-gray-300 p-2"
-              {...register("dateOfBirth", {})}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              placeholder="johndoe"
-              className="rounded border border-gray-300 p-2"
-              {...register("username", {})}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              placeholder="johndoe@example.com"
-              className="rounded border border-gray-300 p-2"
-              {...register("email", {})}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              placeholder="Password"
-              className="rounded border border-gray-300 p-2"
-              {...register("password", {})}
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="rounded border border-gray-300 p-2"
-              {...register("confirmPassword", {})}
-            />
-          </div>
-
-          <input
-            type="submit"
-            value="Sign Up"
-            className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
-          />
-          <Link
-            href="/"
-            className="rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
-          >
-            Back
-          </Link>
-        </form>
+            </form>
+          )}
+        </div>
       </main>
     </>
   );

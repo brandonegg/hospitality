@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { prisma } from "../../db";
@@ -31,7 +32,10 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       // Check if the password and confirm password match
       if (input.password !== input.confirmPassword) {
-        throw new Error("Passwords do not match");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Passwords do not match",
+        });
       }
 
       // Check if the username is already taken
@@ -39,7 +43,10 @@ export const userRouter = createTRPCRouter({
         where: { username: input.username },
       });
       if (usernameExists) {
-        throw new Error("Username is already taken");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Username is already taken",
+        });
       }
 
       // Check if the email is already taken
@@ -47,7 +54,10 @@ export const userRouter = createTRPCRouter({
         where: { email: input.email },
       });
       if (emailExists) {
-        throw new Error("Email is already taken");
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email is already taken",
+        });
       }
 
       // format the user data
