@@ -44,7 +44,7 @@ CREATE TABLE `User` (
     `username` VARCHAR(191) NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `dateOfBirth` DATETIME(3) NULL,
+    `dateOfBirth` DATE NULL,
     `phoneNumber` VARCHAR(191) NULL,
     `emailVerified` DATETIME(3) NULL,
     `image` VARCHAR(191) NULL,
