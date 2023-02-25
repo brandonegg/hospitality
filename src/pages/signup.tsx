@@ -4,15 +4,12 @@ import Link from "next/link";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-type FormData = {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import type { RouterInputs, RouterOutputs } from "../utils/api";
+import { api } from "../utils/api";
+
+type SignUpInput = RouterInputs["user"]["signup"];
+
+type SignUpOutput = RouterOutputs["user"]["signup"];
 
 /**
  * Error message react component.
@@ -32,14 +29,18 @@ const SignUp: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<SignUpInput>();
+
+  const { mutate } = api.user.signup.useMutation();
 
   /**
    * Form submit handler.
    * @param data Form data.
    * @returns
    */
-  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<SignUpInput> = (data) => {
+    mutate(data);
+  };
 
   return (
     <>
