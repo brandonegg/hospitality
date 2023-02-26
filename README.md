@@ -24,6 +24,23 @@ You can now use the `MySQL` credentials stored in the _.env_ file to connect the
 
 To stop the running containers, run `npm run docker:down` or press `CTRL-C`.
 
+To remove remove volumes from docker-compose: docker-compose down -v
+
+To run command inside a docker container: docker exec -it {CONTAINER_NAME} sh -c "{COMMAND}"
+
+**Setting up MySQL database in Docker container:**
+
+1. Add new connection
+2. Enter connection name, e.g. Docker MySQL
+3. Change the default port from 3306 to 3300
+4. Enter the username (default to **root**) and password (from the .env you entered) for the database connection
+
+Once connected, run the following commands to run migrations on your database:
+
+```
+docker exec -it nextjs sh -c "npx prisma migrate dev"
+```
+
 ## Sonar
 
 Sonar scans the repository to check for potential bugs, formatting issues, coverage, and much more. The sonar utility can be run using `npm run scan` which is just an alias for the `sonar-scanner` command. Sonar requires manual configuration to setup at this time.
