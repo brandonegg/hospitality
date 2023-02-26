@@ -10,7 +10,6 @@ import { api } from "../utils/api";
 import { classNames } from "../utils/text";
 
 type SignUpInput = RouterInputs["user"]["signup"];
-
 type SignUpOutput = RouterOutputs["user"]["signup"];
 
 /**
@@ -18,8 +17,18 @@ type SignUpOutput = RouterOutputs["user"]["signup"];
  * @param children Error message.
  * @returns JSX
  */
-function ErrorMessage({ children }: { children: string | undefined }) {
-  return <span className="text-sm text-red-500">{children}</span>;
+function ErrorMessage({
+  id,
+  children,
+}: {
+  id: string;
+  children: string | undefined;
+}) {
+  return (
+    <span id={id} className="text-sm text-red-500">
+      {children}
+    </span>
+  );
 }
 
 /**
@@ -37,6 +46,7 @@ function Alert({
 }) {
   return (
     <div
+      id={`alert-${type}`}
       className={classNames(
         "rounded border px-4 py-3",
         type === "success"
@@ -45,7 +55,9 @@ function Alert({
       )}
       role="alert"
     >
-      <span className="block sm:inline">{children}</span>
+      <span className="block sm:inline" id={`alert-${type}-message`}>
+        {children}
+      </span>
     </div>
   );
 }
@@ -65,7 +77,7 @@ const SignUp: NextPage = () => {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<SignUpInput>();
+  } = useForm<SignUpInput>({});
 
   const { mutate } = api.user.signup.useMutation({
     onSuccess: (data: SignUpOutput) => setServerResult(data),
@@ -97,9 +109,7 @@ const SignUp: NextPage = () => {
             >
               Back
             </Link>
-            <span className="flex justify-center text-3xl font-bold">
-              Sign Up
-            </span>
+            <h1 className="flex justify-center text-3xl font-bold">Sign Up</h1>
           </div>
 
           {serverResult ? (
@@ -132,7 +142,9 @@ const SignUp: NextPage = () => {
                     })}
                   />
                   {errors.firstName && (
-                    <ErrorMessage>{errors.firstName.message}</ErrorMessage>
+                    <ErrorMessage id="firstName-error">
+                      {errors.firstName.message}
+                    </ErrorMessage>
                   )}
                 </div>
 
@@ -150,7 +162,9 @@ const SignUp: NextPage = () => {
                     })}
                   />
                   {errors.lastName && (
-                    <ErrorMessage>{errors.lastName.message}</ErrorMessage>
+                    <ErrorMessage id="lastName-error">
+                      {errors.lastName.message}
+                    </ErrorMessage>
                   )}
                 </div>
               </div>
@@ -168,7 +182,9 @@ const SignUp: NextPage = () => {
                   })}
                 />
                 {errors.dateOfBirth && (
-                  <ErrorMessage>{errors.dateOfBirth.message}</ErrorMessage>
+                  <ErrorMessage id="dateOfBirth-error">
+                    {errors.dateOfBirth.message}
+                  </ErrorMessage>
                 )}
               </div>
 
@@ -186,7 +202,9 @@ const SignUp: NextPage = () => {
                   })}
                 />
                 {errors.username && (
-                  <ErrorMessage>{errors.username.message}</ErrorMessage>
+                  <ErrorMessage id="username-error">
+                    {errors.username.message}
+                  </ErrorMessage>
                 )}
               </div>
 
@@ -201,10 +219,16 @@ const SignUp: NextPage = () => {
                   )}
                   {...register("email", {
                     required: "Email is required",
+                    pattern: {
+                      value: /^\S+@\S+$/i,
+                      message: "Email is invalid",
+                    },
                   })}
                 />
                 {errors.email && (
-                  <ErrorMessage>{errors.email.message}</ErrorMessage>
+                  <ErrorMessage id="email-error">
+                    {errors.email.message}
+                  </ErrorMessage>
                 )}
               </div>
 
@@ -219,10 +243,16 @@ const SignUp: NextPage = () => {
                   )}
                   {...register("password", {
                     required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
                   })}
                 />
                 {errors.password && (
-                  <ErrorMessage>{errors.password.message}</ErrorMessage>
+                  <ErrorMessage id="password-error">
+                    {errors.password.message}
+                  </ErrorMessage>
                 )}
               </div>
 
@@ -243,15 +273,19 @@ const SignUp: NextPage = () => {
                   })}
                 />
                 {errors.confirmPassword && (
-                  <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+                  <ErrorMessage id="confirmPassword-error">
+                    {errors.confirmPassword.message}
+                  </ErrorMessage>
                 )}
               </div>
 
-              <input
+              <button
                 type="submit"
                 value="Sign Up"
                 className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
-              />
+              >
+                Sign Up
+              </button>
             </form>
           )}
         </div>
