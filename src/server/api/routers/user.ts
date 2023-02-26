@@ -3,7 +3,6 @@ import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
 import { z } from "zod";
 
-import { prisma } from "../../db";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 /**
@@ -30,7 +29,7 @@ export const userRouter = createTRPCRouter({
         confirmPassword: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       // Check if the password and confirm password match
       if (input.password !== input.confirmPassword) {
         throw new TRPCError({
@@ -40,7 +39,7 @@ export const userRouter = createTRPCRouter({
       }
 
       // Check if the username is already taken
-      const usernameExists = await prisma.user.findFirst({
+      const usernameExists = await ctx.prisma.user.findFirst({
         where: { username: input.username },
       });
       if (usernameExists) {
@@ -51,7 +50,7 @@ export const userRouter = createTRPCRouter({
       }
 
       // Check if the email is already taken
-      const emailExists = await prisma.user.findFirst({
+      const emailExists = await ctx.prisma.user.findFirst({
         where: { email: input.email },
       });
       if (emailExists) {
@@ -74,7 +73,7 @@ export const userRouter = createTRPCRouter({
       };
 
       // Create the user
-      const user = await prisma.user.create({
+      const user = await ctx.prisma.user.create({
         data: newUser,
         select: defaultUserSelect,
       });

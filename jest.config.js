@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js", "<rootDir>/singleton.ts"],
   modulePathIgnorePatterns: ["./tests/e2e/*"],
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
@@ -15,7 +15,11 @@ const customJestConfig = {
 
     "^@/pages/(.*)$": "<rootDir>/src/pages/$1",
   },
+  testEnvironment: "node",
+  clearMocks: true,
+  coverageProvider: "v8",
   preset: "ts-jest/presets/js-with-ts",
+  setupFiles: ["dotenv/config"],
   transform: {
     "^.+\\.mjs?$": "ts-jest",
   },
