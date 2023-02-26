@@ -7,7 +7,7 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js", "<rootDir>/singleton.ts"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   modulePathIgnorePatterns: ["./tests/e2e/*"],
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
