@@ -100,8 +100,8 @@ const SignUp: NextPage = () => {
         <meta name="description" content="Hospitality Sign Up" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="mx-auto flex min-h-screen max-w-lg flex-col">
-        <div className="space-y-2 rounded-lg border border-gray-500 p-2">
+      <main className="mx-auto flex min-h-screen max-w-lg flex-col p-2">
+        <div className="space-y-2 rounded-lg border border-gray-200 p-2">
           <div className="relative">
             <Link
               href="/"
