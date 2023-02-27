@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Read environment variables from file.
@@ -7,16 +7,16 @@ import { defineConfig, devices } from '@playwright/test';
 // require('dotenv').config();
 
 // Use process.env.PORT by default and fallback to port 3000
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 // Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
-const baseURL = `http://localhost:${PORT}`
+const baseURL = `http://localhost:${PORT}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: "./tests/e2e",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -24,7 +24,7 @@ export default defineConfig({
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000
+    timeout: 5000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -35,10 +35,10 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   webServer: {
-    command: 'npm run dev',
+    command: "npm run dev",
     url: baseURL,
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
@@ -51,24 +51,25 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
+    video: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
 
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
 
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
 
     /* Test against mobile viewports. */

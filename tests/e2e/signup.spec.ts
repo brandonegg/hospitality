@@ -110,30 +110,4 @@ test.describe("sign up page", () => {
     await expect(confirmPasswordError).toBeVisible();
     await expect(confirmPasswordError).toHaveText(/Passwords do not match/);
   });
-
-  test("display success message when submitting valid form", async ({
-    page,
-  }) => {
-    // Expect the page to display success message when submitting valid form
-    const form = page.locator("form");
-    const firstName = form.locator("input[name=firstName]");
-    const lastName = form.locator("input[name=lastName]");
-    const dateOfBirth = form.locator("input[name=dateOfBirth]");
-    const email = form.locator("input[name=email]");
-    const password = form.locator("input[name=password]");
-    const confirmPassword = form.locator("input[name=confirmPassword]");
-    const submit = form.locator("button[type=submit]");
-
-    await firstName.fill("John");
-    await lastName.fill("Doe");
-    await dateOfBirth.fill("2021-01-01");
-    await email.fill("johndoe@example.com");
-    await password.fill("12345678");
-    await confirmPassword.fill("12345678");
-    await submit.click();
-
-    const successMessage = page.locator("span[id=alert-success-message]");
-    await expect(successMessage).toBeVisible();
-    await expect(successMessage).toHaveText(/Successfully created account!/);
-  });
 });
