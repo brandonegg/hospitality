@@ -19,10 +19,32 @@ Docker is used to containerized our application so that you don't have to run mu
 3. Fill in the necessary information for the _.env_ file
 4. Run `npm run docker:build` to build the containers (you only have to do this once).
 5. Run `npm run docker:up` to start the containers.
+6. (optional): To access the NextJS image terminal, run the command `docker exec -it nextjs sh`. This might be useful for install new packages to the NextJS image.
 
 You can now use the `MySQL` credentials stored in the _.env_ file to connect the `MySQL` server using your favorite database management tool..
 
 To stop the running containers, run `npm run docker:down` or press `CTRL-C`.
+
+To remove volumes from docker-compose: docker-compose down -v
+
+To run command inside a docker container: docker exec -it {CONTAINER_NAME} sh -c "{COMMAND}"
+
+**For example:**
+
+When installing a package, you would run `npm install {PACKAGE}` in your local terminal. Your local environment is not sync with the NextJS docker image. Hence, you would also need to install the same package in the NextJS docker image as well by running this command `docker exec -it nextjs sh -c "npm install {PACKAGE}"`. Similar process for uninstall a package from your local environment.
+
+**Setting up MySQL database in Docker container:**
+
+1. Add new connection
+2. Enter connection name, e.g. Docker MySQL
+3. Change the default port from 3306 to 3300
+4. Enter the username (default to **root**) and password (from the .env you entered) for the database connection
+
+Once connected, run the following commands to run migrations on your database:
+
+```
+docker exec -it nextjs sh -c "npx prisma migrate dev"
+```
 
 ## Sonar
 
