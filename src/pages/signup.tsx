@@ -122,7 +122,7 @@ const SignUp: NextPage = () => {
         <div className="space-y-2  p-2">
           <div className="relative">
             <Link
-              href="/"
+              href="/login"
               className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />

@@ -21,6 +21,28 @@ test.describe("sign up page", () => {
     await expect(form).toBeVisible();
   });
 
+  test("has back button", async ({ page }) => {
+    // Expect the page to contain the Sign Up form
+    const back = page.locator("a");
+    await expect(back).toBeVisible();
+    await expect(back).toHaveText(/Back/);
+  });
+
+  test('has "Back" link that redirects to the login page', async ({ page }) => {
+    // Expect the page to contain the Sign Up form
+    const back = page.locator("a");
+    await back.click();
+    await expect(page).toHaveURL(/login/);
+  });
+
+  test("has signup button", async ({ page }) => {
+    // Expect the page to contain the Sign Up form
+    const form = page.locator("form");
+    const submit = form.locator("button[type=submit]");
+    await expect(submit).toBeVisible();
+    await expect(submit).toHaveText(/Sign Up/);
+  });
+
   test("has sign up form fields", async ({ page }) => {
     // Expect the page to contain the Sign Up form fields
     const form = page.locator("form");
