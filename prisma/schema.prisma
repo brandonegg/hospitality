@@ -64,3 +64,9 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Availability {
+    id            String    @id @default(cuid())
+    startTime     String
+    endTime       String
+}
