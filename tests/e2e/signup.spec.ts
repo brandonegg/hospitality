@@ -26,6 +26,10 @@ test.describe("sign up page", () => {
     const form = page.locator("form");
     const firstName = form.locator("input[name=firstName]");
     const lastName = form.locator("input[name=lastName]");
+    const street = form.locator("input[name=street]");
+    const city = form.locator("input[name=city]");
+    const state = form.locator("select[name=state]");
+    const zipCode = form.locator("input[name=zipCode]");
     const dateOfBirth = form.locator("input[name=dateOfBirth]");
     const email = form.locator("input[name=email]");
     const password = form.locator("input[name=password]");
@@ -34,6 +38,10 @@ test.describe("sign up page", () => {
 
     await expect(firstName).toBeVisible();
     await expect(lastName).toBeVisible();
+    await expect(street).toBeVisible();
+    await expect(city).toBeVisible();
+    await expect(state).toBeVisible();
+    await expect(zipCode).toBeVisible();
     await expect(dateOfBirth).toBeVisible();
     await expect(email).toBeVisible();
     await expect(password).toBeVisible();
@@ -54,6 +62,22 @@ test.describe("sign up page", () => {
     const lastNameError = page.locator("span[id=lastName-error]");
     await expect(lastNameError).toBeVisible();
     await expect(lastNameError).toHaveText(/Last name is required/);
+
+    const streetError = page.locator("span[id=street-error]");
+    await expect(streetError).toBeVisible();
+    await expect(streetError).toHaveText(/Street address is required/);
+
+    const cityError = page.locator("span[id=city-error]");
+    await expect(cityError).toBeVisible();
+    await expect(cityError).toHaveText(/City is required/);
+
+    const stateError = page.locator("span[id=state-error]");
+    await expect(stateError).toBeVisible();
+    await expect(stateError).toHaveText(/State is required/);
+
+    const zipCodeError = page.locator("span[id=zipCode-error]");
+    await expect(zipCodeError).toBeVisible();
+    await expect(zipCodeError).toHaveText(/Zip is required/);
 
     const dateOfBirthError = page.locator("span[id=dateOfBirth-error]");
     await expect(dateOfBirthError).toBeVisible();
@@ -81,6 +105,10 @@ test.describe("sign up page", () => {
     const form = page.locator("form");
     const firstName = form.locator("input[name=firstName]");
     const lastName = form.locator("input[name=lastName]");
+    const street = form.locator("input[name=street]");
+    const city = form.locator("input[name=city]");
+    const state = form.locator("select[name=state]");
+    const zipCode = form.locator("input[name=zipCode]");
     const dateOfBirth = form.locator("input[name=dateOfBirth]");
     const email = form.locator("input[name=email]");
     const password = form.locator("input[name=password]");
@@ -91,6 +119,10 @@ test.describe("sign up page", () => {
 
     await firstName.fill("John");
     await lastName.fill("Doe");
+    await street.fill("123 Main St");
+    await city.fill("New York");
+    await state.selectOption("NY");
+    await zipCode.fill("12345");
     await dateOfBirth.fill("2021-01-01");
     await email.fill("john.doe");
     await password.fill("1234567");

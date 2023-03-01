@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import type { PrismaClient, User } from "@prisma/client";
+import type { Address, PrismaClient, User } from "@prisma/client";
 import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 
@@ -9,6 +9,7 @@ import type { RouterOutputs } from "../../src/utils/api";
 const mockUser: User | null = {
   id: "test-id",
   name: "test user",
+  addressId: "test-address-id",
   username: "test-username",
   email: "test-user@example.com",
   dateOfBirth: new Date("1990-01-01"),
@@ -16,6 +17,14 @@ const mockUser: User | null = {
   phoneNumber: null,
   emailVerified: null,
   image: null,
+};
+
+const mockAddress: Address | null = {
+  id: "test-address-id",
+  street: "1234 Main St",
+  city: "Test City",
+  state: "Test State",
+  zipCode: 12345,
 };
 
 const emptyUser: User | null = null;
@@ -34,6 +43,10 @@ describe("sign up router", () => {
     const input: Input = {
       firstName: "test",
       lastName: "user",
+      street: "1234 Main St",
+      city: "Test City",
+      state: "Test State",
+      zipCode: "12345",
       dateOfBirth: "1990-01-01",
       username: "test-username",
       email: "test-user@example.com",
@@ -63,6 +76,10 @@ describe("sign up router", () => {
     const input: Input = {
       firstName: "test",
       lastName: "user",
+      street: "1234 Main St",
+      city: "Test City",
+      state: "Test State",
+      zipCode: "12345",
       dateOfBirth: "1990-01-01",
       username: "test-username",
       email: "test-user@example.com",
@@ -101,6 +118,10 @@ describe("sign up router", () => {
     const input: Input = {
       firstName: "test",
       lastName: "user",
+      street: "1234 Main St",
+      city: "Test City",
+      state: "Test State",
+      zipCode: "12345",
       dateOfBirth: "1990-01-01",
       username: "test-username",
       email: "test-user@example.com",
@@ -110,6 +131,7 @@ describe("sign up router", () => {
 
     prismaMock.user.findFirst.mockResolvedValue(emptyUser);
     prismaMock.user.create.mockResolvedValue(mockOutput as User);
+    prismaMock.address.create.mockResolvedValue(mockAddress);
 
     const result = await caller.user.signup(input);
 
