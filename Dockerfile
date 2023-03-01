@@ -3,6 +3,9 @@
 # Use node 18 image
 FROM node:18
 
+# Install Prisma globally
+RUN npm install -g prisma
+
 # Create the directory on the node image 
 # where our Next.js app will live
 RUN mkdir -p /app
