@@ -26,11 +26,11 @@ export const userRouter = createTRPCRouter({
         street: z.string(),
         city: z.string(),
         state: z.string(),
-        zipCode: z.string(),
+        zipCode: z.string().max(5),
         username: z.string(),
         email: z.string().email(),
-        password: z.string(),
-        confirmPassword: z.string(),
+        password: z.string().min(8),
+        confirmPassword: z.string().min(8),
       })
     )
     .mutation(async ({ ctx, input }) => {
