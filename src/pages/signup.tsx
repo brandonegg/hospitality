@@ -5,62 +5,14 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import Alert from "../components/Alert";
+import ErrorMessage from "../components/ErrorMessage";
 import type { RouterInputs, RouterOutputs } from "../utils/api";
 import { api } from "../utils/api";
 import { classNames } from "../utils/text";
 
 type SignUpInput = RouterInputs["user"]["signup"];
 type SignUpOutput = RouterOutputs["user"]["signup"];
-
-/**
- * Error message react component.
- * @param children Error message.
- * @returns JSX
- */
-function ErrorMessage({
-  id,
-  children,
-}: {
-  id: string;
-  children: string | undefined;
-}) {
-  return (
-    <span id={id} className="text-sm text-red-500">
-      {children}
-    </span>
-  );
-}
-
-/**
- * Alert react component.
- * @param type Alert type.
- * @param children Alert message.
- * @returns JSX
- */
-function Alert({
-  type,
-  children,
-}: {
-  type: string;
-  children: string | undefined;
-}) {
-  return (
-    <div
-      id={`alert-${type}`}
-      className={classNames(
-        "rounded border px-4 py-3",
-        type === "success"
-          ? "border-green-400 bg-green-100 text-green-700"
-          : "border-red-400 bg-red-100 text-red-700"
-      )}
-      role="alert"
-    >
-      <span className="block sm:inline" id={`alert-${type}-message`}>
-        {children}
-      </span>
-    </div>
-  );
-}
 
 /**
  * Sign Up page react component.
