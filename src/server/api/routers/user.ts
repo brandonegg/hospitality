@@ -23,6 +23,10 @@ export const userRouter = createTRPCRouter({
         firstName: z.string(),
         lastName: z.string(),
         dateOfBirth: z.string(),
+        street: z.string(),
+        city: z.string(),
+        state: z.string(),
+        zipCode: z.string(),
         username: z.string(),
         email: z.string().email(),
         password: z.string(),
@@ -63,6 +67,19 @@ export const userRouter = createTRPCRouter({
       // hash the password
       const hashPassword = await argon2.hash(input.password);
 
+      // format the address data
+      const newAddress = {
+        street: input.street,
+        city: input.city,
+        state: input.state,
+        zipCode: parseInt(input.zipCode, 10),
+      };
+
+      // Create the user's address
+      const address = await ctx.prisma.address.create({
+        data: newAddress,
+      });
+
       // format the user data
       const newUser = {
         name: `${input.firstName} ${input.lastName}`,
@@ -70,6 +87,7 @@ export const userRouter = createTRPCRouter({
         username: input.username,
         email: input.email,
         password: hashPassword,
+        addressId: address.id,
       };
 
       // Create the user
