@@ -20,7 +20,6 @@ const Login: NextPage = () => {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<LoginInput>({});
 
