@@ -1,6 +1,30 @@
 import { expect, test } from "@playwright/test";
+import { setupServer } from "msw/node";
+
+import { api } from "../../src/utils/api";
+import { trpc, trpcMsw } from "../msw/setup";
+
+// const server = setupServer(
+//   trpcMsw.user.signup.mutation(async (req, res, ctx) => {
+//     return res(
+//       ctx.status(200),
+//       ctx.data({
+//         id: "1",
+//         name: "John Doe",
+//         username: "johndoe",
+//         email: "johndoe@example.com",
+//       })
+//     );
+//   })
+// );
 
 test.describe("sign up page", () => {
+  // test.beforeAll(() => server.listen());
+
+  // test.afterEach(() => server.resetHandlers());
+
+  // test.afterAll(() => server.close());
+
   test.beforeEach(async ({ page }) => {
     await page.goto("/signup");
   });
@@ -164,4 +188,54 @@ test.describe("sign up page", () => {
     await expect(confirmPasswordError).toBeVisible();
     await expect(confirmPasswordError).toHaveText(/Passwords do not match/);
   });
+
+  // test("display success message when submitting valid form", async ({
+  //   page,
+  // }) => {
+  //   // Expect the page to display success message when submitting valid form
+  //   const form = page.locator("form");
+  //   const firstName = form.locator("input[name=firstName]");
+  //   const lastName = form.locator("input[name=lastName]");
+  //   const street = form.locator("input[name=street]");
+  //   const city = form.locator("input[name=city]");
+  //   const state = form.locator("select[name=state]");
+  //   const zipCode = form.locator("input[name=zipCode]");
+  //   const dateOfBirth = form.locator("input[name=dateOfBirth]");
+  //   const username = form.locator("input[name=username]");
+  //   const email = form.locator("input[name=email]");
+  //   const password = form.locator("input[name=password]");
+  //   const confirmPassword = form.locator("input[name=confirmPassword]");
+  //   const submit = form.locator("button[type=submit]");
+
+  //   await firstName.fill("John");
+  //   await lastName.fill("Doe");
+  //   await street.fill("123 Main St");
+  //   await city.fill("New York");
+  //   await state.selectOption("NY");
+  //   await zipCode.fill("12345");
+  //   await dateOfBirth.fill("2021-01-01");
+  //   await username.fill("johndoe");
+  //   await email.fill("johndoe@example.com");
+  //   await password.fill("12345678");
+  //   await confirmPassword.fill("12345678");
+
+  //   await submit.click();
+
+  //   const user = await trpc.user.signup.mutate({
+  //     firstName: "John",
+  //     lastName: "Doe",
+  //     street: "123 Main St",
+  //     city: "New York",
+  //     state: "NY",
+  //     zipCode: "12345",
+  //     dateOfBirth: "2021-01-01",
+  //     username: "johndoe1",
+  //     email: "johndoe1@example.com",
+  //     password: "12345678",
+  //     confirmPassword: "12345678",
+  //   });
+
+  //   const successMessage = page.locator("div[class=alert-success]");
+  //   await expect(successMessage).toBeVisible();
+  // });
 });
