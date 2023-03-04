@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from 'react';
+import React, { ButtonHTMLAttributes, useState } from 'react';
 
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
@@ -24,15 +24,13 @@ for (let hour = 7; hour < 20; hour++){
     }
   }
 }
-// add something that removes times that are no longer available because doctors didn't say they were available or because
-// another appointment was made
 
 /**
- * make a button for Appointment
+ * make a button for availability
  * @param props
  * @returns 
  */
-function AppointButton(props:{children:string, text:string}) {
+const AvailButton = (props:{children:string, text:string}) => {
   const text = props.text;
   const [active, setActive] = useState(false);
 
@@ -41,6 +39,7 @@ function AppointButton(props:{children:string, text:string}) {
  */
   const changeColor = () => {
     setActive(!active);
+
   };
   const buttonStyle = {
     backgroundColor: active ? "green" : "white",
@@ -52,7 +51,7 @@ function AppointButton(props:{children:string, text:string}) {
     display: "block", /* Make the buttons appear below each other */
   };
   return (
-    <button onClick={changeColor} style={buttonStyle}> {text} </button>
+    <button className={active ? "selected" : "boxes"} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
 }
 
@@ -60,12 +59,12 @@ function AppointButton(props:{children:string, text:string}) {
  * Like when2meet, a column of avaialability
  * @returns JSX
  */
-const ColOfAppoint = (props:{children:string, day:string}) => {
+const ColOfAvail = (props:{children:string, day:string}) => {
   const day = props.day;
   return (
-      <div className="AppointmentSetter flex flex-col items-center justify-center px-2 py-0">
+      <div className="availabilitySetter flex flex-col items-center justify-center px-2 py-0">
         <span> {day} </span>
-        {times.map((time, index) => <AppointButton key={index} text={time} > </AppointButton>)}
+        {times.map((time, index) => <AvailButton key={index} text={time} > </AvailButton>)}
       </div>
     );
   }
@@ -73,7 +72,7 @@ const ColOfAppoint = (props:{children:string, day:string}) => {
  * Doctor availabilty react component.
  * @returns JSX
  */
-const Appointment: NextPage = () => {
+const Availability: NextPage = () => {
     const realButtons = {
       border: "1px solid black", /* Green border */
       borderRadius: 20,
@@ -83,14 +82,18 @@ const Appointment: NextPage = () => {
       display: "block", /* Make the buttons appear below each other */
     };
     /**
-     * Send the desired Appointment to the database
+     * Send the desired availability to the database
      */
     const submitToDB = () => {
-      //
+      const checkedBoxes:any = document.querySelectorAll('.selected');
       console.log("Submit pressed");
+      console.log(checkedBoxes);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      console.log(checkedBoxes.getText().toString());
+      
     };
     /**
-     * Go to the previous page
+     * Go to the previous page  
      */
     const goBack = () => {
       //
@@ -99,28 +102,28 @@ const Appointment: NextPage = () => {
     return (
       <>
         <Head>
-          <title>Make Appointment</title>
-          <meta name="description" content="Hospitality Appointment" />
+          <title>Set Availability</title>
+          <meta name="description" content="Hospitality Doctor Availabilty" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
-            <span className="text-2xl "> Appointment Signup </span>
+            <span className="text-2xl "> Set Your Availabilty </span>
           </div>
           <div className="flex flex-row h-20 w-32 ">
             <div className="pt-8 pl-10 ">
               <button onClick={goBack} style={realButtons}> Back </button>
             </div>
           </div>
-          <div className="AppointmentSetter flex flex-row items-center justify-center gap-2 px-2 py-0 ">
-            <ColOfAppoint day = "Sunday"> </ColOfAppoint>
-            <ColOfAppoint day = "Monday"> </ColOfAppoint>
-            <ColOfAppoint day = "Tuesday"> </ColOfAppoint>
-            <ColOfAppoint day = "Wednesday"> </ColOfAppoint>
-            <ColOfAppoint day = "Thursday"> </ColOfAppoint>
-            <ColOfAppoint day = "Friday"> </ColOfAppoint>
-            <ColOfAppoint day = "Saturday"> </ColOfAppoint>
+          <div className="availabilitySetter flex flex-row items-center justify-center gap-2 px-2 py-0 ">
+            <ColOfAvail day = "Sunday"> </ColOfAvail>
+            <ColOfAvail day = "Monday"> </ColOfAvail>
+            <ColOfAvail day = "Tuesday"> </ColOfAvail>
+            <ColOfAvail day = "Wednesday"> </ColOfAvail>
+            <ColOfAvail day = "Thursday"> </ColOfAvail>
+            <ColOfAvail day = "Friday"> </ColOfAvail>
+            <ColOfAvail day = "Saturday"> </ColOfAvail>
           </div>
           <div className="availabilitySetter flex flex-col items-center justify-center gap-2 pt-10 pb-10">
             <button onClick={submitToDB} style={realButtons}> Submit </button>
@@ -130,4 +133,4 @@ const Appointment: NextPage = () => {
     );
   };
   
-export default Appointment;
+export default Availability;
