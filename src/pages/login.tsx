@@ -1,4 +1,7 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftIcon,
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/react/24/solid";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -117,8 +120,9 @@ const Login: NextPage = () => {
               <button
                 type="submit"
                 value="Sign Up"
-                className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
               >
+                <ArrowRightOnRectangleIcon className="h-4 w-4" />
                 Login
               </button>
               <Link
