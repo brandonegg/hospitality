@@ -1,5 +1,6 @@
 import {
   ArrowLeftIcon,
+  ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import type { NextPage } from "next";
@@ -117,19 +118,30 @@ const Login: NextPage = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <button
-                type="submit"
-                value="Sign Up"
-                className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
-              >
-                <ArrowRightOnRectangleIcon className="h-4 w-4" />
-                Login
-              </button>
+              {/* login and sign up button */}
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  value="Sign Up"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                >
+                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                  Login
+                </button>
+                <Link
+                  href="/signup"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                >
+                  <ArrowLeftOnRectangleIcon className="h-4 w-4" />
+                  Sign Up
+                </Link>
+              </div>
+              {/* forgot password button */}
               <Link
-                href="/signup"
+                href="/forgot-password"
                 className="text-indigo-500 hover:text-indigo-600"
               >
-                Don&apos;t have an account?
+                Forgot Password?
               </Link>
             </div>
           </form>

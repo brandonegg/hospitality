@@ -27,6 +27,22 @@ test.describe("login page", () => {
     await expect(page).toHaveURL("/");
   });
 
+  test("has forgot password link that redirects to the forgot password page", async ({
+    page,
+  }) => {
+    const forgotPassword = page.getByText(/Forgot Password/);
+    await forgotPassword.click();
+    await expect(page).toHaveURL("/forgot-password");
+  });
+
+  test('has "Sign Up" link that redirects to the sign up page', async ({
+    page,
+  }) => {
+    const signUp = page.getByText(/Sign Up/);
+    await signUp.click();
+    await expect(page).toHaveURL("/signup");
+  });
+
   test("has login form", async ({ page }) => {
     // Expect the page to contain the Login form
     const form = page.locator("form");
