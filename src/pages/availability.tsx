@@ -12,13 +12,11 @@ for (let hour = 7; hour < 20; hour++){
     if (!(hour === 19 && min === 1)){ //don't want to add 7:30s
       if (hour > 12) { // pm
         const nonMilHour = hour - 12;
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        const time = `${nonMilHour}:${minutes[min]} pm`;
+        const time = `${nonMilHour}:${minutes[min] as string} pm`;
         times.push(time);
       }
       else{ // am
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        const time = `${hour}:${minutes[min]} am`;
+        const time = `${hour}:${minutes[min] as string} am`;
         times.push(time);
       }
     }
