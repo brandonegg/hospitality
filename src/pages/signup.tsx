@@ -1,4 +1,8 @@
-import { ArrowLeftIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftIcon,
+  ArrowRightOnRectangleIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/24/solid";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -135,7 +139,10 @@ const SignUp: NextPage = () => {
             <div className="space-y-2">
               <Alert type="success">Successfully created account!</Alert>
               <button className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
-                <Link href="/login">Login</Link>
+                <Link href="/login" className="inline-flex items-center gap-1">
+                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
+                  Login
+                </Link>
               </button>
             </div>
           ) : (
