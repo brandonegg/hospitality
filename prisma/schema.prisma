@@ -72,3 +72,12 @@ model Availability {
   endTime   String
   docId     Int
 }
+
+model Appointment {
+  id        String @id @default(cuid())
+  day       Int
+  startTime String
+  endTime   String
+  docId     Int
+  userName  String
+}
