@@ -16,6 +16,7 @@ const mockUser: User | null = {
   password: "password",
   phoneNumber: null,
   emailVerified: null,
+  role: "PATIENT",
   image: null,
 };
 
