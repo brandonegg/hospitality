@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import React, { ButtonHTMLAttributes, useState } from 'react';
+import Router from 'next/router'
+import React, { useState } from 'react';
 
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
@@ -10,8 +11,9 @@ const minutes: string[] = ["00", "30"]
 for (let hour = 7; hour < 20; hour++){
   for (let min = 0; min < 2; min++){
     if (!(hour === 19 && min === 1)){ //don't want to add 7:30s
-      if (hour > 12) { // pm
-        const nonMilHour = hour - 12;
+      if (hour > 11) { // pm
+        let nonMilHour = hour;
+        if (hour !== 12) {nonMilHour = hour - 12;}
         const time = `${nonMilHour}:${minutes[min] as string} pm`;
         times.push(time);
       }
@@ -28,8 +30,9 @@ for (let hour = 7; hour < 20; hour++){
  * @param props
  * @returns 
  */
-const AvailButton = (props:{children:string, text:string}) => {
+const AvailButton = (props:{children:string, text:string, day:string }) => {
   const text = props.text;
+  const day = props.day;
   const [active, setActive] = useState(false);
 
  /**
@@ -49,7 +52,7 @@ const AvailButton = (props:{children:string, text:string}) => {
     display: "block", /* Make the buttons appear below each other */
   };
   return (
-    <button className={active ? "selected" : "boxes"} onClick={changeColor} style={buttonStyle}> {text} </button>
+    <button className={text + " " + day + " " + (active ? "selected" : "boxes")} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
 }
 
@@ -62,7 +65,7 @@ const ColOfAvail = (props:{children:string, day:string}) => {
   return (
       <div className="availabilitySetter flex flex-col items-center justify-center px-2 py-0">
         <span> {day} </span>
-        {times.map((time, index) => <AvailButton key={index} text={time} > </AvailButton>)}
+        {times.map((time, index) => <AvailButton key={index} text={time} day={day}> </AvailButton>)}
       </div>
     );
   }
@@ -82,14 +85,28 @@ const Availability: NextPage = () => {
     /**
      * Send the desired availability to the database
      */
-    const submitToDB = () => {
-      const checkedBoxes:any = document.querySelectorAll('.selected');
+    const submitToDB = async () => {
+      const checkedBoxes = document.querySelectorAll('.selected');
       console.log("Submit pressed");
-      console.log(checkedBoxes);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-      console.log(checkedBoxes.getText().toString());
-      
-    };
+      const times:[string,number][] = [];
+      const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+      type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
+      checkedBoxes.forEach(box => {
+        const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
+        times.push([time, dayToNum[box.classList[2] as day]]);
+      })
+      try {
+        const body = { times }
+        await fetch(`/api/storeAvail`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+        await Router.push('/')
+      } catch (error) {
+        console.error(error)
+      }
+    }
     /**
      * Go to the previous page  
      */
@@ -124,7 +141,7 @@ const Availability: NextPage = () => {
             <ColOfAvail day = "Saturday"> </ColOfAvail>
           </div>
           <div className="availabilitySetter flex flex-col items-center justify-center gap-2 pt-10 pb-10">
-            <button onClick={submitToDB} style={realButtons}> Submit </button>
+            <button onClick={() => { void submitToDB(); }} style={realButtons}> Submit </button>
           </div>
         </main>
       </>

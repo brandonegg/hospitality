@@ -51,10 +51,7 @@ function AppointButton(props: { children: string; text: string }) {
     display: "block" /* Make the buttons appear below each other */,
   };
   return (
-    <button onClick={changeColor} style={buttonStyle}>
-      {" "}
-      {text}{" "}
-    </button>
+    <button className={text + " " + (active ? "selected" : "boxes")} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
 }
 
@@ -93,7 +90,12 @@ const Appointment: NextPage = () => {
    */
   const submitToDB = () => {
     //
-    console.log("Submit pressed");
+    const checkedBoxes = document.querySelectorAll('.selected');
+      console.log("Submit pressed");
+      checkedBoxes.forEach(box => {
+        const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
+        console.log(time); // this is the time of the selected boxes
+      })      
   };
   /**
    * Go to the previous page
@@ -143,3 +145,20 @@ const Appointment: NextPage = () => {
 };
 
 export default Appointment;
+
+/**
+ * See what availability a doctor has
+ * @returns 
+ */
+/**
+export async function getStaticProps() {
+  // Get all foods in the "food" db
+  const times = await prisma.availability.findMany();
+
+  return {
+    props: {
+      appointButton:times,
+    }
+  };
+}
+*/
