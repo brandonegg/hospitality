@@ -88,12 +88,13 @@ const Appointment: NextPage = () => {
     const submitToDB = async () => {
       const checkedBoxes = document.querySelectorAll('.selected');
       console.log("Submit pressed");
-      const times:[string,number][] = [];
+      const tempDocId = parseInt(doctor); // this will have to change in the future once doctors actually are created and have unique ids
+      const times:[string,number,number][] = [];
       const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
       type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
       checkedBoxes.forEach(box => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
-        times.push([time, dayToNum[box.classList[2] as day]]);
+        times.push([time, dayToNum[box.classList[2] as day], tempDocId]);
       })
       try {
         const body = { times }
@@ -114,6 +115,14 @@ const Appointment: NextPage = () => {
       //
       console.log("Back pressed");
     };
+    const [doctor, setValue] = React.useState("1");
+
+    /**
+     * update state when dropdown changes
+     */
+    const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setValue(event.target.value);
+    };
     return (
       <>
         <Head>
@@ -124,7 +133,14 @@ const Appointment: NextPage = () => {
         
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
-            <span className="text-2xl "> Set Your Availabilty </span>
+            <span className="text-2xl "> Make an Appointment </span>
+          </div>
+          <div className="absolute top-0 right-0 h-16 w-16 pt-10 pr-20 ">
+            <select value={doctor} onChange={changeDropDown}>
+              <option value="1">Doctor 1</option>
+              <option value="2">Doctor 2</option>
+              <option value="3">Doctor 3</option>
+            </select>
           </div>
           <div className="flex flex-row h-20 w-32 ">
             <div className="pt-8 pl-10 ">

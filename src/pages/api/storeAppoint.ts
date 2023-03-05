@@ -11,13 +11,14 @@ export default async function handle(
   res: NextApiResponse,
 ) {
   interface infoFromAvailability {
-    times: [string,number][],
+    times: [string,number,number][],
   }
-  const times:[string,number][] = Array.from((req.body as infoFromAvailability).times);
-  const startEndDayInfo:[string,string,number][] = [];
-  times.forEach((timeInt) => {
-    const time = timeInt[0];
-    const day = timeInt[1];
+  const times:[string,number,number][] = Array.from((req.body as infoFromAvailability).times);
+  const startEndDayInfo:[string,string,number,number][] = [];
+  times.forEach((timeIntInt) => {
+    const time = timeIntInt[0];
+    const day = timeIntInt[1];
+    const docId = timeIntInt[2]
     const timeAndAmPM = time.split(" ");
     const actualTime = timeAndAmPM[0] as string;
     const hourColonMin = actualTime.split(":");
@@ -34,7 +35,7 @@ export default async function handle(
         endMin = "00";
     }
     const endTime = `${endHour as string}:${endMin} ${timeAndAmPM[1] as string}`
-    startEndDayInfo.push([time,endTime,day]); //push in start time
+    startEndDayInfo.push([time,endTime,day,docId]); //push in start time
   });
   const results = [];
   for await (const startEndDayArray of startEndDayInfo){
@@ -43,7 +44,7 @@ export default async function handle(
           day:startEndDayArray[2],
           startTime: startEndDayArray[0],
           endTime: startEndDayArray[1],
-          docId: 1,
+          docId: startEndDayArray[3],
           userName: "testUser"
         },
       })
