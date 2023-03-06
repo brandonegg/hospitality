@@ -39,9 +39,9 @@ interface NavBarProps {
  */
 const NavigationLink = ({ href, label }: NavLinkProps ) => {
     return <>
-        <div className='h-full hover:bg-gray-700'>
+        <div className='hover:bg-gray-700'>
             <Link href={href}>
-                <div className="px-3 text-md font-medium text-white hover:bg-gray-700">{label}</div>
+                <div className="px-3 py-4 text-md font-medium text-white hover:bg-gray-700">{label}</div>
             </Link>
         </div>
     </>
@@ -80,14 +80,14 @@ const NavigationBar = ({ loggedIn }: NavBarProps) => {
     });
 
     return (
-        <nav className="bg-gray-800 rounded-lg mx-6 my-6">
+        <nav className="bg-gray-800 rounded-lg">
             <div className="px-2 max-w-7xl">
                 <div className='flex items-center justify-between'>
                     <div className="h-full flex items-center justify-start">
                         {pages}
                     </div>
                     <div className="flex items-center justify-start">
-                        <div className="py-4 space-x-2">
+                        <div className="space-x-2">
                             {links}
                         </div>
                     </div>

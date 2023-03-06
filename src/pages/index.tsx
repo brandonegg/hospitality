@@ -17,7 +17,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div id='header-content'>
+        <div id='header-content' className="m-6">
+          <h2 className="mb-6 text-4xl font-semibold">Hospitality</h2>
           <NavigationBar loggedIn={false}/>
         </div>
       </main>
