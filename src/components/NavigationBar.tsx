@@ -14,6 +14,7 @@ interface NavLinkProps {
  */
 const PagesConfig: NavLinkProps[] = [
     {
+        // TODO: Change this to 'import' the hero icon properly
         label: <>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
@@ -37,9 +38,11 @@ interface NavBarProps {
  */
 const NavigationLink = ({ href, label }: NavLinkProps ) => {
     return <>
-        <Link className='h-full' href={href}>
-            <div className="px-3 h-full text-md font-medium text-white hover:bg-gray-700">{label}</div>
-        </Link>
+        <div className='h-full hover:bg-gray-700'>
+            <Link href={href}>
+                <div className="px-3 text-md font-medium text-white hover:bg-gray-700">{label}</div>
+            </Link>
+        </div>
     </>
 }
 
@@ -76,13 +79,16 @@ const NavigationBar = ({ loggedIn }: NavBarProps) => {
     });
 
     return (
-        <nav className="bg-gray-800 rounded-lg">
-            <div className="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div className="flex items-center justify-start">
-                    <div className="hidden md:block"></div>
-                    {pages}
-                    <div className="py-4">
-                        {links}
+        <nav className="bg-gray-800 rounded-lg mx-6 my-6">
+            <div className="px-2 max-w-7xl">
+                <div className='flex items-center justify-between'>
+                    <div className="h-full flex items-center justify-start">
+                        {pages}
+                    </div>
+                    <div className="flex items-center justify-start">
+                        <div className="py-4 space-x-2">
+                            {links}
+                        </div>
                     </div>
                 </div>
             </div>
