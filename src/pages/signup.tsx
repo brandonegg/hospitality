@@ -6,6 +6,7 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -115,6 +116,8 @@ const SignUp: NextPage = () => {
     mutate(data);
   };
 
+  const router = useRouter();
+
   return (
     <>
       <Head>
@@ -125,13 +128,13 @@ const SignUp: NextPage = () => {
       <main className="container mx-auto min-h-screen max-w-3xl flex-col p-2">
         <div className="space-y-2  p-2">
           <div className="relative">
-            <Link
-              href="/login"
+            <button
+              onClick={() => router.back()}
               className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
-            </Link>
+            </button>
             <h1 className="flex justify-center text-3xl font-bold">Sign Up</h1>
           </div>
 
@@ -139,7 +142,7 @@ const SignUp: NextPage = () => {
             <div className="space-y-2">
               <Alert type="success">Successfully created account!</Alert>
               <button className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
-                <Link href="/login" className="inline-flex items-center gap-1">
+                <Link href="/" className="inline-flex items-center gap-1">
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   Login
                 </Link>

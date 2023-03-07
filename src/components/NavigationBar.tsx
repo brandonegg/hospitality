@@ -67,10 +67,10 @@ const NavigationBar = ({ loggedIn }: NavBarProps) => {
     ) : (
         <>
         <Link href="/login">
-            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-indigo-600 hover:bg-indigo-700">Login</span>
+            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Login</span>
         </Link>
         <Link href="/signup">
-            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-indigo-600 hover:bg-indigo-700">Sign up</span>
+            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign up</span>
         </Link>
         </>
     );
