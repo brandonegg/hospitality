@@ -2,7 +2,30 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import type { ReactElement} from 'react';
 import { useState } from 'react';
 
-interface HorizontalCarouselSlideProps {
+interface FadedTitleBodyCarouselSlideProps {
+    title?: string;
+    body?: string;
+}
+
+/**
+ * Component for creating the faded background title/body slide elements
+ * for the horizontal carousel
+ * @param props 
+ * @returns 
+ */
+export const FadedTitleBodyCarouselSlide = ({title, body}: FadedTitleBodyCarouselSlideProps) => {
+    return <>
+        <div className='h-full flex flex-col overflow-hidden'>
+            <div className="flex-grow"></div>
+            <div className="px-16 py-8 bg-gradient-to-t from-white/75 to-gray-100/0">
+            <h1 className='text-black text-4xl font-bold'>{title}</h1>
+            <p className='text-lg text-black'><i>{body}</i></p>
+            </div>
+        </div>
+    </>
+}
+
+export interface HorizontalCarouselSlideProps {
     backgroundImage: string | undefined;
     body?: ReactElement;
 }
@@ -11,32 +34,7 @@ interface HorizontalCarouselSlideProps {
  * Carousel component
  * @param param0 
  */
-const HorizontalCarousel = ({}) => {
-    const slides: HorizontalCarouselSlideProps[] = [
-        {
-            backgroundImage: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2620&q=80',
-            body: <>
-                <div className='m-4'>
-                    <h1 className='text-white font-bold'>Title</h1>
-                    <p className='text-white'>body</p>
-                </div>
-            </>
-        },
-        {
-            backgroundImage: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80',
-        },
-        {
-            backgroundImage: 'https://images.unsplash.com/photo-1661961112951-f2bfd1f253ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2672&q=80',
-        },
-    
-        {
-            backgroundImage: 'https://images.unsplash.com/photo-1512756290469-ec264b7fbf87?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2253&q=80',
-        },
-        {
-            backgroundImage: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2671&q=80',
-        },
-    ];
-
+const HorizontalCarousel = ({slides}: {slides: HorizontalCarouselSlideProps[]}) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     /**
@@ -85,7 +83,7 @@ const HorizontalCarousel = ({}) => {
             style={{
                 backgroundImage: backgroundImageUrl(),
             }}
-            className='w-full h-full rounded-2xl bg-center bg-cover duration-500 border border-gray-400 drop-shadow-md'
+            className='w-full h-full rounded-2xl overflow-hidden bg-center bg-cover duration-500 border border-gray-400 drop-shadow-md'
         >
             {slides[currentIndex]?.body}
         </div>
