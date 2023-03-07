@@ -115,7 +115,7 @@ const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlid
             onClick={() => goToSlide(slideIndex)}
             className='text-2xl cursor-pointer'
             >
-            <div className='mx-1 w-2 h-2 rounded-full bg-gray-900'></div>
+                <div className={`mx-1 w-2 h-2 rounded-full ${slideIndex === currentIndex ? 'bg-gray-900' : 'bg-gray-400'}`}></div>
             </div>
         ))}
         </div>
