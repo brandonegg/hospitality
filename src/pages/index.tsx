@@ -35,7 +35,7 @@ const Home: NextPage = () => {
           <NavigationBar loggedIn={false}/>
         </div>
         <div id='main-content' className="mx-6">
-          <HorizontalCarousel slides={carouselSlides}/>
+          <HorizontalCarousel slides={carouselSlides} autoCycle={10}/>
         </div>
       </main>
     </>

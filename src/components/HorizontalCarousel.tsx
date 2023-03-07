@@ -1,5 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import type { ReactElement} from 'react';
+import { useEffect} from 'react';
 import { useState } from 'react';
 
 interface FadedTitleBodyCarouselSlideProps {
@@ -32,9 +33,10 @@ export interface HorizontalCarouselSlideProps {
 
 /**
  * Carousel component
- * @param param0 
+ * @param slides Slides to shuffle through
+ * @param autoCycle The time (in seconds) to auto shuffle between slides. Undefined will be no auto shuffle. 
  */
-const HorizontalCarousel = ({slides}: {slides: HorizontalCarouselSlideProps[]}) => {
+const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlideProps[], autoCycle?: number}) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
     /**
@@ -76,6 +78,17 @@ const HorizontalCarousel = ({slides}: {slides: HorizontalCarouselSlideProps[]}) 
 
         return;
     }
+
+    useEffect(() => {
+        if (autoCycle) {
+            const intervalId = setInterval(() => {
+                nextSlide();
+            }, autoCycle*1000);
+
+
+            return () => clearInterval(intervalId);
+        }
+    });
 
     return (
     <div className='max-w-[1400px] h-96 w-full m-auto py-4 relative group'>
