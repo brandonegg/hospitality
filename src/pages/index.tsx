@@ -17,7 +17,7 @@ const Home: NextPage = () => {
         <meta name="description" content="The ultimate hospital management system" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="max-w-[1400px] mx-auto">
         <div id='header-content' className="m-6">
           <h2 className="mb-6 text-4xl font-semibold">Hospitality</h2>
           <NavigationBar loggedIn={false}/>
