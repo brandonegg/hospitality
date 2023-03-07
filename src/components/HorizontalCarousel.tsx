@@ -1,11 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
-import type { CSSProperties} from 'react';
+import type { ReactElement} from 'react';
 import { useState } from 'react';
 
 interface HorizontalCarouselSlideProps {
-    backgroundImage: string | undefined,
-    header?: string,
-    body?: string,
+    backgroundImage: string | undefined;
+    body?: ReactElement;
 }
 
 /**
@@ -16,6 +15,12 @@ const HorizontalCarousel = ({}) => {
     const slides: HorizontalCarouselSlideProps[] = [
         {
             backgroundImage: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2620&q=80',
+            body: <>
+                <div className='m-4'>
+                    <h1 className='text-white font-bold'>Title</h1>
+                    <p className='text-white'>body</p>
+                </div>
+            </>
         },
         {
             backgroundImage: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80',
@@ -61,32 +66,29 @@ const HorizontalCarousel = ({}) => {
     };
 
     /**
-     * Creates current display view for slide
-     * 
-     * @param slide Slide to display
-     * @returns React component
+     * Get background image url if present
+     * @returns css url() or undefined if no backgroundImage specified.
      */
-    const Slide = ( {slide}: {slide: HorizontalCarouselSlideProps | undefined}) => {
-        const slideStyle: CSSProperties = {}
-
-        if (slide?.backgroundImage) {
-            slideStyle.backgroundImage = `url(${slide.backgroundImage})`;
+    const backgroundImageUrl = () => {
+        const currentSlide = slides[currentIndex];
+    
+        if (currentSlide && currentSlide.backgroundImage) {
+            return `url(${currentSlide.backgroundImage})`;
         }
 
-        return (
-            <div
-                style={slideStyle}
-                className='w-full h-full rounded-2xl bg-center bg-cover duration-500'
-            >
-                <h1>{slides[currentIndex]?.header}</h1>
-            </div>
-        )
+        return;
     }
-
 
     return (
     <div className='max-w-[1400px] h-96 w-full m-auto py-4 relative group'>
-        <Slide slide={slides[currentIndex]}/>
+        <div
+            style={{
+                backgroundImage: backgroundImageUrl(),
+            }}
+            className='w-full h-full rounded-2xl bg-center bg-cover duration-500 border border-gray-400 drop-shadow-md'
+        >
+            {slides[currentIndex]?.body}
+        </div>
         {/* Left Arrow */}
         <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
         <ChevronLeftIcon onClick={prevSlide} className="h-6 w-6" />
