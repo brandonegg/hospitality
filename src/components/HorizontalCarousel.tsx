@@ -18,7 +18,7 @@ export const FadedTitleBodyCarouselSlide = ({title, body}: FadedTitleBodyCarouse
     return <>
         <div className='h-full flex flex-col overflow-hidden'>
             <div className="flex-grow"></div>
-            <div className="px-16 pb-8 pt-32 bg-gradient-to-t from-white/100 to-gray-100/0">
+            <div className="px-16 pb-8 pt-16 sm:pt-32 bg-gradient-to-t from-white/100 to-gray-100/0">
             <h1 className='text-black text-4xl font-bold'>{title}</h1>
             <p className='text-lg text-black'><i>{body}</i></p>
             </div>
