@@ -4,6 +4,7 @@
 import { Bars3Icon, HomeIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import type { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 import type { ReactNode } from 'react';
 
 /**
@@ -68,48 +69,55 @@ const NavigationBar = ({ session }: NavBarProps) => {
      * @param props
      */
     const AccountInfo = ({}) => {
-        const links = session?.user ? (
-            <>
-                <div className="group relative h-full block mr-2 p-2 rounded-lg hover:bg-gray-700">
-                    <UserCircleIcon className='w-7 h-7 text-white'/>
-                    <div className='z-50 bg-white drop-shadow-xl border border-slate-600 rounded-md absolute hidden group-hover:block mt-2 right-0'>
-                        <div className='flex flex-col'>
-                            <Link href="/login">
-                                <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign out</p>
-                            </Link>
+        /**
+         * Renders login/signup info, or account info depending on session
+         * @param props 
+         * @returns 
+         */
+        const SessionView = ({}) => {
+            return session?.user ? (
+                <>
+                    <div className="group relative h-full block mr-2 p-2 rounded-lg hover:bg-gray-700">
+                        <UserCircleIcon className='w-7 h-7 text-white'/>
+                        <div className='z-50 bg-white drop-shadow-xl border border-slate-600 rounded-md absolute hidden group-hover:block mt-2 right-0'>
+                            <div className='flex flex-col'>
+                                <button onClick={async () => {await signOut()}}>
+                                    <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign out</p>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </>
-        ) : (
-            <>
-            <Link href="/login">
-                <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Login</span>
-            </Link>
-            <Link href="/signup">
-                <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign up</span>
-            </Link>
-            </>
-        );
+                </>
+            ) : (
+                <>
+                    <div className="group relative h-full block mr-2 p-2 sm:hidden rounded-lg hover:bg-gray-700">
+                        <Bars3Icon className='w-6 h-6 text-white'/>
+                        <div className='z-50 bg-white drop-shadow-xl border border-slate-600 rounded-md absolute hidden group-hover:block mt-2 right-0'>
+                            <div className='flex flex-col'>
+                                <Link href="/login">
+                                    <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Login</p>
+                                </Link>
+                                <Link href="/signup">
+                                    <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign up</p>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="hidden sm:block space-x-2">
+                        <Link href="/login">
+                            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Login</span>
+                        </Link>
+                        <Link href="/signup">
+                            <span className="px-3 py-2 rounded-md text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign up</span>
+                        </Link>
+                    </div>
+                </>
+            );
+        }
 
         return <>
             <div className="flex items-center justify-start">
-                <div className="group relative h-full block mr-2 p-2 sm:hidden rounded-lg hover:bg-gray-700">
-                    <Bars3Icon className='w-6 h-6 text-white'/>
-                    <div className='z-50 bg-white drop-shadow-xl border border-slate-600 rounded-md absolute hidden group-hover:block mt-2 right-0'>
-                        <div className='flex flex-col'>
-                            <Link href="/login">
-                                <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Login</p>
-                            </Link>
-                            <Link href="/signup">
-                                <p className="w-24 px-3 py-2 text-md font-medium text-white bg-blue-600 hover:bg-blue-700">Sign up</p>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-                <div className="hidden sm:block space-x-2">
-                    {links}
-                </div>
+                <SessionView/>
             </div>
         </>
     }
