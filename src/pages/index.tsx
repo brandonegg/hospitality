@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import React from 'react';
 
+import HorizontalCarousel from "../components/HorizontalCarousel";
 import NavigationBar from "../components/NavigationBar";
 
 /**
@@ -20,6 +21,9 @@ const Home: NextPage = () => {
         <div id='header-content' className="m-6">
           <h2 className="mb-6 text-4xl font-semibold">Hospitality</h2>
           <NavigationBar loggedIn={false}/>
+        </div>
+        <div id='main-content' className="mx-6">
+          <HorizontalCarousel/>
         </div>
       </main>
     </>
