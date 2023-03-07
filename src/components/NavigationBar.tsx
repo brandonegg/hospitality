@@ -81,7 +81,7 @@ const NavigationBar = ({ loggedIn }: NavBarProps) => {
 
     return (
         <nav className="bg-gray-800 rounded-lg">
-            <div className="px-2 max-w-7xl">
+            <div className="px-2 max-w-[1400px] mx-auto">
                 <div className='flex items-center justify-between'>
                     <div className="h-full flex items-center justify-start">
                         {pages}
