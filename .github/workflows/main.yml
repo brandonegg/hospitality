@@ -6,16 +6,6 @@ on:
   pull_request:
     branches: [main, master]
 
-env:
-  NODE_ENV: "test"
-  MYSQL_DATABASE: "db"
-  MYSQL_ROOT_PASSWORD: "password"
-  DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
-  NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
-  NEXTAUTH_URL: "http://localhost:3000"
-  DISCORD_CLIENT_ID: ""
-  DISCORD_CLIENT_SECRET: ""
-
 jobs:
   lint:
     timeout-minutes: 5
@@ -75,6 +65,15 @@ jobs:
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Run Playwright tests
+        env:
+          NODE_ENV: "test"
+          MYSQL_DATABASE: "db"
+          MYSQL_ROOT_PASSWORD: "password"
+          DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
+          NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
+          NEXTAUTH_URL: "http://localhost:3000"
+          DISCORD_CLIENT_ID: ""
+          DISCORD_CLIENT_SECRET: ""
         run: npx playwright test --project=${{ matrix.project }}
       - uses: actions/upload-artifact@v2
         if: always()
