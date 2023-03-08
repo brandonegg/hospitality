@@ -111,6 +111,13 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
+    container:
+      image: mcr.microsoft.com/playwright:v1.30.0-focal
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, webkit, firefox]
+
     steps:
       - uses: actions/checkout@v3
 
@@ -136,6 +143,8 @@ jobs:
           DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
+        env:
+          DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
       - uses: actions/upload-artifact@v2
         if: always()
         with:
