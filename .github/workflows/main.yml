@@ -1,17 +1,19 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+
 env:
-  MYSQL_DATABASE: ""
-  MYSQL_ROOT_PASSWORD: ""
-  DATABASE_URL: "file:./db.sqlite"
+  NODE_ENV: "test"
+  MYSQL_DATABASE: "db"
+  MYSQL_ROOT_PASSWORD: "password"
+  DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
   NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
   NEXTAUTH_URL: "http://localhost:3000"
-  DISCORD_CLIENT_ID: ""
-  DISCORD_CLIENT_SECRET: ""
+
 jobs:
   lint:
     timeout-minutes: 5
