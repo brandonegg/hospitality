@@ -21,7 +21,9 @@ test.describe("login page", () => {
     await expect(back).toHaveText(/Back/);
   });
 
-  test('has "Back" link that redirects to the home page', async ({ page }) => {
+  test('has "Back" link that redirects to the previous page', async ({ page }) => {
+    await page.goto("/");
+    await page.goto("/login");
     const back = page.getByText(/Back/);
     await back.click();
     await expect(page).toHaveURL("/");
