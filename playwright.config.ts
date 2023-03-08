@@ -42,6 +42,9 @@ export default defineConfig({
     url: baseURL,
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
+    env: {
+      NODE_ENV: 'test',
+    }
   },
   use: {
     baseURL,
