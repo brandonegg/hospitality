@@ -20,28 +20,27 @@ test.describe('navbar', () => {
     await page.goto('/');
   });
 
-  test('shows login and signup when no user signed in', async ({page}) => {
-    await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible();
-  });
+  test.describe('logged out', () => {
+    test('shows login and signup buttons', async ({page}) => {
+      await expect(page.getByRole('link', { name: 'Login' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible();
+    });
 
-  /*
-  test('shows Dashboard link when user signed in', async ({page}) => {
-    const mockSession: Session = {
-      expires: "1",
-      user: { 
-        id: "1", 
-        username: "e2e", 
-        name: "e2e" 
-      },
-    };
+    test('hides dashboard link', async ({page}) => {
+      await expect(page.getByRole('link', { name: 'Dashboard' })).toBeHidden();
+    });
+  })
 
-    jest.mock('next-auth/react', () => ({
-      useSession: jest.fn().mockReturnValue(mockSession),
-    }));
-  
-    await expect(page.getByRole('link', { name: 'Login' })).toBeHidden();
-    await expect(page.getByRole('link', { name: 'Sign up' })).toBeHidden();
-  });
-  */
+  test.describe('logged in', () => {
+    test.use({ storageState: 'playwright/.auth/user.json' });
+    
+    test('hide sign up and login buttons', async ({page}) => {
+      await expect(page.getByRole('link', { name: 'Login' })).toBeHidden();
+      await expect(page.getByRole('link', { name: 'Sign up' })).toBeHidden();
+    });
+
+    test('shows dashboard link', async ({page}) => {
+      await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible();
+    });
+  })
 });
