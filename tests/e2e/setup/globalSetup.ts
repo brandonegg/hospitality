@@ -1,4 +1,5 @@
-import { Browser, BrowserType, chromium, firefox, webkit } from "@playwright/test";
+import type { Browser} from "@playwright/test";
+import { chromium, firefox, webkit } from "@playwright/test";
 import * as argon2 from "argon2";
 
 import { prisma } from '../../../src/server/db';
@@ -6,10 +7,7 @@ import { prisma } from '../../../src/server/db';
 /**
  * Sets up the testing environment
  */
-async function globalSetup(workerData) {
-    //const storagePath = path.resolve(__dirname, 'storageState.json')
-
-    //const sessionToken = '04456e41-ec3b-4edf-92c1-48c14e57cacd2'
+async function globalSetup() {
     const address = await prisma.address.upsert({
         where: {
             id: 'test_address',
