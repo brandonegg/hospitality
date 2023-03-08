@@ -132,7 +132,7 @@ jobs:
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Migrate DB
         run: |
-          DATABASE_URL="mysql://root:password@127.0.0.1:${PORT}/db"
+          echo "DATABASE_URL=\"mysql://root:password@127.0.0.1:${PORT}/db\"" >> $GITHUB_ENV
           echo $DATABASE_URL
           npx prisma migrate dev
       - name: Run Playwright tests
