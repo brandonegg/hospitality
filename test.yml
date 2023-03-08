@@ -1,3 +1,0 @@
-TEST='3123'/test
-TEST="3123"/test
-DATABASE_URL="mysql://user:password@127.0.0.1:3123/db"
