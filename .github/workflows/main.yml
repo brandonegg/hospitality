@@ -121,6 +121,7 @@ jobs:
           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
             sleep 1
           done
+          echo "DATABASE_URL=\"mysql://root:password@127.0.0.1:${PORT}/db\"" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v2
         with:
@@ -132,7 +133,6 @@ jobs:
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Migrate DB
         run: |
-          echo "DATABASE_URL=\"mysql://root:password@127.0.0.1:${PORT}/db\"" >> $GITHUB_ENV
           echo $DATABASE_URL
           npx prisma migrate dev
       - name: Run Playwright tests
