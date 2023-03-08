@@ -12,7 +12,6 @@ import type { ReactNode } from 'react';
  */
 const PagesConfig: NavLinkProps[] = [
     {
-        // TODO: Change this to 'import' the hero icon properly
         label: <HomeIcon className='h-6 w-6'/>,
         href: '/',
         requiresAccount: false,
@@ -51,14 +50,12 @@ const NavigationBar = ({ session }: NavBarProps) => {
      * @param props Properties of nav link element to represent as component 
      */
     const NavigationLink = ({ href, label, requiresAccount }: NavLinkProps ) => {
-        if (requiresAccount && !session?.user) {
-            return;
-        }
+        const hidden = requiresAccount && !session?.user;
         
         return <>
             <div className='hover:bg-gray-700'>
                 <Link href={href}>
-                    <div className="px-3 py-4 text-md font-medium text-white hover:bg-gray-700">{label}</div>
+                    <div className={"px-3 py-4 text-md font-medium text-white hover:bg-gray-700" + (hidden ? ' hidden' : '')}>{label}</div>
                 </Link>
             </div>
         </>
@@ -122,8 +119,10 @@ const NavigationBar = ({ session }: NavBarProps) => {
         </>
     }
 
-    const pages = PagesConfig.map(prop => {
-        return NavigationLink(prop);
+    const pages = PagesConfig.map((prop, index) => {
+        return (
+            <NavigationLink key={index} label={prop.label} href={prop.href} requiresAccount={prop.requiresAccount} />
+        )
     });
 
     return (
