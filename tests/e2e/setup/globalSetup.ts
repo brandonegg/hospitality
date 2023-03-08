@@ -1,13 +1,12 @@
-import { chromium } from "@playwright/test";
+import { Browser, BrowserType, chromium, firefox, webkit } from "@playwright/test";
 import * as argon2 from "argon2";
 
 import { prisma } from '../../../src/server/db';
 
-
 /**
  * Sets up the testing environment
  */
-async function globalSetup() {
+async function globalSetup(workerData) {
     //const storagePath = path.resolve(__dirname, 'storageState.json')
 
     //const sessionToken = '04456e41-ec3b-4edf-92c1-48c14e57cacd2'
@@ -40,17 +39,31 @@ async function globalSetup() {
         update: {},
     })
 
-    const browser = await chromium.launch();
-    const page = await browser.newPage();
+    //const browsers = [await chromium.launch(), await webkit.launch(), await firefox.launch()];
+    const browsers: Record<string, Browser> = {
+        "chromium": await chromium.launch(),
+        "webkit": await webkit.launch(),
+        "firefox": await firefox.launch(),
+    };
 
-    await page.goto('localhost:3000/login');
-    await page.locator("input[name=username]").fill('e2e');
-    await page.locator("input[name=password]").fill('password');
-    await page.getByRole('button', { name: 'Login' }).click();
-    await page.waitForURL('http://localhost:3000/', {waitUntil: 'networkidle'});
+    for (const name in browsers) {
+        const browser: Browser | undefined = browsers[name];
 
-    await page.context().storageState({ path: 'playwright/.auth/user.json' });
-    await browser.close();
+        if (!browser) {
+            continue;
+        }
+
+        const page = await browser.newPage();
+
+        await page.goto('localhost:3000/login');
+        await page.locator("input[name=username]").fill('e2e');
+        await page.locator("input[name=password]").fill('password');
+        await page.getByRole('button', { name: 'Login' }).click();
+        await page.waitForURL('http://localhost:3000/', {waitUntil: 'networkidle'});
+
+        await page.context().storageState({ path: `playwright/.auth/${name}/user.json` });
+        await browser.close();
+    }
 }
 
 export default globalSetup;

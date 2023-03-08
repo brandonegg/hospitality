@@ -32,9 +32,14 @@ test.describe('navbar', () => {
   })
 
   test.describe('logged in', () => {
-    test.use({ storageState: 'playwright/.auth/user.json' });
+    test.use({
+      storageState: async ({browserName}, use) => {
+        await use(`playwright/.auth/${browserName}/user.json`);
+      },
+    });
     
     test('hide sign up and login buttons', async ({page}) => {
+
       await expect(page.getByRole('link', { name: 'Login' })).toBeHidden();
       await expect(page.getByRole('link', { name: 'Sign up' })).toBeHidden();
     });
