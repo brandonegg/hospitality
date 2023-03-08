@@ -10,7 +10,7 @@ env:
   NODE_ENV: "test"
   MYSQL_DATABASE: "db"
   MYSQL_ROOT_PASSWORD: "password"
-  DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
+  DATABASE_URL: "mysql://root:password@localhost:3306/db"
   NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
   NEXTAUTH_URL: "http://localhost:3000"
   DISCORD_CLIENT_ID: ""
@@ -44,6 +44,7 @@ jobs:
   test-e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:latest
@@ -55,15 +56,18 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     defaults:
       run:
         working-directory: ./
+  
     container:
       image: mcr.microsoft.com/playwright:v1.30.0-focal
     strategy:
       fail-fast: false
       matrix:
         project: [chromium, webkit, firefox]
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
