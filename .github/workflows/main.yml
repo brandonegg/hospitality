@@ -14,7 +14,7 @@ env:
   NEXTAUTH_URL: "http://localhost:3000"
   DISCORD_CLIENT_ID: ""
   DISCORD_CLIENT_SECRET: ""
-  DATABASE_URL: ""
+  DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
 
 jobs:
   lint:
