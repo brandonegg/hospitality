@@ -78,6 +78,8 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Migrate DB
+        run: npx prisma migrate dev
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
       - uses: actions/upload-artifact@v2
