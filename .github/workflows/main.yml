@@ -10,7 +10,6 @@ env:
   NODE_ENV: "test"
   MYSQL_DATABASE: "db"
   MYSQL_ROOT_PASSWORD: "password"
-  DATABASE_URL: "mysql://root:password@127.0.0.1:3306/db"
   NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
   NEXTAUTH_URL: "http://localhost:3000"
   DISCORD_CLIENT_ID: ""
@@ -132,7 +131,10 @@ jobs:
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
       - name: Migrate DB
-        run: npx prisma migrate dev
+        run: |
+          DATABASE_URL="mysql://root:password@127.0.0.1:${PORT}/db"
+          echo $DATABASE_URL
+          npx prisma migrate dev
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
       - uses: actions/upload-artifact@v2
