@@ -1,4 +1,4 @@
-import type { Browser} from "@playwright/test";
+import type { Browser, BrowserType} from "@playwright/test";
 import { chromium, firefox, webkit } from "@playwright/test";
 import * as argon2 from "argon2";
 
@@ -38,19 +38,20 @@ async function globalSetup() {
     })
 
     //const browsers = [await chromium.launch(), await webkit.launch(), await firefox.launch()];
-    const browsers: Record<string, Browser> = {
-        "chromium": await chromium.launch(),
-        "webkit": await webkit.launch(),
-        "firefox": await firefox.launch(),
+    const browsers: Record<string, BrowserType> = {
+        "chromium": chromium,
+        "webkit": webkit,
+        "firefox": firefox,
     };
 
     for (const name in browsers) {
-        const browser: Browser | undefined = browsers[name];
+        const browserType: BrowserType | undefined = browsers[name];
 
-        if (!browser) {
+        if (!browserType) {
             continue;
         }
 
+        const browser = await browserType.launch();
         const page = await browser.newPage();
 
         await page.goto('localhost:3000/login');
