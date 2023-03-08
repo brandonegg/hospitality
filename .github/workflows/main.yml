@@ -121,7 +121,7 @@ jobs:
           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
             sleep 1
           done
-          echo "DATABASE_URL=\"mysql://user:password@127.0.0.1:${PORT}/db\"" >> $GITHUB_ENV
+          echo "DATABASE_URL=\"mysql://root:${MYSQL_ROOT_PASSWORD}@127.0.0.1:${PORT}/db\"" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v2
         with:
