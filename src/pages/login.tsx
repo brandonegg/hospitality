@@ -40,13 +40,13 @@ const Login: NextPage = () => {
       const res = await signIn("credentials", {
         ...data,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
       // error response
       if (res?.error) setError("Invalid username or password");
 
       // success response
-      if (res?.ok) window.location.replace("/dashboard");
+      if (res?.ok) window.location.replace("/");
     } catch (err) {
       console.error(err);
     }
