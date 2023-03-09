@@ -1,7 +1,8 @@
-import type { Browser, BrowserType} from "@playwright/test";
+import type { BrowserType} from "@playwright/test";
 import { chromium, firefox, webkit } from "@playwright/test";
 import * as argon2 from "argon2";
 
+import { baseURL } from "../../../playwright.config";
 import { prisma } from '../../../src/server/db';
 
 /**
@@ -54,11 +55,11 @@ async function globalSetup() {
         const browser = await browserType.launch();
         const page = await browser.newPage();
 
-        await page.goto('localhost:3000/login');
+        await page.goto(`${baseURL}/login`);
         await page.locator("input[name=username]").fill('e2e');
         await page.locator("input[name=password]").fill('password');
         await page.getByRole('button', { name: 'Login' }).click();
-        await page.waitForURL('http://localhost:3000/', {waitUntil: 'networkidle'});
+        await page.waitForURL(`${baseURL}`, {waitUntil: 'networkidle'});
 
         await page.context().storageState({ path: `playwright/.auth/${name}/user.json` });
         await browser.close();
