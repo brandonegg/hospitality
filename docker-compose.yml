@@ -1,32 +1,19 @@
+version: '3.3'
 services:
-  mysql:
-    image: mysql
+  db:
+    image: mysql:latest
     container_name: mysql
-    ports:
-      - "3300:3306"
     restart: always
     environment:
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
       - MYSQL_ROOT_PASSWORD
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
     volumes:
       - mysql-data:/var/lib/mysql
-
-  nextjs:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nextjs
-    depends_on:
-      - mysql
-    ports:
-      - 3000:3000
-    restart: always
-    volumes:
-      - ./:/app
-      - /app/node_modules
-      - /app/.next
 
 volumes:
   mysql-data:

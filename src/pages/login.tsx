@@ -6,6 +6,7 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import React, { useCallback, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -39,17 +40,19 @@ const Login: NextPage = () => {
       const res = await signIn("credentials", {
         ...data,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/",
       });
       // error response
       if (res?.error) setError("Invalid username or password");
 
       // success response
-      if (res?.ok) window.location.replace("/dashboard");
+      if (res?.ok) window.location.replace("/");
     } catch (err) {
       console.error(err);
     }
   }, []);
+
+  const router = useRouter();
 
   return (
     <>
@@ -61,13 +64,13 @@ const Login: NextPage = () => {
       <main className="container mx-auto min-h-screen max-w-3xl flex-col p-2">
         <div className="space-y-2 p-2">
           <div className="relative">
-            <Link
-              href="/"
+            <button
+              onClick={() => router.back()}
               className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
-            </Link>
+            </button>
             <h1 className="flex justify-center text-3xl font-bold">Login</h1>
           </div>
 

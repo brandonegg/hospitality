@@ -1,17 +1,21 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+
 env:
-  MYSQL_DATABASE: ""
-  MYSQL_ROOT_PASSWORD: ""
-  DATABASE_URL: "file:./db.sqlite"
+  NODE_ENV: "test"
+  MYSQL_DATABASE: "db"
+  MYSQL_ROOT_PASSWORD: "password"
   NEXTAUTH_SECRET: "4AxM2+jQEjsNV1+1ascFa0gfkUoJZTpFhLHulUGMNB8="
   NEXTAUTH_URL: "http://localhost:3000"
   DISCORD_CLIENT_ID: ""
   DISCORD_CLIENT_SECRET: ""
+  DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3306/${MYSQL_DATABASE}"
+
 jobs:
   lint:
     timeout-minutes: 5
@@ -38,19 +42,39 @@ jobs:
       - name: Run Jest
         run: npm run test:jest
   test-e2e:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./
-    container:
-      image: mcr.microsoft.com/playwright:v1.30.0-focal
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
     strategy:
       fail-fast: false
       matrix:
         project: [chromium, webkit, firefox]
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Verify MariaDB connection
+        env:
+          PORT: ${{ job.services.mariadb.ports[3306] }}
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+            sleep 1
+          done
+
       - uses: actions/setup-node@v2
         with:
           node-version: "16.x"
@@ -59,8 +83,18 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
+      - name: Migrate DB
+        run: npx prisma migrate dev
+        env:
+          DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
+      - name: Install playwright
+        run: npx playwright install --with-deps
+        env:
+          DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.project }}
+        env:
+          DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
       - uses: actions/upload-artifact@v2
         if: always()
         with:
