@@ -1,6 +1,5 @@
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { type NextPage } from "next";
-import Head from "next/head";
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
@@ -28,11 +27,6 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Hospitality</title>
-        <meta name="description" content="The ultimate hospital management system" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main className="max-w-[1400px] mx-auto">
         <div id='header-content' className="m-6">
           <h2 className="mb-6 text-4xl font-semibold flex items-center space-x-2"><HeartIcon className='w-9 h-9 text-red-600'/>
