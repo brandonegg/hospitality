@@ -42,7 +42,7 @@ const ForgotPassword: NextPage = () => {
           <div className="relative">
             <button
               onClick={() => router.back()}
-              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
+              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-blue-600 hover:bg-blue-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
@@ -81,7 +81,7 @@ const ForgotPassword: NextPage = () => {
               <button
                 type="submit"
                 value="Sign Up"
-                className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                className="inline-flex cursor-pointer items-center gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
               >
                 <PaperAirplaneIcon className="h-4 w-4" />
                 Send me reset instructions
