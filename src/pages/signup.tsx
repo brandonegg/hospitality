@@ -410,7 +410,7 @@ const SignUp: NextPage = () => {
                 )}
               </div>
 
-              <div>
+              <div className="flex items-center justify-between">
                 <button
                   type="submit"
                   value="Sign Up"
@@ -419,6 +419,14 @@ const SignUp: NextPage = () => {
                   <PaperAirplaneIcon className="h-4 w-4" />
                   Sign Up
                 </button>
+
+                {/* login button */}
+                <Link
+                  href="/login"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Already have an account?
+                </Link>
               </div>
             </form>
           )}

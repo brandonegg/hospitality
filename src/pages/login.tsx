@@ -139,10 +139,11 @@ const Login: NextPage = () => {
                   Sign Up
                 </Link>
               </div>
+
               {/* forgot password button */}
               <Link
                 href="/forgot-password"
-                className="hover:text-indblueibluego-700 text-blue-600"
+                className="text-blue-600 hover:text-blue-700"
               >
                 Forgot Password?
               </Link>
