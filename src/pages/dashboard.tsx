@@ -35,9 +35,9 @@ interface DashBoardNavButtonProperties {
  */
 const DashBoardNavButton = ({href, label}: DashBoardNavButtonProperties) => {
     return <>
-        <Link href={href} className="bg-sky-200 h-full w-28 border border-gray-600 rounded-lg">
+        <Link href={href} className="box-content rounded-t-lg hover:bg-gray-200 border-x-[1px] border-t-[1px] border-transparent hover:border-gray-400 h-full px-3">
             <div className="grid place-content-center h-full w-full text-center">
-                <span>{label}</span>
+                <span className="text-lg">{label}</span>
             </div>
         </Link>
     </>
@@ -69,13 +69,14 @@ const Dashboard: NextPage = () => {
             <NavigationBar session={sessionData}/>
         </div>
         <div className="m-6 gap-4">
-            <section className="px-2 m-8 border-b-2 pb-2">
+            <section className="px-2 m-8 border-b-2">
                 <div className="flex justify-between">
                     <h2 className="font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
-                    <div className="flex space-x-4">
+                    <div className="flex">
                         <DashBoardNavButton label="Appointments" href="/"/>
                         <DashBoardNavButton label="Documents" href="/"/>
                         <DashBoardNavButton label="Refills" href="/"/>
+                        <DashBoardNavButton label="Profile" href="/"/>
                     </div>
                 </div>
             </section>
