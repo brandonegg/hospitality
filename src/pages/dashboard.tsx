@@ -71,25 +71,32 @@ const Dashboard: NextPage = () => {
         <div className="m-6 gap-4">
             <section className="px-2 m-8 border-b-2">
                 <div className="flex justify-between">
-                    <h2 className="font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
-                    <div className="flex">
+                    <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
+                    <div className="hidden sm:flex mx-auto md:m-0">
                         <DashBoardNavButton label="Appointments" href="/"/>
                         <DashBoardNavButton label="Documents" href="/"/>
                         <DashBoardNavButton label="Refills" href="/"/>
                         <DashBoardNavButton label="Profile" href="/"/>
                     </div>
+                    <div className="w-full sm:hidden mx-4 mb-2">
+                        <button className="text-md font-semibold border-2 border-slate-900 bg-slate-200 w-full py-2 rounded-lg">
+                            Quick Access ▼
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            <div className="m-8 grid grid-cols-6 gap-8">
-                <SquareWidget width={2}>
-                    <p>Weather here</p>
-                </SquareWidget>
-                <SquareWidget width={2}>
-                    <div className="p-4 bg-yellow-100 h-full">
-                        <h1 className="font-bold text-xl ">Upcomming Appointments:</h1>
-                    </div>
-                </SquareWidget>
+            <div className="m-8">
+                <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-6 sm:grid-cols-4 gap-8">
+                    <SquareWidget width={2}>
+                        <p>Weather here</p>
+                    </SquareWidget>
+                    <SquareWidget width={2}>
+                        <div className="p-4 bg-yellow-100 h-full">
+                            <h1 className="font-bold text-xl ">Upcomming Appointments:</h1>
+                        </div>
+                    </SquareWidget>
+                </div>
             </div>
         </div>
     </main>
