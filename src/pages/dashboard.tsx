@@ -1,4 +1,4 @@
-import { HeartIcon } from "@heroicons/react/24/solid";
+import { DocumentCheckIcon, HeartIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { NextPage } from "next/types";
@@ -18,7 +18,7 @@ interface SquareWidgetProperties {
  */
 const SquareWidget = ({width, children}: SquareWidgetProperties) => {
     return <>
-        <div className={"aspect-square border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
+        <div className={"border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
             {children}
         </div>
     </>
@@ -78,7 +78,7 @@ const Dashboard: NextPage = () => {
                         <DashBoardNavButton label="Refills" href="/"/>
                         <DashBoardNavButton label="Profile" href="/"/>
                     </div>
-                    <div className="w-full sm:hidden mx-4 mb-2">
+                    <div className="w-full sm:hidden mb-2">
                         <button className="text-md font-semibold border-2 border-slate-900 bg-slate-200 w-full py-2 rounded-lg">
                             Quick Access ▼
                         </button>
@@ -86,14 +86,24 @@ const Dashboard: NextPage = () => {
                 </div>
             </section>
 
-            <div className="m-8">
+            <div className="sm:m-8">
                 <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-6 sm:grid-cols-4 gap-8">
-                    <SquareWidget width={2}>
-                        <p>Weather here</p>
-                    </SquareWidget>
                     <SquareWidget width={2}>
                         <div className="p-4 bg-yellow-100 h-full">
                             <h1 className="font-bold text-xl ">Upcomming Appointments:</h1>
+                        </div>
+                    </SquareWidget>
+                    <SquareWidget width={1}>
+                        <div className="w-full h-full">
+                            <div>
+                                <h1 className="bg-slate-800 text-gray-300 w-full text-center font-bold text-lg p-1 border-b-[1px] align-middle">
+                                    Insurance
+                                </h1>
+                            </div>
+                            <div className="h-full bg-slate-100 p-2">
+                                <p className="pt-1 italic">Everything is up-to-date!</p>
+                                <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
+                            </div>
                         </div>
                     </SquareWidget>
                 </div>
