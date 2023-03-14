@@ -102,7 +102,12 @@ const Dashboard: NextPage = () => {
         <div className="m-6 gap-4">
             <section className="px-2 m-8 border-b-2">
                 <div className="flex justify-between">
-                    <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
+                    <span className="hidden lg:inline">
+                        <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
+                    </span>
+                    <span className="lg:hidden">
+                        <h2 className="hidden md:inline font-bold text-3xl">Welcome!</h2>
+                    </span>
                     <div className="hidden sm:flex mx-auto md:m-0">
                         <DashBoardNavButton selected={true} label="Overview" href="/"/>
                         <DashBoardNavButton label="Appointments" href="/"/>
@@ -119,7 +124,7 @@ const Dashboard: NextPage = () => {
             </section>
 
             <div className="sm:m-8">
-                <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-6 sm:grid-cols-4 gap-8">
+                <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:grid-cols-3 gap-8">
                     <SquareWidget title="Upcomming Appointments" width={2}>
                         <div className="p-2 bg-yellow-100 h-full">
                         </div>
