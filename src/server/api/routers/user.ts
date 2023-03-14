@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
 import { z } from "zod";
 
+import { transporter } from "../../email";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 /**
@@ -97,5 +98,69 @@ export const userRouter = createTRPCRouter({
       });
 
       return user;
+    }),
+  forgotPassword: publicProcedure
+    .input(z.object({ email: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Check if the email exists
+      const user = await ctx.prisma.user.findFirst({
+        where: { email: input.email },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email does not exist",
+        });
+      }
+
+      // email options
+      const options = {
+        from: "Hospitality Support",
+        to: input.email,
+        subject: "hello world",
+        html: "<h1>Hello world</h1>",
+      };
+
+      // Send email
+      const email = await transporter.sendMail(options);
+
+      if (!email) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Email could not be sent",
+        });
+      }
+
+      return "Email sent";
+    }),
+  checkResetToken: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(({ input }) => {
+      return "token";
+    }),
+  resetPassword: publicProcedure
+    .input(
+      z.object({
+        newPassword: z.string().min(8),
+        confirmPassword: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the token is valid
+
+      // Check if the password and confirm password match
+      if (input.newPassword !== input.confirmPassword) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Passwords do not match",
+        });
+      }
+
+      // hash the password
+      const hashPassword = await argon2.hash(input.newPassword);
+
+      // Update the password
+
+      return "Password updated";
     }),
 });

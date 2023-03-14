@@ -6,6 +6,8 @@ import { z } from "zod";
  * This way you can ensure the app isn't built with invalid env vars.
  */
 const server = z.object({
+  EMAIL_USER: z.string().min(1),
+  EMAIL_PASSWORD: z.string().min(1),
   MYSQL_DATABASE: z.string(),
   MYSQL_ROOT_PASSWORD: z.string(),
   DATABASE_URL: z.string().url(),
@@ -41,6 +43,8 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
+  EMAIL_USER: process.env.EMAIL_USER,
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
   MYSQL_DATABASE: process.env.MYSQL_DATABASE,
   MYSQL_ROOT_PASSWORD: process.env.MYSQL_ROOT_PASSWORD,
   DATABASE_URL: process.env.DATABASE_URL,

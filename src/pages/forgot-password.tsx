@@ -2,11 +2,24 @@ import { ArrowLeftIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
+import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import Alert from "../components/Alert";
 import ErrorMessage from "../components/ErrorMessage";
+import type { RouterInputs, RouterOutputs } from "../utils/api";
+import { api } from "../utils/api";
 import { classNames } from "../utils/text";
+
+// types
+type ForgotPasswordInput = RouterInputs["user"]["forgotPassword"];
+type ForgotPasswordOutput = RouterOutputs["user"]["forgotPassword"];
+
+type ServerResult = {
+  type: "success" | "error";
+  message: string;
+};
 
 /**
  * Forgot password page react component.
@@ -17,15 +30,32 @@ const ForgotPassword: NextPage = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<ForgotPasswordInput>();
+
+  const [serverResult, setServerResult] = useState<ServerResult | undefined>(
+    undefined
+  );
+
+  const { mutate } = api.user.forgotPassword.useMutation({
+    onSuccess: (data: ForgotPasswordOutput) =>
+      setServerResult({
+        type: "success",
+        message: data,
+      }),
+    onError: (error) =>
+      setServerResult({
+        type: "error",
+        message: error.message,
+      }),
+  });
 
   /**
    * Form submit handler.
    * @param data Form data.
    * @returns
    */
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ForgotPasswordInput> = (data) => {
+    mutate(data);
   };
 
   const router = useRouter();
@@ -33,8 +63,8 @@ const ForgotPassword: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Sign Up</title>
-        <meta name="description" content="Hospitality Sign Up" />
+        <title>Forgot Password</title>
+        <meta name="description" content="Hospitality Forgot Password" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container mx-auto min-h-screen max-w-3xl flex-col p-2">
@@ -51,6 +81,11 @@ const ForgotPassword: NextPage = () => {
               Can&apos;t Sign In?
             </h1>
           </div>
+
+          {/* server response result */}
+          {serverResult && (
+            <Alert type={serverResult.type}>{serverResult.message}</Alert>
+          )}
 
           <form
             className="flex flex-col gap-2"
