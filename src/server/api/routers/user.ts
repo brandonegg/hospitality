@@ -9,6 +9,12 @@ import { env } from "../../../env.mjs";
 import { transporter } from "../../email";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
+interface ResetToken {
+  email: string;
+  iat: number;
+  exp: number;
+}
+
 /**
  * The default select for a user.
  * This is used to ensure that we don't accidentally expose sensitive data.
@@ -142,23 +148,39 @@ export const userRouter = createTRPCRouter({
         });
       }
 
-      return "Email sent";
+      return "A password reset message was sent to your email address.";
     }),
   checkResetToken: publicProcedure
     .input(z.object({ token: z.string() }))
     .query(({ input }) => {
-      return "token";
+      // Check if token exists
+      if (!input.token) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Token is required",
+        });
+      }
+
+      // Check if the token is valid
+      try {
+        jwt.verify(input.token, env.JWT_SECRET);
+        return "Token is valid";
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
     }),
   resetPassword: publicProcedure
     .input(
       z.object({
+        token: z.string(),
         newPassword: z.string().min(8),
         confirmPassword: z.string().min(8),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Check if the token is valid
-
       // Check if the password and confirm password match
       if (input.newPassword !== input.confirmPassword) {
         throw new TRPCError({
@@ -167,10 +189,25 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      // decode the token
+      const decoded = jwt.decode(input.token);
+
+      // Check if the token is valid
+      if (!decoded) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
+
       // hash the password
       const hashPassword = await argon2.hash(input.newPassword);
 
       // Update the password
+      await ctx.prisma.user.update({
+        where: { email: (decoded as ResetToken).email },
+        data: { password: hashPassword },
+      });
 
       return "Password updated";
     }),
