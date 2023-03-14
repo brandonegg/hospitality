@@ -55,6 +55,7 @@ const ForgotPassword: NextPage = () => {
    * @returns
    */
   const onSubmit: SubmitHandler<ForgotPasswordInput> = (data) => {
+    setServerResult(undefined);
     mutate(data);
   };
 

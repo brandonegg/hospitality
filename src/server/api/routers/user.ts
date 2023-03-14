@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
 import { z } from "zod";
 
+import template from "../../../emails/template";
 import { transporter } from "../../email";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -113,12 +114,18 @@ export const userRouter = createTRPCRouter({
         });
       }
 
+      // generate reset token
+      const token = await argon2.hash(input.email);
+
+      const html = template(user.name, token);
+
       // email options
       const options = {
         from: "Hospitality Support",
         to: input.email,
-        subject: "hello world",
-        html: "<h1>Hello world</h1>",
+        subject: "Password Reset",
+        text: "Hospitality Password Reset\nHi ${user.name},\nYou recently requested to reset your password. Use the button below to reset it.\nThis password reset link is only valid for the next 5 minutes\nIf this was a mistake, just ignore this email.",
+        html,
       };
 
       // Send email
