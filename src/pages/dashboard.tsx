@@ -1,11 +1,14 @@
-import { DocumentCheckIcon, HeartIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
+import { DocumentCheckIcon } from "@heroicons/react/24/solid";
 import { useRouter } from "next/router";
 import type { NextPage } from "next/types";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 
-import NavigationBar from "../components/NavigationBar";
+import MainHeader from "../components/Header";
+import type { DashBoardNavButtonProperties} from "../components/dashboard/Navigation";
+import { DashBoardNavButton, DashBoardQuickAccessNavButton } from "../components/dashboard/Navigation";
 import VitalsWidget from "../components/dashboard/Vitals";
+
 
 interface SquareWidgetProperties {
     title?: string;
@@ -47,41 +50,36 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
     </>
 };
 
-interface DashBoardNavButtonProperties {
-    href: string;
-    label: string;
-    selected?: boolean;
-}
-
-/**
- * Dashboard nav button component. Shown below the main nav bar
- * @param param0 
- */
-const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
-    if (selected) {
-        return <>
-            <div className="box-content rounded-t-lg bg-gray-200 border-x-[1px] border-t-[1px] border-gray-400 h-full px-3">
-                <div className="grid place-content-center h-full w-full text-center">
-                    <span className="text-lg">{label}</span>
-                </div>
-            </div>
-        </>
+const dashboardNavLinks: DashBoardNavButtonProperties[] = [
+    {
+        selected: true,
+        label: "Overview",
+        href: "/",
+    },
+    {
+        label: "Appointments",
+        href: "/",
+    },
+    {
+        label: "Documents",
+        href: "/",
+    },
+    {
+        label: "Refills",
+        href: "/",
+    },
+    {
+        label: "Profile",
+        href: "/",
     }
-    
-    return <>
-        <Link href={href} className="box-content rounded-t-lg hover:bg-gray-200 border-x-[1px] border-t-[1px] border-transparent hover:border-gray-400 h-full px-3">
-            <div className="grid place-content-center h-full w-full text-center">
-                <span className="text-lg">{label}</span>
-            </div>
-        </Link>
-    </>
-}
+];
 
 /**
  * User dashboard page
  * @returns 
  */
 const Dashboard: NextPage = () => {
+    const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
     const router = useRouter();
     const { data: sessionData, status } = useSession({
         required: true,
@@ -94,16 +92,30 @@ const Dashboard: NextPage = () => {
         return <></>;
     }
 
+    /**
+     * Event handler for the quick access toggle button.
+     */
+    const handleQuickAccessTogle = () => {
+        setQuickAccessOpened(!quickAccessOpened);
+    }
+
+    const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
+        return (
+            <DashBoardNavButton key={index} {...linkDetails}/>
+        );
+    });
+
+    const dashboardDropdownNavButtons = dashboardNavLinks.map((linkDetails, index) => {
+        return (
+            <DashBoardQuickAccessNavButton key={index} {...linkDetails}/>
+        );
+    });
+
     return <>
     <main className="max-w-[1400px] mx-auto">
-        <div id='header-content' className="m-6">
-            <h2 className="mb-6 text-4xl font-semibold flex items-center space-x-2"><HeartIcon className='w-9 h-9 text-red-600'/>
-            <span>Hospitality</span>
-            </h2>
-            <NavigationBar session={sessionData}/>
-        </div>
+        <MainHeader session={sessionData} />
         <div className="m-6 gap-4">
-            <section className="px-2 m-8 border-b-2">
+            <section className="px-2 m-4 sm:m-8 border-b-2">
                 <div className="flex justify-between">
                     <span className="hidden lg:inline">
                         <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
@@ -112,16 +124,17 @@ const Dashboard: NextPage = () => {
                         <h2 className="hidden md:inline font-bold text-3xl">Welcome!</h2>
                     </span>
                     <div className="hidden sm:flex mx-auto md:m-0">
-                        <DashBoardNavButton selected={true} label="Overview" href="/"/>
-                        <DashBoardNavButton label="Appointments" href="/"/>
-                        <DashBoardNavButton label="Documents" href="/"/>
-                        <DashBoardNavButton label="Refills" href="/"/>
-                        <DashBoardNavButton label="Profile" href="/"/>
+                        {dashboardTopNavButtons}
                     </div>
                     <div className="w-full sm:hidden mb-2">
-                        <button className="text-md font-semibold border-2 border-slate-900 bg-slate-200 w-full py-2 rounded-lg">
+                        <button onClick={handleQuickAccessTogle} className="text-md font-semibold border-2 border-slate-900 bg-slate-200 w-full py-2 rounded-lg">
                             Quick Access ▼
                         </button>
+                        <div className={"mx-2 p-2 bg-gray-800 rounded-b-lg" + (quickAccessOpened ? "" : " hidden")}>
+                                <ul className="divide-y divide-gray-300">
+                                    {dashboardDropdownNavButtons}
+                                </ul>
+                        </div>
                     </div>
                 </div>
             </section>
