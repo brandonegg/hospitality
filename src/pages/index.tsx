@@ -1,4 +1,3 @@
-import { HeartIcon } from '@heroicons/react/24/solid';
 import { type NextPage } from "next";
 import { useSession } from 'next-auth/react';
 import React from 'react';
