@@ -5,6 +5,7 @@ import type { NextPage } from "next/types";
 import { useSession } from "next-auth/react";
 
 import NavigationBar from "../components/NavigationBar";
+import VitalsWidget from "../components/dashboard/Vitals";
 
 interface SquareWidgetProperties {
     title?: string;
@@ -37,9 +38,11 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
     };
     
     return <>
-        <div className={"flex flex-col border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
-            <Title/>
-            {children}
+        <div className={(width == 2 ? 'col-span-2' : 'col-span-1')}>
+            <div className="border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg">
+                <Title/>
+                {children}
+            </div>
         </div>
     </>
 };
@@ -130,7 +133,7 @@ const Dashboard: NextPage = () => {
                         </div>
                     </SquareWidget>
                     <SquareWidget width={1} title="Insurance">
-                        <div className="w-full h-full">
+                        <div className="w-full">
                             <div className="h-full bg-slate-100 p-2">
                                 <p className="pt-1 italic">Everything is up-to-date!</p>
                                 <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
@@ -138,13 +141,7 @@ const Dashboard: NextPage = () => {
                         </div>
                     </SquareWidget>
                     <SquareWidget width={2} title="Vitals">
-                        <div className="w-full h-full">
-                            <div className="h-full bg-slate-100 p-2 flex flex-col">
-                                <div className="grow">
-                                </div>
-                                <h1 className="text-xs text-right italic">Last recorded on 3/10/2023</h1>
-                            </div>
-                        </div>
+                        <VitalsWidget/>
                     </SquareWidget>
                 </div>
             </div>
