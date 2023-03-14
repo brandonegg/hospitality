@@ -20,6 +20,24 @@ const demoVitals: VitalsInfo[] = [
         label: "Temperature",
         value: "96",
         unit: "℉",
+    },
+    {
+        icon: <Image alt="scale" src="weighing-scale.svg" width={32} height={32}/>,
+        label: "Weight",
+        value: "160",
+        unit: "lb",
+    },
+    {
+        icon: <Image alt="lungs" src="lungs.svg" width={36} height={32}/>,
+        label: "Respiration",
+        value: "16",
+        unit: "",
+    },
+    {
+        icon: <Image alt="human chest" src="human-chest.svg" width={32} height={32}/>,
+        label: "Oxygen Saturation",
+        value: "98",
+        unit: "%",
     }
 ]
 
