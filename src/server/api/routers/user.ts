@@ -1,9 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
+import * as jwt from "jsonwebtoken";
 import { z } from "zod";
 
 import template from "../../../emails/template";
+import { env } from "../../../env.mjs";
 import { transporter } from "../../email";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
@@ -115,7 +117,9 @@ export const userRouter = createTRPCRouter({
       }
 
       // generate reset token
-      const token = await argon2.hash(input.email);
+      const token = jwt.sign({ email: input.email }, env.JWT_SECRET, {
+        expiresIn: "5m",
+      });
 
       const html = template(user.name, token);
 

@@ -12,6 +12,7 @@ const server = z.object({
   MYSQL_ROOT_PASSWORD: z.string(),
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  JWT_SECRET: z.string().min(1),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)
@@ -49,6 +50,7 @@ const processEnv = {
   MYSQL_ROOT_PASSWORD: process.env.MYSQL_ROOT_PASSWORD,
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
+  JWT_SECRET: process.env.JWT_SECRET,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
