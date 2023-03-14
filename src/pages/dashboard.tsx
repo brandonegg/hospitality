@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import NavigationBar from "../components/NavigationBar";
 
 interface SquareWidgetProperties {
+    title?: string;
     width: 1 | 2; // Width of the widget relative to grid cells.
     children: JSX.Element;
 }
@@ -16,9 +17,28 @@ interface SquareWidgetProperties {
  * @param param0 
  * @returns 
  */
-const SquareWidget = ({width, children}: SquareWidgetProperties) => {
+const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
+    /**
+     * Widget title generation
+     * @returns 
+     */
+    const Title = () => {
+        if (!title) {
+            return <>
+            </>;
+        }
+        return <>
+            <div className="bg-slate-800 text-gray-300">
+                <div className="p-1">
+                    <h1 className="font-bold text-center text-lg">{title}</h1>
+                </div>
+            </div>
+        </>
+    };
+    
     return <>
         <div className={"border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
+            <Title/>
             {children}
         </div>
     </>
@@ -27,13 +47,24 @@ const SquareWidget = ({width, children}: SquareWidgetProperties) => {
 interface DashBoardNavButtonProperties {
     href: string;
     label: string;
+    selected?: boolean;
 }
 
 /**
  * Dashboard nav button component. Shown below the main nav bar
  * @param param0 
  */
-const DashBoardNavButton = ({href, label}: DashBoardNavButtonProperties) => {
+const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
+    if (selected) {
+        return <>
+            <div className="box-content rounded-t-lg bg-gray-200 border-x-[1px] border-t-[1px] border-gray-400 h-full px-3">
+                <div className="grid place-content-center h-full w-full text-center">
+                    <span className="text-lg">{label}</span>
+                </div>
+            </div>
+        </>
+    }
+    
     return <>
         <Link href={href} className="box-content rounded-t-lg hover:bg-gray-200 border-x-[1px] border-t-[1px] border-transparent hover:border-gray-400 h-full px-3">
             <div className="grid place-content-center h-full w-full text-center">
@@ -73,6 +104,7 @@ const Dashboard: NextPage = () => {
                 <div className="flex justify-between">
                     <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
                     <div className="hidden sm:flex mx-auto md:m-0">
+                        <DashBoardNavButton selected={true} label="Overview" href="/"/>
                         <DashBoardNavButton label="Appointments" href="/"/>
                         <DashBoardNavButton label="Documents" href="/"/>
                         <DashBoardNavButton label="Refills" href="/"/>
@@ -88,18 +120,12 @@ const Dashboard: NextPage = () => {
 
             <div className="sm:m-8">
                 <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-6 sm:grid-cols-4 gap-8">
-                    <SquareWidget width={2}>
-                        <div className="p-4 bg-yellow-100 h-full">
-                            <h1 className="font-bold text-xl ">Upcomming Appointments:</h1>
+                    <SquareWidget title="Upcomming Appointments" width={2}>
+                        <div className="p-2 bg-yellow-100 h-full">
                         </div>
                     </SquareWidget>
-                    <SquareWidget width={1}>
+                    <SquareWidget width={1} title="Insurance">
                         <div className="w-full h-full">
-                            <div>
-                                <h1 className="bg-slate-800 text-gray-300 w-full text-center font-bold text-lg p-1 border-b-[1px] align-middle">
-                                    Insurance
-                                </h1>
-                            </div>
                             <div className="h-full bg-slate-100 p-2">
                                 <p className="pt-1 italic">Everything is up-to-date!</p>
                                 <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
