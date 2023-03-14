@@ -37,7 +37,7 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
     };
     
     return <>
-        <div className={"border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
+        <div className={"flex flex-col border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg " + (width == 2 ? 'col-span-2' : 'col-span-1')}>
             <Title/>
             {children}
         </div>
@@ -134,6 +134,15 @@ const Dashboard: NextPage = () => {
                             <div className="h-full bg-slate-100 p-2">
                                 <p className="pt-1 italic">Everything is up-to-date!</p>
                                 <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
+                            </div>
+                        </div>
+                    </SquareWidget>
+                    <SquareWidget width={2} title="Vitals">
+                        <div className="w-full h-full">
+                            <div className="h-full bg-slate-100 p-2 flex flex-col">
+                                <div className="grow">
+                                </div>
+                                <h1 className="text-xs text-right italic">Last recorded on 3/10/2023</h1>
                             </div>
                         </div>
                     </SquareWidget>
