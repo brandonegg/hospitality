@@ -59,7 +59,7 @@ async function globalSetup() {
         await page.locator("input[name=username]").fill('e2e');
         await page.locator("input[name=password]").fill('password');
         await page.getByRole('button', { name: 'Login' }).click();
-        await page.waitForURL(`${baseURL}/dashboard`, {waitUntil: 'networkidle'});
+        await page.goto(`${baseURL}/`, {waitUntil: 'load'});
 
         await page.context().storageState({ path: `playwright/.auth/${name}/user.json` });
         await browser.close();
