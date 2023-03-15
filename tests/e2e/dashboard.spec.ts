@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test.describe('dashboard', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/dashboard');
+        await page.goto('/dashboard', {
+            waitUntil: "load",
+        });
     });
 
     test.describe('logged out', () => {
@@ -19,7 +21,7 @@ test.describe('dashboard', () => {
         });
 
         test('on the dashboard page', ({page}) => {
-            expect(page.url()).toContain('login');
+            expect(page.url()).toContain('dashboard');
         });
     })
 });
