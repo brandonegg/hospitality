@@ -1,17 +1,12 @@
 import { describe, expect, test } from "@jest/globals";
-import type { Address, PrismaClient, User } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 import * as jwt from "jsonwebtoken";
 
 import { appRouter, type AppRouter } from "../../src/server/api/root";
-import type { RouterOutputs } from "../../src/utils/api";
 
 const resetToken = jwt.sign({ email: "test-user@example.com" }, "123456", {
-  expiresIn: "5m",
-});
-
-const invalidToken = jwt.sign({}, "123456", {
   expiresIn: "5m",
 });
 

@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 
 import Alert from "../components/Alert";
 import ErrorMessage from "../components/ErrorMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
 import type { RouterInputs, RouterOutputs } from "../utils/api";
 import { api } from "../utils/api";
 import { classNames } from "../utils/text";
@@ -72,16 +73,7 @@ const ResetPassword: NextPage = () => {
     return (
       // place holder loading animation
       <main className="container mx-auto min-h-screen max-w-3xl flex-col p-2">
-        <div className="flex items-center justify-center">
-          <div
-            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            role="status"
-          >
-            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-              Loading...
-            </span>
-          </div>
-        </div>
+        <LoadingSpinner />
       </main>
     );
   }
