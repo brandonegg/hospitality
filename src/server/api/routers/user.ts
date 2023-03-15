@@ -118,7 +118,7 @@ export const userRouter = createTRPCRouter({
       if (!user) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "Email does not exist",
+          message: "User with that email does not exist",
         });
       }
 
@@ -190,7 +190,15 @@ export const userRouter = createTRPCRouter({
       }
 
       // decode the token
-      const decoded = jwt.decode(input.token);
+      let decoded;
+      try {
+        decoded = jwt.verify(input.token, env.JWT_SECRET);
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
 
       // Check if the token is valid
       if (!decoded) {
