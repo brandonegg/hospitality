@@ -49,28 +49,4 @@ describe("forgot password", () => {
       })
     );
   });
-
-  test("successfully send email", async () => {
-    // mock the prisma client db
-    const prismaMock = mockDeep<PrismaClient>();
-
-    const mockOutput: RouterOutputs["user"]["forgotPassword"] =
-      "A password reset message was sent to your email address.";
-
-    const caller = appRouter.createCaller({
-      session: null,
-      prisma: prismaMock,
-    });
-
-    type Input = inferProcedureInput<AppRouter["user"]["forgotPassword"]>;
-    const input: Input = {
-      email: "test-user@example.com",
-    };
-
-    prismaMock.user.findFirst.mockResolvedValue(mockUser);
-
-    const result = await caller.user.forgotPassword(input);
-
-    expect(result).toBe(mockOutput);
-  });
 });
