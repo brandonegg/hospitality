@@ -1,7 +1,7 @@
 import { DocumentCheckIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/router";
-import type { NextPage } from "next/types";
-import { useSession } from "next-auth/react";
+import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
+import type { Session } from "next-auth";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 
 import MainHeader from "../components/Header";
@@ -9,6 +9,9 @@ import type { DashBoardNavButtonProperties} from "../components/dashboard/Naviga
 import { DashBoardNavButton, DashBoardQuickAccessNavButton } from "../components/dashboard/Navigation";
 import VitalsWidget from "../components/dashboard/Vitals";
 
+interface DashboardPageProps {
+    user: Session['user'],
+}
 
 interface SquareWidgetProperties {
     title?: string;
@@ -78,19 +81,10 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
  * User dashboard page
  * @returns 
  */
-const Dashboard: NextPage = () => {
+const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
-    const router = useRouter();
-    const { data: sessionData, status } = useSession({
-        required: true,
-        async onUnauthenticated() {
-            await router.push('/login');
-        },
-    });
-
-    if (status === 'loading') {
-        return <></>;
-    }
+    
+    console.log(user);
 
     /**
      * Event handler for the quick access toggle button.
@@ -113,12 +107,12 @@ const Dashboard: NextPage = () => {
 
     return <>
     <main className="max-w-[1400px] mx-auto">
-        <MainHeader session={sessionData} />
+        <MainHeader user={user} />
         <div className="m-6 gap-4">
             <section className="px-2 m-4 sm:m-8 border-b-2">
                 <div className="flex justify-between">
                     <span className="hidden lg:inline">
-                        <h2 className="hidden md:inline font-bold text-3xl">Welcome, {sessionData.user.name}</h2>
+                        <h2 className="hidden md:inline font-bold text-3xl">Welcome, {user.name}</h2>
                     </span>
                     <span className="lg:hidden">
                         <h2 className="hidden md:inline font-bold text-3xl">Welcome!</h2>
@@ -162,5 +156,31 @@ const Dashboard: NextPage = () => {
     </main>
     </>
 };
+
+/**
+ * Server side page setup
+ * @param context 
+ * @returns 
+ */
+export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (context: GetServerSidePropsContext) => {
+    // Get the user session
+    const session = await getSession(context);
+
+    if (!session?.user) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        };
+    }
+  
+    // If the user is authenticated, continue with rendering the page
+    return {
+      props: {
+        user: session.user,
+      },
+    };
+}
 
 export default Dashboard

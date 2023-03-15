@@ -35,7 +35,7 @@ interface NavLinkProps {
 }
 
 interface NavBarProps {
-    session: Session | null;
+    user?: Session['user'];
 }
 
 /**
@@ -44,13 +44,13 @@ interface NavBarProps {
  * @param props Provide logged in user data is user signed into session
  * @returns 
  */
-const NavigationBar = ({ session }: NavBarProps) => {
+const NavigationBar = ({ user }: NavBarProps) => {
     /**
      * Singular navigation bar link component.
      * @param props Properties of nav link element to represent as component 
      */
     const NavigationLink = ({ href, label, requiresAccount }: NavLinkProps ) => {
-        const hidden = requiresAccount && !session?.user;
+        const hidden = requiresAccount && !user;
         
         return <>
             <div className='hover:bg-gray-700'>
@@ -72,7 +72,7 @@ const NavigationBar = ({ session }: NavBarProps) => {
          * @returns 
          */
         const SessionView = ({}) => {
-            return session?.user ? (
+            return user ? (
                 <>
                     <div className="group relative h-full block mr-2 p-2 rounded-lg hover:bg-gray-700">
                         <UserCircleIcon className='w-7 h-7 text-white'/>

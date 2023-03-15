@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   return (
     <>
       <main className="max-w-[1400px] mx-auto">
-        <MainHeader session={sessionData} />
+        <MainHeader user={sessionData?.user} />
         <div id='main-content' className="mx-6">
           <HorizontalCarousel slides={carouselSlides} autoCycle={10}/>
         </div>
