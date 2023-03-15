@@ -16,7 +16,7 @@ const demoVitals: VitalsInfo[] = [
         unit: "bpm",
     },
     {
-        icon: <Image alt="thermometer" src="thermometer.svg" width={48} height={32}/>,
+        icon: <Image alt="thermometer" src="thermometer.svg" width={46} height={46}/>,
         label: "Temperature",
         value: "96",
         unit: "℉",
@@ -28,7 +28,7 @@ const demoVitals: VitalsInfo[] = [
         unit: "lb",
     },
     {
-        icon: <Image alt="lungs" src="lungs.svg" width={36} height={32}/>,
+        icon: <Image alt="lungs" src="lungs.svg" width={36} height={36}/>,
         label: "Respiration",
         value: "16",
         unit: "",

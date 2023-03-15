@@ -84,8 +84,6 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
 const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
     
-    console.log(user);
-
     /**
      * Event handler for the quick access toggle button.
      */
