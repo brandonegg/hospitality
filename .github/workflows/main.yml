@@ -7,8 +7,8 @@ on:
     branches: [main, master]
 
 env:
-  EMAIL_USER: ""
-  EMAIL_PASSWORD: ""
+  EMAIL_USER: "test@test.com"
+  EMAIL_PASSWORD: "123456"
   JWT_SECRET: "123456"
   NODE_ENV: "test"
   MYSQL_DATABASE: "db"
