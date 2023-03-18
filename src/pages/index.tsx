@@ -1,13 +1,11 @@
-import { HeartIcon } from '@heroicons/react/24/solid';
 import { type NextPage } from "next";
-import Head from "next/head";
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
+import MainHeader from '../components/Header';
 import type { HorizontalCarouselSlideProps } from "../components/HorizontalCarousel";
 import { FadedTitleBodyCarouselSlide } from "../components/HorizontalCarousel";
 import HorizontalCarousel from "../components/HorizontalCarousel";
-import NavigationBar from "../components/NavigationBar";
 import indexContent from '../data/index.json';
 
 /**
@@ -28,18 +26,8 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Hospitality</title>
-        <meta name="description" content="The ultimate hospital management system" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main className="max-w-[1400px] mx-auto">
-        <div id='header-content' className="m-6">
-          <h2 className="mb-6 text-4xl font-semibold flex items-center space-x-2"><HeartIcon className='w-9 h-9 text-red-600'/>
-            <span>Hospitality</span>
-          </h2>
-          <NavigationBar session={sessionData}/>
-        </div>
+        <MainHeader user={sessionData?.user} />
         <div id='main-content' className="mx-6">
           <HorizontalCarousel slides={carouselSlides} autoCycle={10}/>
         </div>
