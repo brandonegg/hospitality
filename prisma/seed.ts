@@ -26,6 +26,7 @@ async function main() {
     data: [
       {
         name: "Bob",
+        username: "bob",
         email: "bob@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -34,6 +35,7 @@ async function main() {
       },
       {
         name: "Bobo",
+        username: "bobo",
         email: "bob@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -42,6 +44,7 @@ async function main() {
       },
       {
         name: "Yewande",
+        username: "yewande",
         email: "yewande@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -50,6 +53,7 @@ async function main() {
       },
       {
         name: "Angelique",
+        username: "angelique",
         email: "angelique@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -58,6 +62,7 @@ async function main() {
       },
       {
         name: "John",
+        username: "john",
         email: "john@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -66,6 +71,7 @@ async function main() {
       },
       {
         name: "Joe",
+        username: "joe",
         email: "joe@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -74,6 +80,7 @@ async function main() {
       },
       {
         name: "Admin User 1",
+        username: "adminuser1",
         email: "adminuser1@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -82,6 +89,7 @@ async function main() {
       },
       {
         name: "Jane",
+        username: "jane",
         email: "jane@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
@@ -90,6 +98,7 @@ async function main() {
       },
       {
         name: "Josh",
+        username: "josh",
         email: "josh@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
