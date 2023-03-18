@@ -4,21 +4,6 @@ import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 
 import { appRouter, type AppRouter } from "../../src/server/api/root";
-import type { RouterOutputs } from "../../src/utils/api";
-
-const mockUser: User | null = {
-  id: "test-id",
-  name: "test user",
-  addressId: "test-address-id",
-  username: "test-username",
-  email: "test-user@example.com",
-  dateOfBirth: new Date("1990-01-01"),
-  password: "password",
-  phoneNumber: null,
-  emailVerified: null,
-  role: "PATIENT",
-  image: null,
-};
 
 const emptyUser: User | null = null;
 
