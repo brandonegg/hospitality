@@ -15,6 +15,21 @@ import { api } from "../../utils/api";
 import { classNames } from "../../utils/text";
 
 /**
+ * Get the initials of a name.
+ * @param string
+ * @returns
+ */
+const getInitial = (name: string) => {
+  const names = name.split(" ");
+  let initials = names[0]?.substring(0, 1).toUpperCase();
+
+  if (initials && names.length > 1) {
+    initials += names[names.length - 1]?.substring(0, 1).toUpperCase();
+  }
+  return initials;
+};
+
+/**
  * Users page
  * @param props
  * @returns JSX
@@ -136,7 +151,7 @@ const UsersPage: NextPage = () => {
                         <div className="flex items-center gap-2">
                           <div className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
                             <span className="font-normal text-gray-600 dark:text-gray-300">
-                              JL
+                              {getInitial(user.name)}
                             </span>
                           </div>
                           <div className="flex flex-col">
