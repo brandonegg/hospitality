@@ -60,6 +60,9 @@ const ResetPassword: NextPage = () => {
   if (error)
     return (
       <main className="container mx-auto min-h-screen max-w-3xl flex-col space-y-2 p-2">
+        <h1 className="flex justify-center text-3xl font-bold">
+          Password Reset
+        </h1>
         <Alert type="error">{error.message}</Alert>
         <button className="cursor-pointer rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
           <Link href="/" className="inline-flex items-center gap-1">
