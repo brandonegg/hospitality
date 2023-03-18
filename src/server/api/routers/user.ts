@@ -37,11 +37,14 @@ export const userRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { limit, cursor } = input;
-      const items = await ctx.prisma.user.findMany({
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
-        select: { ...defaultUserSelect, dateOfBirth: true },
-      });
+      const [count, items] = await ctx.prisma.$transaction([
+        ctx.prisma.user.count(),
+        ctx.prisma.user.findMany({
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
+          select: { ...defaultUserSelect, dateOfBirth: true },
+        }),
+      ]);
 
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
@@ -49,6 +52,7 @@ export const userRouter = createTRPCRouter({
         nextCursor = nextItem?.id;
       }
       return {
+        count,
         items,
         nextCursor,
       };

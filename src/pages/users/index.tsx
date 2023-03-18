@@ -53,6 +53,7 @@ const UsersPage: NextPage = () => {
   };
 
   // items in the current page
+  const usersLength = data?.pages[page]?.count;
   const toShow = data?.pages[page]?.items;
 
   return (
@@ -67,7 +68,7 @@ const UsersPage: NextPage = () => {
 
         {toShow && (
           <>
-            {/* <span>{data.length} Users</span> */}
+            <span>{usersLength} Users</span>
 
             <div className="grid-col-10 grid">
               {/* search bar */}
