@@ -7,7 +7,7 @@ import { z } from "zod";
 import template from "../../../emails/template";
 import { env } from "../../../env.mjs";
 import { transporter } from "../../email";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 interface ResetToken {
   email: string;
@@ -24,9 +24,35 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   email: true,
   username: true,
+  role: true,
 });
 
 export const userRouter = createTRPCRouter({
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+      const items = await ctx.prisma.user.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        select: { ...defaultUserSelect, dateOfBirth: true },
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
   signup: publicProcedure
     .input(
       z.object({
