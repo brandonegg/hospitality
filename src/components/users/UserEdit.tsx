@@ -14,6 +14,7 @@ type UserUpdateInput = RouterInputs["user"]["update"];
 type UserUpdateOutput = RouterOutputs["user"]["update"];
 
 interface UserEditProps {
+  refetch: () => Promise<void>;
   user?: User;
   popup: Popup;
   setPopup: Dispatch<SetStateAction<Popup>>;
@@ -24,7 +25,7 @@ interface UserEditProps {
  * @param param0
  * @returns JSX
  */
-const UserEdit = ({ user, setPopup }: UserEditProps) => {
+const UserEdit = ({ refetch, user, setPopup }: UserEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     UserUpdateOutput | undefined
@@ -39,7 +40,11 @@ const UserEdit = ({ user, setPopup }: UserEditProps) => {
   });
 
   const { mutate } = api.user.update.useMutation({
-    onSuccess: (data: UserUpdateOutput) => setServerResult(data),
+    onSuccess: async (data: UserUpdateOutput) => {
+      setServerResult(data);
+
+      await refetch();
+    },
     onError: (error) => setServerError(error.message),
   });
 

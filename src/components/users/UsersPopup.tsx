@@ -32,6 +32,7 @@ const UserPopupTitle = ({ type }: UserPopupTitleProps) => {
 interface UserPopupBodyProps {
   type?: "create" | "edit" | "delete";
   user?: User;
+  refetch: () => Promise<void>;
   popup: Popup;
   setPopup: Dispatch<SetStateAction<Popup>>;
 }
@@ -41,12 +42,25 @@ interface UserPopupBodyProps {
  * @param param0
  * @returns JSX
  */
-const UserPopupBody = ({ user, type, popup, setPopup }: UserPopupBodyProps) => {
+const UserPopupBody = ({
+  refetch,
+  user,
+  type,
+  popup,
+  setPopup,
+}: UserPopupBodyProps) => {
   switch (type) {
     case "create":
       return <UserCreate popup={popup} setPopup={setPopup} />;
     case "edit":
-      return <UserEdit user={user} popup={popup} setPopup={setPopup} />;
+      return (
+        <UserEdit
+          refetch={refetch}
+          user={user}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      );
     case "delete":
       return <UserDelete popup={popup} setPopup={setPopup} />;
     default:
@@ -55,6 +69,7 @@ const UserPopupBody = ({ user, type, popup, setPopup }: UserPopupBodyProps) => {
 };
 
 interface UserPopupProps {
+  refetch: () => Promise<void>;
   popup: Popup;
   setPopup: Dispatch<SetStateAction<Popup>>;
 }
@@ -63,7 +78,7 @@ interface UserPopupProps {
  * User popup component.
  * @returns JSX
  */
-const UserPopup = ({ popup, setPopup }: UserPopupProps) => {
+const UserPopup = ({ refetch, popup, setPopup }: UserPopupProps) => {
   return (
     <Dialog
       open={popup.show}
@@ -81,6 +96,7 @@ const UserPopup = ({ popup, setPopup }: UserPopupProps) => {
           </Dialog.Title>
 
           <UserPopupBody
+            refetch={refetch}
             user={popup.user}
             type={popup.type}
             popup={popup}

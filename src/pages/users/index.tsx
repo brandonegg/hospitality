@@ -51,7 +51,7 @@ const UsersPage: NextPage = () => {
   const [limit] = useState(10);
   const [popup, setPopup] = useState<Popup>({ show: false });
 
-  const { data, error, isLoading, fetchNextPage } =
+  const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(
       {
         limit,
@@ -105,7 +105,13 @@ const UsersPage: NextPage = () => {
         </div>
 
         {/* popup */}
-        {popup.show && <UserPopup popup={popup} setPopup={setPopup} />}
+        {popup.show && (
+          <UserPopup
+            refetch={refetch as unknown as () => Promise<void>}
+            popup={popup}
+            setPopup={setPopup}
+          />
+        )}
 
         {isLoading && <div>Loading...</div>}
 
