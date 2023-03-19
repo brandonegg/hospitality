@@ -6,7 +6,6 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
-import { format } from "date-fns";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { useState } from "react";
@@ -19,6 +18,13 @@ import { api } from "../../utils/api";
 import { classNames } from "../../utils/text";
 
 export type User = RouterOutputs["user"]["getAll"]["items"][number];
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "UTC",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
 
 /**
  * Get the initials of a name.
@@ -187,7 +193,7 @@ const UsersPage: NextPage = () => {
                       </td>
                       <td className="px-6 py-2">{user.email}</td>
                       <td className="px-6 py-2">
-                        {format(user.dateOfBirth as Date, "MM/dd/yyyy")}
+                        {dateFormatter.format(user.dateOfBirth as Date)}
                       </td>
                       <td className="px-6 py-2">{user.role}</td>
                       <td className="px-6 py-2">
