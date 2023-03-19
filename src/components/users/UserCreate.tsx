@@ -14,6 +14,7 @@ type UserCreateInput = RouterInputs["user"]["create"];
 type UserCreateOutput = RouterOutputs["user"]["create"];
 
 interface UserCreateProps {
+  refetch: () => Promise<void>;
   popup: Popup;
   setPopup: Dispatch<SetStateAction<Popup>>;
 }
@@ -22,7 +23,7 @@ interface UserCreateProps {
  * UserCreate component
  * @returns JSX
  */
-const UserCreate = ({ setPopup }: UserCreateProps) => {
+const UserCreate = ({ refetch, setPopup }: UserCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     UserCreateOutput | undefined
@@ -35,7 +36,11 @@ const UserCreate = ({ setPopup }: UserCreateProps) => {
   } = useForm<UserCreateInput>();
 
   const { mutate } = api.user.create.useMutation({
-    onSuccess: (data: UserCreateOutput) => setServerResult(data),
+    onSuccess: async (data: UserCreateOutput) => {
+      setServerResult(data);
+
+      await refetch();
+    },
     onError: (error) => setServerError(error.message),
   });
 

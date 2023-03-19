@@ -51,7 +51,7 @@ const UserPopupBody = ({
 }: UserPopupBodyProps) => {
   switch (type) {
     case "create":
-      return <UserCreate popup={popup} setPopup={setPopup} />;
+      return <UserCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
     case "edit":
       return (
         <UserEdit
@@ -62,7 +62,14 @@ const UserPopupBody = ({
         />
       );
     case "delete":
-      return <UserDelete popup={popup} setPopup={setPopup} />;
+      return (
+        <UserDelete
+          refetch={refetch}
+          user={user}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      );
     default:
       return <></>;
   }

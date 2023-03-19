@@ -59,7 +59,7 @@ const UserEdit = ({ refetch, user, setPopup }: UserEditProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully update a user!</Alert>
+      <Alert type="success">Successfully updated a user!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
