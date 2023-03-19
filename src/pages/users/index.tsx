@@ -12,7 +12,7 @@ import { useState } from "react";
 
 import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
-import UserPopup from "../../components/users/UsersPopup";
+import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { classNames } from "../../utils/text";
