@@ -11,8 +11,12 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
+import UserPopup from "../../components/users/UsersPopup";
+import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { classNames } from "../../utils/text";
+
+export type User = RouterOutputs["user"]["getAll"]["items"][number];
 
 /**
  * Get the initials of a name.
@@ -29,6 +33,12 @@ const getInitial = (name: string) => {
   return initials;
 };
 
+export type Popup = {
+  show: boolean;
+  type?: "create" | "edit" | "delete";
+  user?: User;
+};
+
 /**
  * Users page
  * @param props
@@ -38,7 +48,8 @@ const UsersPage: NextPage = () => {
   const { data: sessionData } = useSession();
 
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
+  const [popup, setPopup] = useState<Popup>({ show: false });
 
   const { data, error, isLoading, fetchNextPage } =
     api.user.getAll.useInfiniteQuery(
@@ -75,7 +86,26 @@ const UsersPage: NextPage = () => {
     <main className="mx-auto max-w-[1400px]">
       <MainHeader user={sessionData?.user} />
       <div className="m-6 gap-4 space-y-2">
-        <h1 className="text-3xl font-bold">All Users</h1>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">All Users</h1>
+            {toShow && <span>{usersLength} Users</span>}
+          </div>
+
+          {/* add user button */}
+          <div className="">
+            <button
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
+              onClick={() => setPopup({ show: true, type: "create" })}
+            >
+              <PlusIcon className="h-4 w-4" />
+              Add User
+            </button>
+          </div>
+        </div>
+
+        {/* popup */}
+        {popup.show && <UserPopup popup={popup} setPopup={setPopup} />}
 
         {isLoading && <div>Loading...</div>}
 
@@ -83,25 +113,6 @@ const UsersPage: NextPage = () => {
 
         {toShow && (
           <>
-            <span>{usersLength} Users</span>
-
-            <div className="grid-col-10 grid">
-              {/* search bar */}
-              <input
-                type="text"
-                placeholder="Search for users"
-                className="col-start-1 col-end-9 w-full rounded-lg border border-gray-400 bg-gray-50 p-2 sm:col-end-4"
-              />
-
-              {/* add user button */}
-              <div className="col-span-1 col-end-10 flex justify-end">
-                <button className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700">
-                  <PlusIcon className="h-4 w-4" />
-                  Add User
-                </button>
-              </div>
-            </div>
-
             <div className="grid grid-cols-3 items-center">
               <div className="flex">
                 <button
@@ -115,7 +126,9 @@ const UsersPage: NextPage = () => {
                   Previous
                 </button>
               </div>
-              <span className="flex justify-center">Page {page + 1}</span>
+              <span className="flex justify-center font-semibold">
+                Page {page + 1}
+              </span>
               <div className="flex justify-end">
                 <button
                   className={classNames(
@@ -130,7 +143,7 @@ const UsersPage: NextPage = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-xl border-gray-600 drop-shadow-lg">
+            <div className="overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
               <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-slate-800 text-sm uppercase text-gray-300">
                   <tr>
@@ -169,11 +182,21 @@ const UsersPage: NextPage = () => {
                       <td className="px-6 py-2">{user.role}</td>
                       <td className="px-6 py-2">
                         <div className="flex gap-2">
-                          <button className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 text-white hover:bg-blue-700">
+                          <button
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
+                            onClick={() =>
+                              setPopup({ show: true, type: "edit", user })
+                            }
+                          >
                             <PencilSquareIcon className="h-4 w-4" />
                             Edit
                           </button>
-                          <button className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 py-2 px-3 text-white hover:bg-red-700">
+                          <button
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
+                            onClick={() =>
+                              setPopup({ show: true, type: "delete", user })
+                            }
+                          >
                             <TrashIcon className="h-4 w-4" />
                             Delete
                           </button>

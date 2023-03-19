@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
@@ -56,6 +57,72 @@ export const userRouter = createTRPCRouter({
         items,
         nextCursor,
       };
+    }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        dateOfBirth: z.string(),
+        username: z.string(),
+        email: z.string().email(),
+        role: z.string(),
+        password: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const {
+        firstName,
+        lastName,
+        dateOfBirth,
+        username,
+        email,
+        role,
+        password,
+      } = input;
+
+      // Check if the username is already taken
+      const usernameExists = await ctx.prisma.user.findFirst({
+        where: { username },
+      });
+      if (usernameExists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Username is already taken",
+        });
+      }
+
+      // Check if the email is already taken
+      const emailExists = await ctx.prisma.user.findFirst({
+        where: { email },
+      });
+      if (emailExists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email is already taken",
+        });
+      }
+
+      // hash the password
+      const hashPassword = await argon2.hash(password);
+
+      // format the user data
+      const newUser = {
+        name: `${firstName} ${lastName}`,
+        dateOfBirth: new Date(dateOfBirth),
+        username,
+        email,
+        password: hashPassword,
+        role: role as Role,
+      };
+
+      // Create the user
+      const user = await ctx.prisma.user.create({
+        data: newUser,
+        select: defaultUserSelect,
+      });
+
+      return user;
     }),
   signup: publicProcedure
     .input(
