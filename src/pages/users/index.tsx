@@ -5,9 +5,10 @@ import {
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
+import { Role } from "@prisma/client";
 import { format } from "date-fns";
-import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
+import type { GetServerSidePropsContext, NextPage } from "next";
+import { getSession, useSession } from "next-auth/react";
 import { useState } from "react";
 
 import Alert from "../../components/Alert";
@@ -221,6 +222,38 @@ const UsersPage: NextPage = () => {
       </div>
     </main>
   );
+};
+
+/**
+ * Server side page setup
+ * @param context
+ * @returns
+ */
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  // Get the user session
+  const session = await getSession(context);
+
+  // If the user is not logged in, redirect to the login page
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  // If the user is not an admin, redirect to the dashboard
+  if (session.user.role !== Role.ADMIN) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
 };
 
 export default UsersPage;
