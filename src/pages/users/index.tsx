@@ -10,6 +10,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
+import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
 import UserPopup from "../../components/users/UsersPopup";
 import type { RouterOutputs } from "../../utils/api";
@@ -93,15 +94,17 @@ const UsersPage: NextPage = () => {
           </div>
 
           {/* add user button */}
-          <div className="">
-            <button
-              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
-              onClick={() => setPopup({ show: true, type: "create" })}
-            >
-              <PlusIcon className="h-4 w-4" />
-              Add User
-            </button>
-          </div>
+          {toShow && (
+            <div className="">
+              <button
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
+                onClick={() => setPopup({ show: true, type: "create" })}
+              >
+                <PlusIcon className="h-4 w-4" />
+                Add User
+              </button>
+            </div>
+          )}
         </div>
 
         {/* popup */}
@@ -115,7 +118,7 @@ const UsersPage: NextPage = () => {
 
         {isLoading && <div>Loading...</div>}
 
-        {error && <div>Error: {error.message}</div>}
+        {error && <Alert type="error">{error.message}</Alert>}
 
         {toShow && (
           <>
