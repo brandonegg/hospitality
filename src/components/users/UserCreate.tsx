@@ -45,13 +45,12 @@ const UserCreate = ({ setPopup }: UserCreateProps) => {
    * @returns
    */
   const onSubmit: SubmitHandler<UserCreateInput> = (data) => {
-    // console.log(data);
     mutate(data);
   };
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created account!</Alert>
+      <Alert type="success">Successfully created a user!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}

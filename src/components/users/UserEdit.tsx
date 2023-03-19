@@ -1,10 +1,17 @@
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
 import type { Popup, User } from "../../pages/users";
+import type { RouterInputs, RouterOutputs } from "../../utils/api";
+import { api } from "../../utils/api";
+import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
+
+type UserUpdateInput = RouterInputs["user"]["update"];
+type UserUpdateOutput = RouterOutputs["user"]["update"];
 
 interface UserEditProps {
   user?: User;
@@ -18,12 +25,22 @@ interface UserEditProps {
  * @returns JSX
  */
 const UserEdit = ({ user, setPopup }: UserEditProps) => {
+  const [serverError, setServerError] = useState<string | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<
+    UserUpdateOutput | undefined
+  >(undefined);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<UserUpdateInput>({
     defaultValues: user,
+  });
+
+  const { mutate } = api.user.update.useMutation({
+    onSuccess: (data: UserUpdateOutput) => setServerResult(data),
+    onError: (error) => setServerError(error.message),
   });
 
   /**
@@ -31,17 +48,26 @@ const UserEdit = ({ user, setPopup }: UserEditProps) => {
    * @param data Form data.
    * @returns
    */
-  const onSubmit: SubmitHandler<User> = (data) => {
-    console.log(data);
-    // mutate(data);
-    setPopup({ show: false });
+  const onSubmit: SubmitHandler<UserUpdateInput> = (data) => {
+    mutate(data);
   };
 
-  console.log(user);
-
-  return (
+  return serverResult ? (
+    <div className="space-y-2">
+      <Alert type="success">Successfully update a user!</Alert>
+      <button
+        type="button"
+        onClick={() => setPopup({ show: false })}
+        className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
+      >
+        Close
+      </button>
+    </div>
+  ) : (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-      <h2 className="text-xl font-semibold">Name</h2>
+      {/* server response error */}
+      {serverError && <Alert type="error">{serverError}</Alert>}
+
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <div className="flex flex-grow flex-col">
           <label htmlFor="name">Name</label>
@@ -74,57 +100,6 @@ const UserEdit = ({ user, setPopup }: UserEditProps) => {
           </select>
           {errors.role && (
             <ErrorMessage id="role-error">{errors.role.message}</ErrorMessage>
-          )}
-        </div>
-      </div>
-
-      <h2 className="text-xl font-semibold">Other Information</h2>
-      <div className="flex flex-col">
-        <label htmlFor="dateOfBirth">Date of Birth</label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          className="rounded border border-gray-300 p-2"
-          {...register("dateOfBirth", {
-            required: "Date of birth is required",
-          })}
-        />
-        {errors.dateOfBirth && (
-          <ErrorMessage id="dateOfBirth-error">
-            {errors.dateOfBirth.message}
-          </ErrorMessage>
-        )}
-      </div>
-
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            className="rounded border border-gray-300 p-2"
-            {...register("username", {
-              required: "Username is required",
-            })}
-          />
-          {errors.username && (
-            <ErrorMessage id="username-error">
-              {errors.username.message}
-            </ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            className="rounded border border-gray-300 p-2"
-            {...register("email", {
-              required: "Email is required",
-            })}
-          />
-          {errors.email && (
-            <ErrorMessage id="email-error">{errors.email.message}</ErrorMessage>
           )}
         </div>
       </div>

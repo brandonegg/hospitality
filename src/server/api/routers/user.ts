@@ -124,6 +124,24 @@ export const userRouter = createTRPCRouter({
 
       return user;
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        role: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name, role } = input;
+
+      // Update the user
+      return await ctx.prisma.user.update({
+        where: { id },
+        data: { name, role: role as Role },
+        select: defaultUserSelect,
+      });
+    }),
   signup: publicProcedure
     .input(
       z.object({
