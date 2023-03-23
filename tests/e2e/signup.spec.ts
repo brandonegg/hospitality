@@ -47,16 +47,18 @@ test.describe("sign up page", () => {
 
   test("has back button", async ({ page }) => {
     // Expect the page to contain the Sign Up form
-    const back = page.locator("a");
+    const back = page.getByRole('button', { name: 'Back' });
     await expect(back).toBeVisible();
     await expect(back).toHaveText(/Back/);
   });
 
-  test('has "Back" link that redirects to the login page', async ({ page }) => {
+  test('has "Back" link that redirects to the previous page', async ({ page }) => {
     // Expect the page to contain the Sign Up form
-    const back = page.locator("a");
+    await page.goto("/");
+    await page.goto("/signup")
+    const back = page.getByRole('button', { name: 'Back' });
     await back.click();
-    await expect(page).toHaveURL(/login/);
+    await expect(page).toHaveURL("/");
   });
 
   test("has signup button", async ({ page }) => {

@@ -1,0 +1,19 @@
+{
+    "main_carousel": [
+        {
+            "backgroundImage": "https://mcr.health/wp-content/uploads/2021/03/If-You-Cant-Get-a-Doctors-Appointment.jpg",
+            "title": "Appointment Booking",
+            "body": "Schedule appointments with your trusted provider quickly from the comfort of your device."
+        },
+        {
+            "backgroundImage": "https://healthcare.ascension.org/-/media/project/ascension/healthcare/legacy/markets/michigan/facility-images/mi_ascensionstjohn_hospital_detroit_22201morossrd_1600x1064px.jpg",
+            "title": "Keep Documents Updated",
+            "body": "Ensure your documents are up-to-date before your next visit saving time in the waiting room."
+        },
+        {
+            "backgroundImage": "https://tt152.files.keap.app/tt152/2799b797-d1db-4128-bbc8-af43290f881c",
+            "title": "Manage Refills",
+            "body": "Ensure your documents are up-to-date before your next visit saving time in the waiting room."
+        }
+    ]
+}
