@@ -24,6 +24,7 @@ const getAvailability = async function(docId:number) {
       })
       .then((response) => response.json())
       .then((avails: Availability[]) => {
+        times.length = 0;
         avails.forEach((time) => {
           console.log(time.startTime);
           console.log(time.day);
@@ -34,7 +35,7 @@ const getAvailability = async function(docId:number) {
     console.error(error)
   }
 }
-const availGetter = getAvailability(1);
+let availGetter = getAvailability(1);
 
 
 /**
@@ -149,6 +150,7 @@ const Appointment: NextPage = () => {
      */
     const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
       setValue(event.target.value);
+      availGetter = getAvailability(parseInt(event.target.value));
     };
     return (
       <>
