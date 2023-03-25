@@ -40,15 +40,26 @@ export default async function handle(
   const results = [];
   for await (const startEndDayArray of startEndDayInfo){
     const result = await prisma.appointment.create({
-        data: {
-          day:startEndDayArray[2],
-          startTime: startEndDayArray[0],
-          endTime: startEndDayArray[1],
-          docId: startEndDayArray[3],
-          userName: "testUser"
-        },
-      })
+      data: {
+        day:startEndDayArray[2],
+        startTime: startEndDayArray[0],
+        endTime: startEndDayArray[1],
+        docId: startEndDayArray[3],
+        userName: "testUser"
+      },
+    })
+    // use deleteMany even though only one entry should ever be deleted because delete
+    // needs to take a unique id
+    // this removes a doctors availability for making appointments when an appointment is made
+    const removeAvailability = await prisma.availability.deleteMany({
+      where: {
+        day: startEndDayArray[2], 
+        startTime: startEndDayArray[0],
+        docId: startEndDayArray[3],
+      },
+    })
     results.push(result);
+    results.push(removeAvailability);
   }
   
   return res.status(201).json(results)

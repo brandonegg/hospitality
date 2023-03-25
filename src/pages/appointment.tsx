@@ -1,29 +1,41 @@
+import type { Availability } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Router from 'next/router'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
+// convert from number used for storage and string used for display
+const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
 // change minutes and j for different minutes. hour 7, <hour 20 means 7 to 7 can be marked as available
-const times: string[] = [];
-const minutes: string[] = ["00", "30"]
-for (let hour = 7; hour < 20; hour++){
-  for (let min = 0; min < 2; min++){
-    if (!(hour === 19 && min === 1)){ //don't want to add 7:30s
-      if (hour > 11) { // pm
-        let nonMilHour = hour;
-        if (hour !== 12) {nonMilHour = hour - 12;}
-        const time = `${nonMilHour}:${minutes[min] as string} pm`;
-        times.push(time);
-      }
-      else{ // am
-        const time = `${hour}:${minutes[min] as string} am`;
-        times.push(time);
-      }
-    }
+const times: Availability[] = [];
+/**
+ * instead of displaying all hours, grab the available times for the current doctor
+ */
+const getAvailability = async function(docId:number) {
+  try {
+    const body = { docId }
+    await fetch((`/api/getAvail`),{
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      })
+      .then((response) => response.json())
+      .then((avails: Availability[]) => {
+        avails.forEach((time) => {
+          console.log(time.startTime);
+          console.log(time.day);
+          times.push(time);
+        });
+      });
+  } catch (error) {
+    console.error(error)
   }
 }
+const availGetter = getAvailability(1);
+
 
 /**
  * make a button for Appointment
@@ -62,10 +74,27 @@ const AppointButton = (props:{children:string, text:string, day:string }) => {
  */
 const ColOfAppoint = (props:{children:string, day:string}) => {
   const day = props.day;
+  const [dayTimes, updateTimes] = React.useState<Availability[]>([]);
+  
+  useEffect (() => {
+    /**
+    * Wait for available times to be fetched then display
+    */
+    async function getTimes(){
+      await availGetter;
+      const thisDaysTimes = times.filter(time => time.day === dayToNum[day as day]);
+      updateTimes(thisDaysTimes);
+    }
+    void getTimes();
+  })
+
   return (
       <div className="appointSetter flex flex-col items-center justify-center px-2 py-0">
         <span> {day} </span>
-        {times.map((time, index) => <AppointButton key={index} text={time} day={day}> </AppointButton>)}
+        {
+        dayTimes.map((time, index) => 
+          <AppointButton key={index} text={time.startTime} day={day}> </AppointButton>
+        )}
       </div>
     );
   }
@@ -90,8 +119,6 @@ const Appointment: NextPage = () => {
       console.log("Submit pressed");
       const tempDocId = parseInt(doctor); // this will have to change in the future once doctors actually are created and have unique ids
       const times:[string,number,number][] = [];
-      const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
-      type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
       checkedBoxes.forEach(box => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
         times.push([time, dayToNum[box.classList[2] as day], tempDocId]);
