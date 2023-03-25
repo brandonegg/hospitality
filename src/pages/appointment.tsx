@@ -174,7 +174,7 @@ const Appointment: NextPage = () => {
               <button onClick={goBack} style={realButtons}> Back </button>
             </div>
           </div>
-          <div className="appointSetter flex flex-row items-center justify-center gap-2 px-2 py-0 ">
+          <div className="appointSetter flex flex-row items-start justify-center gap-2 px-2 py-0 ">
             <ColOfAppoint day = "Sunday"> </ColOfAppoint>
             <ColOfAppoint day = "Monday"> </ColOfAppoint>
             <ColOfAppoint day = "Tuesday"> </ColOfAppoint>
