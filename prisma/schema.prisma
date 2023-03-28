@@ -59,12 +59,24 @@ enum Role {
     DOCTOR
 }
 
+// stores the availability for appointments to be made (removed from when appointments created)
 model Availability {
   id        String @id @default(cuid())
   day       Int
   startTime String
   endTime   String
-  docId     Int
+  docId     String
+  date      DateTime @db.Date
+}
+
+// stores the original availability (not removed for appointments that are created)
+model OriginalAvailability {
+  id        String @id @default(cuid())
+  day       Int
+  startTime String
+  endTime   String
+  docId     String
+  date      DateTime @db.Date
 }
 
 model Appointment {
@@ -72,6 +84,7 @@ model Appointment {
   day       Int
   startTime String
   endTime   String
-  docId     Int
+  docId     String
   userName  String
+  date      DateTime @db.Date
 }

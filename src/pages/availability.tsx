@@ -1,8 +1,22 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Router from 'next/router'
+import Router from 'next/router';
+//import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
+//import type { Session } from "next-auth";
+//import { getSession,useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import React, { useState } from 'react';
 
+// interface AvailPageProps {
+//   user: Session['user'],
+// }
+
+const today = new Date();
+const todayDay = today.getDay();
+
+// convert from number used for storage and string used for display
+const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
 // change minutes and j for different minutes. hour 7, <hour 20 means 7 to 7 can be marked as available
@@ -60,11 +74,15 @@ const AvailButton = (props:{children:string, text:string, day:string }) => {
  * Like when2meet, a column of avaialability
  * @returns JSX
  */
-const ColOfAvail = (props:{children:string, day:string}) => {
+const ColOfAvail = (props:{children:string, day:string, week:number}) => {
   const day = props.day;
+  const weekCount = props.week;
+  const offset = todayDay - (dayToNum[day as day] + weekCount * 7);
+  const newDay = new Date(today.getTime());
+  newDay.setDate(newDay.getDate()-offset); // properly handles day and increments month when necessary
   return (
       <div className="availabilitySetter flex flex-col items-center justify-center px-2 py-0">
-        <span> {day} </span>
+        <span> {`${day} ${newDay.getMonth() + 1}/${newDay.getDate()}`} </span>
         {times.map((time, index) => <AvailButton key={index} text={time} day={day}> </AvailButton>)}
       </div>
     );
@@ -82,18 +100,16 @@ const Availability: NextPage = () => {
       cursor: "pointer", /* Pointer/hand icon */
       display: "block", /* Make the buttons appear below each other */
     };
+    const { data: sessionData } = useSession();
     /**
      * Send the desired availability to the database
      */
     const submitToDB = async () => {
       const checkedBoxes = document.querySelectorAll('.selected');
-      console.log("Submit pressed");
-      const times:[string,number][] = [];
-      const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
-      type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
+      const times:[string,number,number, string][] = [];
       checkedBoxes.forEach(box => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
-        times.push([time, dayToNum[box.classList[2] as day]]);
+        if (sessionData?.user?.id) times.push([time, dayToNum[box.classList[2] as day], weekCount, sessionData.user.id]);
       })
       try {
         const body = { times }
@@ -107,13 +123,47 @@ const Availability: NextPage = () => {
         console.error(error)
       }
     }
+
+    const [weekCount, setWeekCount] = useState(0);
+
     /**
      * Go to the previous page  
      */
-    const goBack = () => {
-      //
-      console.log("Back pressed");
+    const goBack = async () => {
+      await Router.push('/')
     };
+
+    /**
+     * reset all boxes to unchecked
+     */
+    function resetCheckedBoxes () {
+      const checkedBoxes = document.querySelectorAll('.selected');
+      checkedBoxes.forEach((check) => (check as HTMLElement).click());
+    }
+    /**
+     * look at the previous weeks avail
+     */
+    const prevWeek = () => {
+      setWeekCount(weekCount - 1);
+      resetCheckedBoxes();
+    }
+
+    /**
+     * look at the next weeks avail
+     */
+    const nextWeek = () => {
+      setWeekCount(weekCount + 1);
+      resetCheckedBoxes();
+    };
+
+    /**
+     * look at current weeks avail
+     */
+    const resetWeek = () => {
+      setWeekCount(0);
+      resetCheckedBoxes();
+    }
+
     return (
       <>
         <Head>
@@ -124,21 +174,26 @@ const Availability: NextPage = () => {
         
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
+            <div className="pt-5 pr-10 ">
+              <button onClick={prevWeek} style={realButtons}> Previous Week </button>
+            </div>
             <span className="text-2xl "> Set Your Availabilty </span>
-          </div>
-          <div className="flex flex-row h-20 w-32 ">
-            <div className="pt-8 pl-10 ">
-              <button onClick={goBack} style={realButtons}> Back </button>
+            <div className="pt-5 pl-10 ">
+              <button onClick={nextWeek} style={realButtons}> Next Week </button>
             </div>
           </div>
+          <div className="flex justify-between pl-10 pr-10">
+            <button onClick={goBack} style={realButtons}> Back </button>
+            <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+          </div>
           <div className="availabilitySetter flex flex-row items-center justify-center gap-2 px-2 py-0 ">
-            <ColOfAvail day = "Sunday"> </ColOfAvail>
-            <ColOfAvail day = "Monday"> </ColOfAvail>
-            <ColOfAvail day = "Tuesday"> </ColOfAvail>
-            <ColOfAvail day = "Wednesday"> </ColOfAvail>
-            <ColOfAvail day = "Thursday"> </ColOfAvail>
-            <ColOfAvail day = "Friday"> </ColOfAvail>
-            <ColOfAvail day = "Saturday"> </ColOfAvail>
+            <ColOfAvail day = "Sunday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Monday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Tuesday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Wednesday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Thursday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Friday" week = {weekCount}> </ColOfAvail>
+            <ColOfAvail day = "Saturday" week = {weekCount}> </ColOfAvail>
           </div>
           <div className="availabilitySetter flex flex-col items-center justify-center gap-2 pt-10 pb-10">
             <button onClick={() => { void submitToDB(); }} style={realButtons}> Submit </button>
@@ -147,5 +202,28 @@ const Availability: NextPage = () => {
       </>
     );
   };
-  
+
+// Not sure how to check if role is doctor, //   if (session?.user?.role === "DOCTOR") isn't working
+// /**
+//  * Server side page setup
+//  * @param context 
+//  * @returns 
+//  */
+// export const getServerSideProps: GetServerSideProps<AvailPageProps> = async (context: GetServerSidePropsContext) => {
+//   // Get the user session
+//   const session = await getSession(context);
+
+//   if (session?.user?.role === "DOCTOR") {
+//       return {
+//           redirect: {
+//               destination: '/',
+//               permanent: false,
+//           },
+//       };
+//   }
+
+//   // If the user is authenticated, continue with rendering the page
+//   return;
+// }
+
 export default Availability;

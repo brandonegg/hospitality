@@ -61,7 +61,7 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
     },
     {
         label: "Appointments",
-        href: "/",
+        href: "/appointment",
     },
     {
         label: "Documents",
@@ -133,7 +133,7 @@ const Dashboard = ({user}: DashboardPageProps) => {
 
             <div className="sm:m-8">
                 <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:grid-cols-3 gap-8">
-                    <SquareWidget title="Upcomming Appointments" width={2}>
+                    <SquareWidget title="Upcoming Appointments" width={2}>
                         <div className="p-2 bg-yellow-100 h-full">
                         </div>
                     </SquareWidget>

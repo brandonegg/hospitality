@@ -11,13 +11,15 @@ export default async function handle(
   res: NextApiResponse,
 ) {
   interface infoFromAvailability {
-    times: [string,number][],
+    times: [string,number, number, string][],
   }
-  const times:[string,number][] = Array.from((req.body as infoFromAvailability).times);
-  const startEndDayInfo:[string,string,number][] = [];
+  const times:[string,number,number,string][] = Array.from((req.body as infoFromAvailability).times);
+  const startEndDayInfo:[string,string,number,string,number][] = [];
   times.forEach((timeInt) => {
     const time = timeInt[0];
     const day = timeInt[1];
+    const weekCount = timeInt[2];
+    const doctor = timeInt[3];
     const timeAndAmPM = time.split(" ");
     const actualTime = timeAndAmPM[0] as string;
     const hourColonMin = actualTime.split(":");
@@ -34,19 +36,37 @@ export default async function handle(
         endMin = "00";
     }
     const endTime = `${endHour as string}:${endMin} ${timeAndAmPM[1] as string}`
-    startEndDayInfo.push([time,endTime,day]); //push in start time
+    startEndDayInfo.push([time,endTime,day,doctor,weekCount]); //push in start time
   });
   const results = [];
+  const today = new Date();
+  const todayDay = today.getDay();
   for await (const startEndDayArray of startEndDayInfo){
+    const storeDay = startEndDayArray[2];
+    const weekCount = startEndDayArray[4];
+    const offset = todayDay - (storeDay + weekCount * 7);
+    const newDay = new Date(today.getTime());
+    newDay.setDate(newDay.getDate()-offset); // properly handles day and increments month when necessary
     const result = await prisma.availability.create({
-        data: {
-          day:startEndDayArray[2],
-          startTime: startEndDayArray[0],
-          endTime: startEndDayArray[1],
-          docId: 1
-        },
-      })
+      data: {
+        day:storeDay,
+        startTime: startEndDayArray[0],
+        endTime: startEndDayArray[1],
+        docId: startEndDayArray[3],
+        date: newDay,
+      },
+    })
+    const result2 = await prisma.originalAvailability.create({
+      data: {
+        day:storeDay,
+        startTime: startEndDayArray[0],
+        endTime: startEndDayArray[1],
+        docId: startEndDayArray[3],
+        date: newDay,
+      },
+    })
     results.push(result);
+    results.push(result2);
   }
   
   return res.status(201).json(results)

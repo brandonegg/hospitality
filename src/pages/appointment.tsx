@@ -1,8 +1,13 @@
-import type { Availability } from "@prisma/client";
+import type { Availability, User } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Router from 'next/router'
+import Router from 'next/router';
+import { useSession } from "next-auth/react"
 import React, { useEffect, useState } from 'react';
+
+
+const today = new Date();
+const todayDay = today.getDay();
 
 // convert from number used for storage and string used for display
 const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
@@ -14,9 +19,9 @@ const times: Availability[] = [];
 /**
  * instead of displaying all hours, grab the available times for the current doctor
  */
-const getAvailability = async function(docId:number) {
+const getAvailability = async function(docId:string, weekCount=0) {
   try {
-    const body = { docId }
+    const body = { docId, weekCount }
     await fetch((`/api/getAvail`),{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -26,8 +31,6 @@ const getAvailability = async function(docId:number) {
       .then((avails: Availability[]) => {
         times.length = 0;
         avails.forEach((time) => {
-          console.log(time.startTime);
-          console.log(time.day);
           times.push(time);
         });
       });
@@ -35,7 +38,33 @@ const getAvailability = async function(docId:number) {
     console.error(error)
   }
 }
-let availGetter = getAvailability(1);
+let availGetter = getAvailability("AllDoctors");
+
+// 
+const doctors: User[] = [];
+/**
+ * instead of displaying all hours, grab the available times for the current doctor
+ */
+const getDoctors = async function() {
+  try {
+    const body = { };
+    await fetch((`/api/getDoctors`),{
+      method: 'POST',
+      headers:  { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      })
+      .then((response) => response.json())
+      .then((docs: User[]) => {
+        doctors.length = 0;
+        docs.forEach((doc) => {
+          doctors.push(doc);
+        });
+      });
+  } catch (error) {
+    console.error(error)
+  }
+}
+const docGetter = getDoctors();
 
 
 /**
@@ -53,8 +82,8 @@ const AppointButton = (props:{children:string, text:string, day:string }) => {
  */
   const changeColor = () => {
     setActive(!active);
-
   };
+
   const buttonStyle = {
     backgroundColor: active ? "green" : "white",
     border: active ? "1px solid black": "1px solid green",
@@ -73,28 +102,42 @@ const AppointButton = (props:{children:string, text:string, day:string }) => {
  * Like when2meet, a column of appointments
  * @returns JSX
  */
-const ColOfAppoint = (props:{children:string, day:string}) => {
+const ColOfAppoint = (props:{children:string, day:string, week:number}) => {
   const day = props.day;
-  const [dayTimes, updateTimes] = React.useState<Availability[]>([]);
+  const weekCount = props.week;
+  const offset = todayDay - (dayToNum[day as day] + weekCount * 7);
+  const newDay = new Date(today.getTime());
+  newDay.setDate(newDay.getDate()-offset); // properly handles day and increments month when necessary
+  
+  const [dayTimes, updateTimes] = React.useState<string[]>([]);
   
   useEffect (() => {
     /**
     * Wait for available times to be fetched then display
     */
     async function getTimes(){
-      await availGetter;
-      const thisDaysTimes = times.filter(time => time.day === dayToNum[day as day]);
-      updateTimes(thisDaysTimes);
+      let ignore = false;
+      if (!ignore){
+        await availGetter;
+        const thisDaysTimes = times.filter(time => time.day === dayToNum[day as day]);
+        const thisDaysStartTimes = thisDaysTimes.map(time => time.startTime);
+        // when viewing all doctors you don't want mult. different chances to apply for same time
+        const thisDaysUniqueTimes = [...new Set(thisDaysStartTimes)];
+        updateTimes(thisDaysUniqueTimes);
+      }
+      return () => {
+        ignore = true;
+      }
     }
     void getTimes();
-  })
+  },[day, weekCount])
 
   return (
       <div className="appointSetter flex flex-col items-center justify-center px-2 py-0">
-        <span> {day} </span>
+        <span> {`${day} ${newDay.getMonth() + 1}/${newDay.getDate()}`} </span>
         {
         dayTimes.map((time, index) => 
-          <AppointButton key={index} text={time.startTime} day={day}> </AppointButton>
+          <AppointButton key={index} text={time} day={day}> </AppointButton>
         )}
       </div>
     );
@@ -104,6 +147,7 @@ const ColOfAppoint = (props:{children:string, day:string}) => {
  * @returns JSX
  */
 const Appointment: NextPage = () => {
+
     const realButtons = {
       border: "1px solid black", /* Green border */
       borderRadius: 20,
@@ -112,17 +156,18 @@ const Appointment: NextPage = () => {
       cursor: "pointer", /* Pointer/hand icon */
       display: "block", /* Make the buttons appear below each other */
     };
+
+    const { data: sessionData } = useSession();
     /**
      * Send the desired Appointment to the database
      */
     const submitToDB = async () => {
       const checkedBoxes = document.querySelectorAll('.selected');
-      console.log("Submit pressed");
-      const tempDocId = parseInt(doctor); // this will have to change in the future once doctors actually are created and have unique ids
-      const times:[string,number,number][] = [];
+      const times:[string,number,string,number,string][] = [];
       checkedBoxes.forEach(box => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
-        times.push([time, dayToNum[box.classList[2] as day], tempDocId]);
+        if (sessionData?.user?.id) times.push([time, dayToNum[box.classList[2] as day], doctor, weekCount, sessionData.user.id,]); // also pass in the correct date here
+        else console.error("Can't access user id to make appointment");
       })
       try {
         const body = { times }
@@ -136,22 +181,77 @@ const Appointment: NextPage = () => {
         console.error(error)
       }
     }
+
+    const [doctor, setValue] = React.useState("AllDoctors");
+
+    const [weekCount, setWeekCount] = useState(0);
+
     /**
      * Go to the previous page  
      */
-    const goBack = () => {
-      //
-      console.log("Back pressed");
+    const goBack = async () => {
+      await Router.push('/')
     };
-    const [doctor, setValue] = React.useState("1");
+
+    /**
+     * reset all boxes to unchecked
+     */
+    function resetCheckedBoxes () {
+      const checkedBoxes = document.querySelectorAll('.selected');
+      checkedBoxes.forEach((check) => (check as HTMLElement).click());
+    }
+    /**
+     * look at the previous weeks avail
+     */
+    const prevWeek = () => {
+      setWeekCount(weekCount - 1);
+      resetCheckedBoxes();
+    }
+
+    /**
+     * look at the next weeks avail
+     */
+    const nextWeek = () => {
+      setWeekCount(weekCount + 1);
+      resetCheckedBoxes();
+    };
+
+    /**
+     * look at current weeks avail
+     */
+    const resetWeek = () => {
+      setWeekCount(0);
+      resetCheckedBoxes();
+    }
 
     /**
      * update state when dropdown changes
      */
     const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      resetCheckedBoxes();
       setValue(event.target.value);
-      availGetter = getAvailability(parseInt(event.target.value));
+      availGetter = getAvailability(event.target.value, weekCount);
     };
+
+    const [docts, updateDocts] = React.useState<User[]>([]);
+
+    useEffect (() => {
+      let ignore = false;
+      if (!ignore){
+      /**
+      * Wait for available times to be fetched then display
+      */
+      async function getDoctors(){
+        await docGetter;
+        updateDocts(doctors);
+      }
+      void getDoctors();
+    }
+      return () => {
+        ignore = true;
+      }
+    })
+
     return (
       <>
         <Head>
@@ -162,28 +262,35 @@ const Appointment: NextPage = () => {
         
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
+            <div className="pt-5 pr-10 ">
+              <button onClick={prevWeek} style={realButtons}> Previous Week </button>
+            </div>
             <span className="text-2xl "> Make an Appointment </span>
-          </div>
-          <div className="absolute top-0 right-0 h-16 w-16 pt-10 pr-20 ">
-            <select value={doctor} onChange={changeDropDown}>
-              <option value="1">Doctor 1</option>
-              <option value="2">Doctor 2</option>
-              <option value="3">Doctor 3</option>
-            </select>
-          </div>
-          <div className="flex flex-row h-20 w-32 ">
-            <div className="pt-8 pl-10 ">
-              <button onClick={goBack} style={realButtons}> Back </button>
+            <div className="pt-5 pl-10 ">
+              <button onClick={nextWeek} style={realButtons}> Next Week </button>
             </div>
           </div>
+          <div className="absolute top-0 right-0 h-16 w-40 pt-5 pr-20 ">
+            <select value={doctor} onChange={changeDropDown}>
+              <option value="AllDoctors">Any Doctor</option>
+              {
+              docts.map((user, index) => 
+                <option key={index} value={user.id}>{user.name}</option>
+              )}
+            </select>
+          </div>
+          <div className="flex justify-between pl-10 pr-10">
+            <button onClick={goBack} style={realButtons}> Back </button>
+            <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+          </div>
           <div className="appointSetter flex flex-row items-start justify-center gap-2 px-2 py-0 ">
-            <ColOfAppoint day = "Sunday"> </ColOfAppoint>
-            <ColOfAppoint day = "Monday"> </ColOfAppoint>
-            <ColOfAppoint day = "Tuesday"> </ColOfAppoint>
-            <ColOfAppoint day = "Wednesday"> </ColOfAppoint>
-            <ColOfAppoint day = "Thursday"> </ColOfAppoint>
-            <ColOfAppoint day = "Friday"> </ColOfAppoint>
-            <ColOfAppoint day = "Saturday"> </ColOfAppoint>
+            <ColOfAppoint day = "Sunday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Monday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Tuesday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Wednesday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Thursday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Friday" week = {weekCount}> </ColOfAppoint>
+            <ColOfAppoint day = "Saturday" week = {weekCount}> </ColOfAppoint>
           </div>
           <div className="appointSetter flex flex-col items-center justify-center gap-2 pt-10 pb-10">
             <button onClick={() => { void submitToDB(); }} style={realButtons}> Submit </button>
