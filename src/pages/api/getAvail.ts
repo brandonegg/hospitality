@@ -33,7 +33,6 @@ export default async function handle(
         return `${newDay.getFullYear()}-${twoDigMonth}-${twoDigDay}`;
     }
 
-    console.log(`SELECT * FROM Availability WHERE date BETWEEN "${dateToString(sunday)}" AND "${dateToString(saturday)}"`);
     if (doctorId === "AllDoctors"){
         const result = await prisma.$queryRawUnsafe(`SELECT * FROM Availability WHERE date BETWEEN "${dateToString(sunday)}" AND "${dateToString(saturday)}"`)
         return res.status(201).json(result)
