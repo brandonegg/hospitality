@@ -116,18 +116,13 @@ const ColOfAppoint = (props:{children:string, day:string, week:number}) => {
     * Wait for available times to be fetched then display
     */
     async function getTimes(){
-      let ignore = false;
-      if (!ignore){
-        await availGetter;
-        const thisDaysTimes = times.filter(time => time.day === dayToNum[day as day]);
-        const thisDaysStartTimes = thisDaysTimes.map(time => time.startTime);
-        // when viewing all doctors you don't want mult. different chances to apply for same time
-        const thisDaysUniqueTimes = [...new Set(thisDaysStartTimes)];
-        updateTimes(thisDaysUniqueTimes);
-      }
-      return () => {
-        ignore = true;
-      }
+      //const weekCoun = weekCount;
+      await availGetter;
+      const thisDaysTimes = times.filter(time => time.day === dayToNum[day as day]);
+      const thisDaysStartTimes = thisDaysTimes.map(time => time.startTime);
+      // when viewing all doctors you don't want mult. different chances to apply for same time
+      const thisDaysUniqueTimes = [...new Set(thisDaysStartTimes)];
+      updateTimes(thisDaysUniqueTimes);
     }
     void getTimes();
   },[day, weekCount])
@@ -196,16 +191,17 @@ const Appointment: NextPage = () => {
     /**
      * reset all boxes to unchecked
      */
-    function resetCheckedBoxes () {
+    function resetCheckedBoxes (weekCountUpdated:number) {
       const checkedBoxes = document.querySelectorAll('.selected');
       checkedBoxes.forEach((check) => (check as HTMLElement).click());
+      availGetter = getAvailability((document.getElementById("dropdown") as HTMLSelectElement).value, weekCountUpdated);
     }
     /**
      * look at the previous weeks avail
      */
     const prevWeek = () => {
       setWeekCount(weekCount - 1);
-      resetCheckedBoxes();
+      resetCheckedBoxes(weekCount - 1);
     }
 
     /**
@@ -213,7 +209,7 @@ const Appointment: NextPage = () => {
      */
     const nextWeek = () => {
       setWeekCount(weekCount + 1);
-      resetCheckedBoxes();
+      resetCheckedBoxes(weekCount + 1);
     };
 
     /**
@@ -221,16 +217,15 @@ const Appointment: NextPage = () => {
      */
     const resetWeek = () => {
       setWeekCount(0);
-      resetCheckedBoxes();
+      resetCheckedBoxes(0);
     }
 
     /**
      * update state when dropdown changes
      */
     const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      resetCheckedBoxes();
       setValue(event.target.value);
-      availGetter = getAvailability(event.target.value, weekCount);
+      resetCheckedBoxes(weekCount);
     };
 
     const [docts, updateDocts] = React.useState<User[]>([]);
@@ -271,7 +266,7 @@ const Appointment: NextPage = () => {
             </div>
           </div>
           <div className="absolute top-0 right-0 h-16 w-40 pt-5 pr-20 ">
-            <select value={doctor} onChange={changeDropDown}>
+            <select id="dropdown" value={doctor} onChange={changeDropDown}>
               <option value="AllDoctors">Any Doctor</option>
               {
               docts.map((user, index) => 
