@@ -199,6 +199,7 @@ const UsersPage: NextPage = () => {
                       <td className="px-6 py-2">
                         <div className="flex gap-2">
                           <button
+                            data-testid={`edit-${index}`}
                             className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
                             onClick={() =>
                               setPopup({ show: true, type: "edit", user })
@@ -208,6 +209,7 @@ const UsersPage: NextPage = () => {
                             Edit
                           </button>
                           <button
+                            data-testid={`delete-${index}`}
                             className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
                             onClick={() =>
                               setPopup({ show: true, type: "delete", user })
