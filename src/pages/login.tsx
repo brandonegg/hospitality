@@ -1,7 +1,7 @@
 import {
   ArrowLeftIcon,
-  ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -66,7 +66,7 @@ const Login: NextPage = () => {
           <div className="relative">
             <button
               onClick={() => router.back()}
-              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
+              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-blue-600 hover:bg-blue-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
@@ -126,23 +126,24 @@ const Login: NextPage = () => {
                 <button
                   type="submit"
                   value="Sign Up"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
                 >
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   Login
                 </button>
                 <Link
                   href="/signup"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
                 >
-                  <ArrowLeftOnRectangleIcon className="h-4 w-4" />
+                  <UserPlusIcon className="h-4 w-4" />
                   Sign Up
                 </Link>
               </div>
+
               {/* forgot password button */}
               <Link
                 href="/forgot-password"
-                className="text-indigo-500 hover:text-indigo-600"
+                className="text-blue-600 hover:text-blue-700"
               >
                 Forgot Password?
               </Link>

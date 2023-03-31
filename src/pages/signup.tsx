@@ -130,7 +130,7 @@ const SignUp: NextPage = () => {
           <div className="relative">
             <button
               onClick={() => router.back()}
-              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-indigo-500 hover:bg-indigo-100"
+              className="absolute inline-flex items-center gap-1 rounded p-2 text-center text-blue-600 hover:bg-blue-100"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
@@ -141,7 +141,7 @@ const SignUp: NextPage = () => {
           {serverResult ? (
             <div className="space-y-2">
               <Alert type="success">Successfully created account!</Alert>
-              <button className="cursor-pointer rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600">
+              <button className="cursor-pointer rounded bg-blue-600 p-2 text-white hover:bg-blue-700">
                 <Link href="/" className="inline-flex items-center gap-1">
                   <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   Login
@@ -410,15 +410,23 @@ const SignUp: NextPage = () => {
                 )}
               </div>
 
-              <div>
+              <div className="flex items-center justify-between">
                 <button
                   type="submit"
                   value="Sign Up"
-                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-2 text-white hover:bg-indigo-600"
+                  className="inline-flex cursor-pointer items-center gap-1 rounded bg-blue-600 p-2 text-white hover:bg-blue-700"
                 >
                   <PaperAirplaneIcon className="h-4 w-4" />
                   Sign Up
                 </button>
+
+                {/* login button */}
+                <Link
+                  href="/login"
+                  className="text-blue-600 hover:text-blue-700"
+                >
+                  Already have an account?
+                </Link>
               </div>
             </form>
           )}

@@ -1,9 +1,19 @@
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
+import * as jwt from "jsonwebtoken";
 import { z } from "zod";
 
+import template from "../../../emails/template";
+import { env } from "../../../env.mjs";
+import { transporter } from "../../email";
 import { createTRPCRouter, publicProcedure } from "../trpc";
+
+interface ResetToken {
+  email: string;
+  iat: number;
+  exp: number;
+}
 
 /**
  * The default select for a user.
@@ -97,5 +107,121 @@ export const userRouter = createTRPCRouter({
       });
 
       return user;
+    }),
+  forgotPassword: publicProcedure
+    .input(z.object({ email: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Check if the email exists
+      const user = await ctx.prisma.user.findFirst({
+        where: { email: input.email },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User with that email does not exist",
+        });
+      }
+
+      // generate reset token
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      const token = jwt.sign({ email: input.email }, env.JWT_SECRET, {
+        expiresIn: "5m",
+      });
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const html = template(user.name, token);
+
+      // email options
+      const options = {
+        from: "Hospitality Support",
+        to: input.email,
+        subject: "Password Reset",
+        text: "Hospitality Password Reset\nHi ${user.name},\nYou recently requested to reset your password. Use the button below to reset it.\nThis password reset link is only valid for the next 5 minutes\nIf this was a mistake, just ignore this email.",
+        html,
+      };
+
+      // Send email
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+      const email = await transporter.sendMail(options);
+
+      if (!email) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Email could not be sent",
+        });
+      }
+
+      return "A password reset message was sent to your email address.";
+    }),
+  checkResetToken: publicProcedure
+    .input(z.object({ token: z.string() }))
+    .query(({ input }) => {
+      // Check if token exists
+      if (!input.token) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Token is required",
+        });
+      }
+
+      // Check if the token is valid
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        jwt.verify(input.token, env.JWT_SECRET);
+        return "Token is valid";
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
+    }),
+  resetPassword: publicProcedure
+    .input(
+      z.object({
+        token: z.string(),
+        newPassword: z.string().min(8),
+        confirmPassword: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Check if the password and confirm password match
+      if (input.newPassword !== input.confirmPassword) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Passwords do not match",
+        });
+      }
+
+      // decode the token
+      let decoded;
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        decoded = jwt.verify(input.token, env.JWT_SECRET);
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
+
+      // Check if the token is valid
+      if (!decoded) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid token",
+        });
+      }
+
+      // hash the password
+      const hashPassword = await argon2.hash(input.newPassword);
+
+      // Update the password
+      await ctx.prisma.user.update({
+        where: { email: (decoded as ResetToken).email },
+        data: { password: hashPassword },
+      });
+
+      return "Password updated";
     }),
 });
