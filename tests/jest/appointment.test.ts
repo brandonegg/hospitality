@@ -9,8 +9,9 @@ const mockAppointment: Appointment = {
   day: 1,
   startTime: "9:30 am",
   endTime: "10:00 am",
-  docId: 1,
-  userName: "testUser2"
+  docId: "test-doc-id",
+  userName: "testUser2",
+  date: new Date(),
 };
 
 const emptyAppoint: Appointment | null = null;
