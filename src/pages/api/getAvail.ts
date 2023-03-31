@@ -6,7 +6,7 @@ import { prisma } from "../../server/db";
 /**
  * get a given doctors availability for appointments
  */
-export default async function handle(
+export default async function getAvails(
     req: NextApiRequest,
     res: NextApiResponse,
 ) {

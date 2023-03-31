@@ -6,7 +6,7 @@ import { prisma } from "../../server/db";
 /**
  * add times to db
  */
-export default async function handle(
+export default async function storeAppoints(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
