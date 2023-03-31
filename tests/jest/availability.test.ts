@@ -73,7 +73,6 @@ describe("makeCorrectDate", () => {
     test("Saturday, no week offset, no day offset", () => expect(makeCorrectDate(new Date("March 17, 2023"), 5,0).toDateString()).toStrictEqual(new Date("March 17, 2023").toDateString()));
     test("Sunday, no week offset, no day offset", () => expect(makeCorrectDate(new Date("March 18, 2023"), 6,0).toDateString()).toStrictEqual(new Date("March 18, 2023").toDateString()));
   });
-
   describe ("week offset, no day offset", () => {
     test("1 week offset, no day offset", () => expect(makeCorrectDate(new Date("March 17, 2023"), 5,1).toDateString()).toStrictEqual(new Date("March 24, 2023").toDateString()));
     test("2 week offset, no day offset", () => expect(makeCorrectDate(new Date("March 17, 2023"), 5,2).toDateString()).toStrictEqual(new Date("March 31, 2023").toDateString()));
@@ -99,11 +98,10 @@ describe("makeCorrectDate", () => {
     test("-3 week offset, 3 day offset, new Month", () => expect(makeCorrectDate(new Date("March 12, 2023"), 3,-3).toDateString()).toStrictEqual(new Date("February 22, 2023").toDateString()));
   });
   test("Leap year", () => expect(makeCorrectDate(new Date("March 14, 2024"), 4,-2).toDateString()).toStrictEqual(new Date("February 29, 2024").toDateString()));
-
 });
 
 describe("processInput", () => {
-  test("Correct storage for no week offset", () => {    
+  test("Correct output", () => {    
     const input = {  
       day: 1,
       startTime: "9:00 am",
@@ -121,5 +119,104 @@ describe("processInput", () => {
 
     result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
     expect(result).toStrictEqual(expectedOutput);
+  });
+  test("Incorrect output, wrong day", () => {    
+    const input = {  
+      day: 0,
+      startTime: "9:00 am",
+      docId: "test-doc-id",
+      weekCount: 0,
+    };
+    const expectedOutput = {
+      day: 1,
+      startTime: "9:00 am",
+      endTime: "9:30 pm",
+      docId: "test-doc-id",
+      date: today.toDateString(),
+    };
+    const result = processInput(input);
+
+    result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
+    expect(result).not.toStrictEqual(expectedOutput);
+  });
+  test("Incorrect output, wrong am pm", () => {    
+    const input = {  
+      day: 1,
+      startTime: "9:00 am",
+      docId: "test-doc-id",
+      weekCount: 0,
+    };
+    const expectedOutput = {
+      day: 1,
+      startTime: "9:00 am",
+      endTime: "9:30 pm",
+      docId: "test-doc-id",
+      date: today.toDateString(),
+    };
+    const result = processInput(input);
+
+    result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
+    expect(result).not.toStrictEqual(expectedOutput);
+
+  });
+  test("Incorrect output, wrong doctor id", () => {    
+    const input = {  
+      day: 1,
+      startTime: "9:00 am",
+      docId: "test-doc-id",
+      weekCount: 0,
+    };
+    const expectedOutput = {
+      day: 1,
+      startTime: "9:00 am",
+      endTime: "9:30 am",
+      docId: "test-doc-id2",
+      date: today.toDateString(),
+    };
+    const result = processInput(input);
+
+    result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
+    expect(result).not.toStrictEqual(expectedOutput);
+    
+  });
+  test("Incorrect output, wrong date", () => {    
+    const input = {  
+      day: 1,
+      startTime: "9:00 am",
+      docId: "test-doc-id",
+      weekCount: 0,
+    };
+    const today2 = new Date(today.getTime());
+    today2.setDate(today.getDate() + 1);
+    const expectedOutput = {
+      day: 1,
+      startTime: "9:00 am",
+      endTime: "9:30 am",
+      docId: "test-doc-id2",
+      date: today2.toDateString(),
+    };
+    const result = processInput(input);
+
+    result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
+    expect(result).not.toStrictEqual(expectedOutput);
+  });
+  test("Incorrect output, wrong date", () => {    
+    const input = {  
+      day: 1,
+      startTime: "9:00 am",
+      docId: "test-doc-id",
+      weekCount: 2,
+    };
+    const expectedOutput = {
+      day: 1,
+      startTime: "9:00 am",
+      endTime: "9:30 am",
+      docId: "test-doc-id2",
+      date: today.toDateString(),
+    };
+    const result = processInput(input);
+
+    result.date = result.date.toDateString() as unknown as Date; // get rid of hours mins etc. for comparing
+    expect(result).not.toStrictEqual(expectedOutput);
   });
 });
