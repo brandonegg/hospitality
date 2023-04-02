@@ -102,7 +102,6 @@ const Dashboard = ({user}: DashboardPageProps) => {
             href: "/myAvailabilities",
         }
     }
-    console.log(user.role);
     if (user.role === "ADMIN"){ // admins can't make appointments, and patients can't make availabilitys
         dashboardNavLinks.splice(1,1);
         dashboardNavLinks[1] = {
