@@ -82,7 +82,7 @@ async function globalSetup() {
     await page.getByRole("button", { name: "Login" }).click();
     await pageLoaded;
     await page.goto(`${baseURL}/`, {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
     });
 
     await page
