@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import * as argon2 from "argon2";
@@ -7,7 +8,7 @@ import { z } from "zod";
 import template from "../../../emails/template";
 import { env } from "../../../env.mjs";
 import { transporter } from "../../email";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 interface ResetToken {
   email: string;
@@ -24,9 +25,135 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   email: true,
   username: true,
+  role: true,
 });
 
 export const userRouter = createTRPCRouter({
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+      const [count, items] = await ctx.prisma.$transaction([
+        ctx.prisma.user.count(),
+        ctx.prisma.user.findMany({
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
+          select: { ...defaultUserSelect, dateOfBirth: true },
+        }),
+      ]);
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        count,
+        items,
+        nextCursor,
+      };
+    }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        dateOfBirth: z.string(),
+        username: z.string(),
+        email: z.string().email(),
+        role: z.string(),
+        password: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const {
+        firstName,
+        lastName,
+        dateOfBirth,
+        username,
+        email,
+        role,
+        password,
+      } = input;
+
+      // Check if the username is already taken
+      const usernameExists = await ctx.prisma.user.findFirst({
+        where: { username },
+      });
+      if (usernameExists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Username is already taken",
+        });
+      }
+
+      // Check if the email is already taken
+      const emailExists = await ctx.prisma.user.findFirst({
+        where: { email },
+      });
+      if (emailExists) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email is already taken",
+        });
+      }
+
+      // hash the password
+      const hashPassword = await argon2.hash(password);
+
+      // format the user data
+      const newUser = {
+        name: `${firstName} ${lastName}`,
+        dateOfBirth: new Date(dateOfBirth),
+        username,
+        email,
+        password: hashPassword,
+        role: role as Role,
+      };
+
+      // Create the user
+      const user = await ctx.prisma.user.create({
+        data: newUser,
+        select: defaultUserSelect,
+      });
+
+      return user;
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        role: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name, role } = input;
+
+      // Update the user
+      return await ctx.prisma.user.update({
+        where: { id },
+        data: { name, role: role as Role },
+        select: defaultUserSelect,
+      });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      // Delete the user
+      return await ctx.prisma.user.delete({
+        where: { id },
+        select: defaultUserSelect,
+      });
+    }),
+
   signup: publicProcedure
     .input(
       z.object({
