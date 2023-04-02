@@ -1,9 +1,8 @@
-import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
-import { getSession,useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 
 import { api } from "../utils/api";

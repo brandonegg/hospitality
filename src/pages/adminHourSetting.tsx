@@ -1,13 +1,11 @@
-import type { Appointment } from "@prisma/client";
-import type { Availability } from "@prisma/client";
+
 import Head from "next/head";
 import Router from 'next/router';
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
-import React, { useState } from 'react';
+import React from 'react';
 
-import { timeSort } from "../pages/appointment";
 import { api } from "../utils/api";
 
 interface myAvailPageProps {
@@ -40,7 +38,7 @@ times.push("12:00 am");
  * Doctor availabilty react component.
  * @returns JSX
  */
-const AdminHourSetting = ({user}: myAvailPageProps) => {
+const AdminHourSetting = () => {
     const realButtons = {
       border: "1px solid black", /* Green border */
       borderRadius: 20,

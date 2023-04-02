@@ -1,5 +1,4 @@
 import type { Appointment } from "@prisma/client";
-import type { Availability } from "@prisma/client";
 import Head from "next/head";
 import Router from 'next/router';
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
@@ -47,8 +46,6 @@ const MyAvailability = ({user}: myAvailPageProps) => {
     const goBack = async () => {
       await Router.push('/')
     };
-
-    const { mutate } = api.myAppoint.removeAppoint.useMutation();
 
     /**
      * look at the previous weeks avail
