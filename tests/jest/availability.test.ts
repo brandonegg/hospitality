@@ -32,6 +32,7 @@ describe("availability router", () => {
     };
 
     const mockOutput: RouterOutputs["storeAvail"]["storeAvails"] = {
+      id: "randomId",
       day: 1,
       startTime: "9:00 am",
       endTime: "9:30 am",
@@ -40,7 +41,7 @@ describe("availability router", () => {
     };
 
     prismaMock.availability.findFirst.mockResolvedValue(emptyAvail);
-    prismaMock.availability.create.mockResolvedValue(mockOutput as Availability);
+    prismaMock.availability.create.mockResolvedValue(mockOutput );
 
     const result = await caller.storeAvail.storeAvails(input);
 
@@ -60,6 +61,7 @@ describe("makeEndTime", () => {
   test("end time 12:30 am", () => expect(makeEndTime("12:30 am")).toBe("1:00 am"));
   test("end time 12:00 pm", () => expect(makeEndTime("12:00 pm")).toBe("12:30 pm"));
   test("end time 12:30 pm", () => expect(makeEndTime("12:30 pm")).toBe("1:00 pm"));
+  test("end time 7:30 am", () => expect(makeEndTime("7:30 am")).toBe("8:00 am"));
 });
 
 // https://www.convertunits.com/dates/daysfromdate/ to confirm date times

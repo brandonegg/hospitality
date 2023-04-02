@@ -1,4 +1,5 @@
 import { DocumentCheckIcon } from "@heroicons/react/24/solid";
+import type { Appointment } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -8,6 +9,9 @@ import MainHeader from "../components/Header";
 import type { DashBoardNavButtonProperties} from "../components/dashboard/Navigation";
 import { DashBoardNavButton, DashBoardQuickAccessNavButton } from "../components/dashboard/Navigation";
 import VitalsWidget from "../components/dashboard/Vitals";
+import { timeSort } from "../pages/appointment"
+import { api } from "../utils/api";
+
 
 interface DashboardPageProps {
     user: Session['user'],
@@ -60,8 +64,12 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
         href: "/",
     },
     {
-        label: "Appointments",
+        label: "Make Appointments",
         href: "/appointment",
+    },
+    {
+        label: "View Appointments",
+        href: "/myAppointments",
     },
     {
         label: "Documents",
@@ -83,6 +91,25 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
  */
 const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
+
+    if (user.role === "DOCTOR"){ // doctors can't make appointments, and patients can't make availabilitys
+        dashboardNavLinks[1] = {
+            label: "Set Availability",
+            href: "/availability",
+        }
+        dashboardNavLinks[2] = {
+            label: "View Availability",
+            href: "/myAvailabilities",
+        }
+    }
+    console.log(user.role);
+    if (user.role === "ADMIN"){ // admins can't make appointments, and patients can't make availabilitys
+        dashboardNavLinks.splice(1,1);
+        dashboardNavLinks[1] = {
+            label: "Set Hours",
+            href: "/adminHourSetting",
+        }
+    }
     
     /**
      * Event handler for the quick access toggle button.
@@ -102,6 +129,28 @@ const Dashboard = ({user}: DashboardPageProps) => {
             <DashBoardQuickAccessNavButton key={index} {...linkDetails}/>
         );
     });
+
+    //appointment stuff 
+    let appoints:Appointment[] = [];
+    if (user.role === "DOCTOR"){
+        const {data} = api.getAppoint.getDocAppoint.useQuery({
+            docId: user.id,
+            weekCount: 0,
+        });
+        // || [] so sort doesn't break when data is undefined
+        appoints = data as Appointment[] || [];
+        appoints.sort(timeSort);
+        appoints.length = 5; // only show the first 5 appointments
+    }
+    if (user.role === "PATIENT"){
+        const {data} = api.getAppoint.getPatientAppoint.useQuery({
+            userId: user.id,
+            weekCount: 0,
+        });
+        appoints = data as Appointment[] || [];
+        appoints.sort(timeSort);
+        appoints.length = 5; // only show first 5 appointments
+    }
 
     return <>
     <main className="max-w-[1400px] mx-auto">
@@ -135,6 +184,10 @@ const Dashboard = ({user}: DashboardPageProps) => {
                 <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:grid-cols-3 gap-8">
                     <SquareWidget title="Upcoming Appointments" width={2}>
                         <div className="p-2 bg-yellow-100 h-full">
+                            {
+                            appoints?.map((appoint, index) => 
+                                <p key={index} className="italic">{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
+                            )}
                         </div>
                     </SquareWidget>
                     <SquareWidget width={1} title="Insurance">

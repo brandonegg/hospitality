@@ -1,17 +1,16 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-//import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
-//import type { Session } from "next-auth";
-//import { getSession,useSession } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import React, { useState } from 'react';
+import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
+import type { Session } from "next-auth";
+import { getSession,useSession } from "next-auth/react";
+import React, { useEffect, useState } from 'react';
 
 import { api } from "../utils/api";
 
-// interface AvailPageProps {
-//   user: Session['user'],
-// }
+interface AvailPageProps {
+  user: Session['user'],
+}
 
 const today = new Date();
 const todayDay = today.getDay();
@@ -19,27 +18,6 @@ const todayDay = today.getDay();
 // convert from number used for storage and string used for display
 const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
 type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
-
-// sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
-// change minutes and j for different minutes. hour 7, <hour 20 means 7 to 7 can be marked as available
-const times: string[] = [];
-const minutes: string[] = ["00", "30"]
-for (let hour = 7; hour < 20; hour++){
-  for (let min = 0; min < 2; min++){
-    if (!(hour === 19 && min === 1)){ //don't want to add 7:30s
-      if (hour > 11) { // pm
-        let nonMilHour = hour;
-        if (hour !== 12) {nonMilHour = hour - 12;}
-        const time = `${nonMilHour}:${minutes[min] as string} pm`;
-        times.push(time);
-      }
-      else{ // am
-        const time = `${hour}:${minutes[min] as string} am`;
-        times.push(time);
-      }
-    }
-  }
-}
 
 /**
  * make a button for availability
@@ -56,7 +34,6 @@ const AvailButton = (props:{children:string, text:string, day:string }) => {
  */
   const changeColor = () => {
     setActive(!active);
-
   };
   const buttonStyle = {
     backgroundColor: active ? "green" : "white",
@@ -76,16 +53,65 @@ const AvailButton = (props:{children:string, text:string, day:string }) => {
  * Like when2meet, a column of avaialability
  * @returns JSX
  */
-const ColOfAvail = (props:{children:string, day:string, week:number}) => {
+const ColOfAvail= (props:{children:string, day:string, week:number}) => {
   const day = props.day;
   const weekCount = props.week;
   const offset = todayDay - (dayToNum[day as day] + weekCount * 7);
   const newDay = new Date(today.getTime());
   newDay.setDate(newDay.getDate()-offset); // properly handles day and increments month when necessary
+
+
+  const [times, setTimes] = useState([] as string[]);
+
+  const { data, status } = api.hours.getHours.useQuery();
+
+  useEffect(()=>{
+    const timeSetting: string[] = [];
+    const minutes: string[] = ["00", "30"];
+		if (status === "success" && data) { // ~~ for int division
+      for (let hour = ~~(data.startHour / 2); hour < ~~(data.endHour / 2); hour++){
+        for (let min = 0; min < 2; min++){
+          if (data.startHour % 2 === 1 && hour === ~~(data.startHour / 2) && min === 0){ // if the start time is :30 then skip the :00 time
+            min = 1;
+          }
+          if (hour > 11) { // pm
+            let nonMilHour = hour;
+            if (hour !== 12) nonMilHour = hour - 12;
+            const time = `${nonMilHour}:${minutes[min] as string} pm`;
+            timeSetting.push(time);
+          }
+          else{ // am
+            let tempHour = hour;
+            if (hour === 0){ // hour 0 is midnight which should be 12:00 am instead of 0:00 am
+              tempHour = 12;
+            }
+            const time = `${tempHour}:${minutes[min] as string} am`;
+            timeSetting.push(time);
+          }
+        }
+      }
+      if (data.endHour % 2 === 1){ // if the end time has a remainder, we need the next :00
+        const hour = (~~(data.endHour / 2));
+        if (hour > 11) { // pm
+          let nonMilHour = hour;
+          if (hour !== 12) nonMilHour = hour - 12;
+          const time = `${nonMilHour}:00 pm`;
+          timeSetting.push(time);
+        }
+        else{
+          const time = `${hour}:00 am`;
+          timeSetting.push(time);
+        }
+      }
+      setTimes(timeSetting);
+    }
+	}, [data, status])
+
+  
   return (
       <div className="availabilitySetter flex flex-col items-center justify-center px-2 py-0">
         <span> {`${day} ${newDay.getMonth() + 1}/${newDay.getDate()}`} </span>
-        {times.map((time, index) => <AvailButton key={index} text={time} day={day}> </AvailButton>)}
+        {status === "success" && times?.map((time, index) => <AvailButton key={index} text={time} day={day}> </AvailButton>)}
       </div>
     );
   }
@@ -93,11 +119,9 @@ const ColOfAvail = (props:{children:string, day:string, week:number}) => {
  * Doctor availabilty react component.
  * @returns JSX
  */
-const Availability: NextPage = () => {
+const Availability = ({user}: AvailPageProps) => {
 
-  const { mutate } = api.storeAvail.storeAvails.useMutation({
-    
-  });
+  const { mutate } = api.storeAvail.storeAvails.useMutation();
 
   const realButtons = {
     border: "1px solid black", /* Green border */
@@ -107,21 +131,19 @@ const Availability: NextPage = () => {
     cursor: "pointer", /* Pointer/hand icon */
     display: "block", /* Make the buttons appear below each other */
   };
-  const { data: sessionData } = useSession();
   /**
    * Send the desired availability to the database
    */
   const submitToDB = () => {
     const checkedBoxes = document.querySelectorAll('.selected');
     checkedBoxes.forEach(box => {
-      console.log(box.classList);
       const startTime = (box.classList[0] as string) + " " + (box.classList[1] as string);
-      if (sessionData?.user?.id) {
-        const docId = sessionData.user.id;
+      if (user.id) {
+        const docId = user.id;
         const day = dayToNum[box.classList[2] as day];
         const data = {day,startTime,docId,weekCount};
-        console.log(data);
         mutate(data);
+        resetCheckedBoxes();
       }
     })
   }
@@ -207,27 +229,30 @@ const Availability: NextPage = () => {
   );
 };
 
-// Not sure how to check if role is doctor, //   if (session?.user?.role === "DOCTOR") isn't working
-// /**
-//  * Server side page setup
-//  * @param context 
-//  * @returns 
-//  */
-// export const getServerSideProps: GetServerSideProps<AvailPageProps> = async (context: GetServerSidePropsContext) => {
-//   // Get the user session
-//   const session = await getSession(context);
-
-//   if (session?.user?.role === "DOCTOR") {
-//       return {
-//           redirect: {
-//               destination: '/',
-//               permanent: false,
-//           },
-//       };
-//   }
-
-//   // If the user is authenticated, continue with rendering the page
-//   return;
-// }
+/**
+ * Server side page setup
+ * @param context 
+ * @returns 
+ */
+export const getServerSideProps: GetServerSideProps<AvailPageProps> = async (context: GetServerSidePropsContext) => {
+  // Get the user session
+  const session = await getSession(context);
+  
+  if (session?.user?.role !== "DOCTOR") {
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false,
+          },
+      };
+  }
+  else{
+    return {
+      props: {
+        user: session.user,
+      },
+    };
+  }
+}
 
 export default Availability;

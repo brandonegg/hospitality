@@ -10,7 +10,7 @@ const mockAppointment: Appointment = {
   startTime: "9:30 am",
   endTime: "10:00 am",
   docId: "test-doc-id",
-  userName: "testUser2",
+  userId: "testUser2",
   date: new Date(),
 };
 

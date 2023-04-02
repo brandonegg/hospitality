@@ -1,3 +1,4 @@
+import type { Role } from "@prisma/client";
 import { verify } from "argon2";
 import type { GetServerSidePropsContext } from "next";
 import type { User } from "next-auth";
@@ -26,7 +27,7 @@ declare module "next-auth" {
       username: string;
       name: string;
       // ...other properties
-      // role: UserRole;
+      role: Role;
     } & DefaultSession["user"];
   }
 
@@ -36,7 +37,7 @@ declare module "next-auth" {
     name: string;
     email: string;
     // ...other properties
-    // role: UserRole;
+    role: Role;
   }
 }
 
@@ -47,6 +48,7 @@ declare module "next-auth/jwt" {
     username: string;
     name: string;
     email: string;
+    role: Role;
   }
 }
 
@@ -64,6 +66,7 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
         token.email = user.email;
         token.name = user.name;
+        token.role = user.role;
       }
       return token;
     },
@@ -73,7 +76,7 @@ export const authOptions: NextAuthOptions = {
         session.user.username = token.username;
         session.user.email = token.email;
         session.user.name = token.name;
-        // session.user.role = user.role; <-- put other properties on the session here
+        session.user.role = token.role; //<-- put other properties on the session here
       }
       return session;
     },
@@ -112,6 +115,7 @@ export const authOptions: NextAuthOptions = {
             name: result.name,
             username,
             email: result.email,
+            role: result.role,
           } as User;
         } catch {
           return null;

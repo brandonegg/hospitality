@@ -85,6 +85,12 @@ model Appointment {
   startTime String
   endTime   String
   docId     String
-  userName  String
+  userId    String 
   date      DateTime @db.Date
+}
+
+model Hours {
+  id        String @id @default(cuid())
+  startHour Int    @default(7)
+  endHour   Int    @default(19)
 }

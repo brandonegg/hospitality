@@ -1,18 +1,6 @@
-import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
-
-/**
- * For testing purposes, can't match a randomly generate id
- */
-const defaultAvailSelector = Prisma.validator<Prisma.AvailabilitySelect>()({
-    day:true,
-    startTime:true,
-    endTime:true,
-    docId:true,
-    date:true,
-  });
 
 /**
  * Process the input to make the correct data to store in the database
@@ -25,12 +13,14 @@ export const processInput = (input: {
     docId: string;
     weekCount: number;
 }) => {
+    // avoid time zone shenanigains by stripping the seconds and hours etc.
+    const storeDate = makeCorrectDate(new Date((new Date()).toDateString()), input.day, input.weekCount);
     return {
         day: input.day,
         startTime: input.startTime,
         endTime: makeEndTime(input.startTime),
         docId: input.docId,
-        date: makeCorrectDate(new Date(), input.day, input.weekCount)
+        date: storeDate,
     }
 }
 
@@ -100,12 +90,10 @@ export const storeAvailRouter = createTRPCRouter({
 
             const avail = await ctx.prisma.availability.create({
                 data,
-                select: defaultAvailSelector,
             });
 
             await ctx.prisma.originalAvailability.create({
                 data,
-                select: defaultAvailSelector,
             });
 
             return avail; // origAvail is same

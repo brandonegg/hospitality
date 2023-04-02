@@ -2,9 +2,32 @@ import type { Availability, User } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Router from 'next/router';
-import { useSession } from "next-auth/react"
+import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
+import type { Session } from "next-auth";
+import { getSession,useSession } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 
+
+export const timeSort = function (a:Availability,b:Availability) { // sort by date, then time
+  if((new Date(a.date).getTime()) == (new Date(b.date).getTime())) { // same day, sort by time
+    const aNums = a.startTime.split(" ")[0] as string;
+    const bNums = b.startTime.split(" ")[0] as string;
+    const aM = a.startTime.split(" ")[1] as string;
+    const bM = b.startTime.split(" ")[1] as string;
+    if (aM === bM) {
+      if ((aNums.split(":")[0]) === (bNums.split(":")[0])) return (aNums.split(":")[1] as string).localeCompare(bNums.split(":")[1] as string) // if same hour, sort by minutes
+      if (parseInt((aNums.split(":")[0] as string)) === 12) return -1; // if 12pm, put it at the beginning
+      if (parseInt((bNums.split(":")[0] as string)) === 12) return 1; // if 12pm, put it at the beginning
+      return parseInt((aNums.split(":")[0] as string)) - parseInt((bNums.split(":")[0] as string)) ; // if both am or both pm sort by time
+    }
+    else return aM.localeCompare(bM); // if one is am and one is pm, sort by am/pm
+  }
+  else return (new Date(a.date).getTime()) - (new Date(b.date).getTime())
+};
+
+interface AppointPageProps {
+  user: Session['user'],
+}
 
 const today = new Date();
 const todayDay = today.getDay();
@@ -30,6 +53,7 @@ const getAvailability = async function(docId:string, weekCount=0) {
       .then((response) => response.json())
       .then((avails: Availability[]) => {
         times.length = 0;
+        avails.sort(timeSort);
         avails.forEach((time) => {
           times.push(time);
         });
@@ -233,14 +257,14 @@ const Appointment: NextPage = () => {
     useEffect (() => {
       let ignore = false;
       if (!ignore){
-      /**
-      * Wait for available times to be fetched then display
-      */
-      async function getDoctors(){
-        await docGetter;
-        updateDocts(doctors);
-      }
-      void getDoctors();
+        /**
+        * Wait for available times to be fetched then display
+        */
+        async function getDoctors(){
+          await docGetter;
+          updateDocts(doctors);
+        }
+        void getDoctors();
     }
       return () => {
         ignore = true;
@@ -294,5 +318,31 @@ const Appointment: NextPage = () => {
       </>
     );
   };
+
+/**
+ * Server side page setup
+ * @param context 
+ * @returns 
+ */
+export const getServerSideProps: GetServerSideProps<AppointPageProps> = async (context: GetServerSidePropsContext) => {
+  // Get the user session
+  const session = await getSession(context);
+
+  if (session?.user?.role !== "PATIENT") {
+      return {
+          redirect: {
+              destination: '/',
+              permanent: false,
+          },
+      };
+  }
+  else{
+    return {
+      props: {
+        user: session.user,
+      },
+    };
+  }
+}
   
 export default Appointment;
