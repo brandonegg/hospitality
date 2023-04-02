@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import * as argon2 from "argon2";
 
 const prisma = new PrismaClient(); // Prisma client instance
@@ -17,8 +17,96 @@ async function main() {
       email: "admin@admin.com",
       password: password,
       dateOfBirth: new Date("1/1/1960"),
-      role: "ADMIN",
+      role: Role.ADMIN,
     },
+  });
+
+  // create some dummy users
+  await prisma.user.createMany({
+    data: [
+      {
+        name: "Bob",
+        username: "bob",
+        email: "bob@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.PATIENT,
+      },
+      {
+        name: "Bobo",
+        username: "bobo",
+        email: "bob@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.DOCTOR,
+      },
+      {
+        name: "Yewande",
+        username: "yewande",
+        email: "yewande@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.PATIENT,
+      },
+      {
+        name: "Angelique",
+        username: "angelique",
+        email: "angelique@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.NURSE,
+      },
+      {
+        name: "John",
+        username: "john",
+        email: "john@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.PATIENT,
+      },
+      {
+        name: "Joe",
+        username: "joe",
+        email: "joe@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.DOCTOR,
+      },
+      {
+        name: "Admin User 1",
+        username: "adminuser1",
+        email: "adminuser1@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.ADMIN,
+      },
+      {
+        name: "Jane",
+        username: "jane",
+        email: "jane@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.NURSE,
+      },
+      {
+        name: "Josh",
+        username: "josh",
+        email: "josh@prisma.io",
+        password: password,
+        dateOfBirth: new Date("3/18/2000"),
+        addressId: "clevr3plo000c3ocy88y5dprl",
+        role: Role.PATIENT,
+      },
+    ],
+    skipDuplicates: true,
   });
 
   console.log({ admin });
