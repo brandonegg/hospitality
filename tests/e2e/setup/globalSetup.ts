@@ -63,7 +63,7 @@ async function globalSetup() {
       name: "e2e-doctor",
       dateOfBirth: new Date(),
       username: "e2e-doctor",
-      email: "e2e-patient@e2e.com",
+      email: "e2e-doctor@e2e.com",
       password: await argon2.hash("password"),
       addressId: address.id,
       role: Role.DOCTOR,
