@@ -42,7 +42,7 @@ test.describe("users page", () => {
       waitUntil: "networkidle",
     });
 
-    await page.goto("/users", {
+    await page.goto(`${baseURL}/users`, {
       waitUntil: "load",
     });
   });
