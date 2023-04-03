@@ -30,9 +30,8 @@ switch (type) {
  * @param label Label of object table is representing
  * @returns JSX
  */
-const TablePopup = ({ label, refetch, popup, setPopup }: {
+const TablePopup = ({ label, popup, setPopup }: {
     label: string,
-    refetch: () => Promise<void>;
     popup: Popup;
     setPopup: Dispatch<SetStateAction<Popup>>;
 }) => {
