@@ -50,6 +50,6 @@ export default async function handle(
       });
     results.push(result);
   }
-  
+
   return res.status(201).json(results);
 }

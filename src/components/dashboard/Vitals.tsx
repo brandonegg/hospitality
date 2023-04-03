@@ -43,7 +43,7 @@ const demoVitals: VitalsInfo[] = [
 
 /**
  * Vitals widget view
- * @returns 
+ * @returns
  */
 const VitalsWidget = () => {
     /**
@@ -63,7 +63,7 @@ const VitalsWidget = () => {
 
     /**
      * Single row for vitals
-     * @returns 
+     * @returns
      */
     const VitalsRow = ({left, right}: {left: VitalsInfo, right?: VitalsInfo}) => {
         return (

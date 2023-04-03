@@ -28,7 +28,7 @@ for (let hour = 7; hour < 20; hour++){
 /**
  * make a button for Appointment
  * @param props
- * @returns 
+ * @returns
  */
 const AppointButton = (props:{children:string, text:string, day:string }) => {
   const text = props.text;
@@ -109,7 +109,7 @@ const Appointment: NextPage = () => {
       }
     };
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = () => {
       //
@@ -130,7 +130,7 @@ const Appointment: NextPage = () => {
           <meta name="description" content="Hospitality Doctor Appointments" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <span className="text-2xl "> Make an Appointment </span>
@@ -163,5 +163,5 @@ const Appointment: NextPage = () => {
       </>
     );
   };
-  
+
 export default Appointment;

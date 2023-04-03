@@ -8,7 +8,7 @@ interface DashBoardNavButtonProperties {
 
 /**
  * Dashboard nav button component. Shown below the main nav bar
- * @param param0 
+ * @param param0
  */
 const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
     if (selected) {
@@ -20,7 +20,7 @@ const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonPropertie
             </div>
         </>;
     }
-    
+
     return <>
         <Link href={href} className="box-content rounded-t-lg hover:bg-gray-200 border-x-[1px] border-t-[1px] border-transparent hover:border-gray-400 h-full px-3">
             <div className="grid place-content-center h-full w-full text-center">
@@ -32,7 +32,7 @@ const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonPropertie
 
 /**
  * Nav bar button component for the quick access drop down.
- * @param param0 
+ * @param param0
  */
 const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
     if (selected) {
@@ -42,7 +42,7 @@ const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButt
             </li>
         );
     }
-    
+
     return (
         <li>
             <Link href={href}>

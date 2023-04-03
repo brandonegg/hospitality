@@ -6,7 +6,7 @@ import MainHeader from "../../components/Header";
 
 /**
  * Beds Table view for creating, modifying, and deleting beds
- * @returns 
+ * @returns
  */
 const BedsPage = () => {
     const { data: sessionData } = useSession();
@@ -28,7 +28,7 @@ export const getServerSideProps = async (
   ) => {
     // Get the user session
     const session = await getSession(context);
-  
+
     // If the user is not logged in, redirect to the login page
     if (!session?.user) {
       return {
@@ -38,7 +38,7 @@ export const getServerSideProps = async (
         },
       };
     }
-  
+
     // If the user is not an admin, redirect to the dashboard
     if (session.user.role !== Role.ADMIN) {
       return {
@@ -48,7 +48,7 @@ export const getServerSideProps = async (
         },
       };
     }
-  
+
     return { props: {} };
   };
 

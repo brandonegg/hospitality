@@ -28,7 +28,7 @@ for (let hour = 7; hour < 20; hour++){
 /**
  * make a button for availability
  * @param props
- * @returns 
+ * @returns
  */
 const AvailButton = (props:{children:string, text:string, day:string }) => {
   const text = props.text;
@@ -108,7 +108,7 @@ const Availability: NextPage = () => {
       }
     };
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = () => {
       //
@@ -121,7 +121,7 @@ const Availability: NextPage = () => {
           <meta name="description" content="Hospitality Doctor Availabilty" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <span className="text-2xl "> Set Your Availabilty </span>
@@ -147,5 +147,5 @@ const Availability: NextPage = () => {
       </>
     );
   };
-  
+
 export default Availability;

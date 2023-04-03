@@ -5,8 +5,8 @@ import NavigationBar from "./NavigationBar";
 
 /**
  * Main site header component with nav bar.
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const MainHeader = ({user}: {user?: Session['user']}) => {
     return (

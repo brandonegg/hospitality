@@ -21,13 +21,13 @@ interface SquareWidgetProperties {
 
 /**
  * A square widget element for displaying useful information in the dashboard
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
     /**
      * Widget title generation
-     * @returns 
+     * @returns
      */
     const Title = () => {
         if (!title) {
@@ -42,7 +42,7 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
             </div>
         </>;
     };
-    
+
     return <>
         <div className={(width == 2 ? 'col-span-2' : 'col-span-1')}>
             <div className="border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg">
@@ -79,11 +79,11 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
 
 /**
  * User dashboard page
- * @returns 
+ * @returns
  */
 const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
-    
+
     /**
      * Event handler for the quick access toggle button.
      */
@@ -157,8 +157,8 @@ const Dashboard = ({user}: DashboardPageProps) => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (context: GetServerSidePropsContext) => {
     // Get the user session
@@ -172,7 +172,7 @@ export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async 
             },
         };
     }
-  
+
     // If the user is authenticated, continue with rendering the page
     return {
       props: {
