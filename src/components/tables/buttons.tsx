@@ -3,26 +3,26 @@ import type { MouseEventHandler } from "react";
 
 export interface ButtonDetails {
     onClick: MouseEventHandler<HTMLButtonElement> | undefined;
-    testId: string;
+    testId?: string;
 }
 
 /**
  * Adds a '+ Add {item}' button to table view.
  */
 const AddButton = ({ onClick, label }: ButtonDetails &
-    {
-        label: string,
-    }) => {
-        return (
-            <button
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
-                onClick={onClick}
-                >
-                <PlusIcon className="h-4 w-4" />
-                Add {label}
-            </button>
-        );
-    };
+{
+    label: string,
+}) => {
+    return (
+        <button
+            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
+            onClick={onClick}
+            >
+            <PlusIcon className="h-4 w-4" />
+            Add {label}
+        </button>
+    );
+};
 
 /**
  * Button for editing the row of a table.

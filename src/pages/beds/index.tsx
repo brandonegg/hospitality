@@ -16,11 +16,11 @@ const BedsTable = () => {
             <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-slate-800 text-sm uppercase text-gray-300">
                     <tr>
-                        <th className="min-w-[200px] px-6 py-3 lg:w-1/3">Building</th>
-                        <th className="min-w-[200px] px-6 py-3 lg:w-1/4">Room</th>
-                        <th className="min-w-[175px] px-6 py-3">Status</th>
+                        <th className="min-w-[200px] px-6 py-3 lg:w-1/4">Building</th>
+                        <th className="min-w-[100px] px-6 py-3">Room</th>
+                        <th className="min-w-[150px] px-6 py-3">Status</th>
                         <th className="max-w-[200px] min-w-[100px] px-6 py-3">Last Occupied</th>
-                        <th className="max-w-[200px] min-w-[100px] px-6 py-3">Last Unoccupied</th>
+                        <th className="max-w-[260px] min-w-[240px] px-6 py-3">Last Unoccupied</th>
                         <th className="max-w-[200px] min-w-[100px] px-6 py-3">Actions</th>
                     </tr>
                 </thead>
