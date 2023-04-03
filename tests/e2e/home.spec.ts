@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { patientTest } from './playwright/fixtures';
+
 test.describe('homepage', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -32,19 +34,13 @@ test.describe('navbar', () => {
   })
 
   test.describe('logged in', () => {
-    test.use({
-      storageState: async ({browserName}, use) => {
-        await use(`playwright/.auth/${browserName}/user.json`);
-      },
-    });
-    
-    test('hide sign up and login buttons', async ({page}) => {
+    patientTest('hide sign up and login buttons', async ({page}) => {
 
       await expect(page.getByRole('link', { name: 'Login' })).toBeHidden();
       await expect(page.getByRole('link', { name: 'Sign up' })).toBeHidden();
     });
 
-    test('shows dashboard link', async ({page}) => {
+    patientTest('shows dashboard link', async ({page}) => {
       await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible();
     });
   })
