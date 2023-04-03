@@ -17,7 +17,7 @@ export const adminTest = baseTest.extend<object, { workerStorageState: string }>
   
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
-    const fileName = path.resolve(workerInfo.project.outputDir, `.admin/${id}.json`);
+    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/admin/${id}.json`);
 
     if (fs.existsSync(fileName)) {
       await use(fileName); // Reuse existing authentication state if any.
@@ -50,7 +50,7 @@ export const patientTest = baseTest.extend<object, { workerStorageState: string 
   
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
-    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/${id}.json`);
+    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/patient/${id}.json`);
 
     if (fs.existsSync(fileName)) {
       await use(fileName); // Reuse existing authentication state if any.
@@ -83,7 +83,7 @@ export const doctorTest = baseTest.extend<object, { workerStorageState: string }
   
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
-    const fileName = path.resolve(workerInfo.project.outputDir, `.doctor/${id}.json`);
+    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/doctor/${id}.json`);
 
     if (fs.existsSync(fileName)) {
       await use(fileName); // Reuse existing authentication state if any.
