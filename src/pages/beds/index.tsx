@@ -21,6 +21,7 @@ const BedsTable = () => {
                         <th className="min-w-[175px] px-6 py-3">Status</th>
                         <th className="max-w-[200px] min-w-[100px] px-6 py-3">Last Occupied</th>
                         <th className="max-w-[200px] min-w-[100px] px-6 py-3">Last Unoccupied</th>
+                        <th className="max-w-[200px] min-w-[100px] px-6 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
