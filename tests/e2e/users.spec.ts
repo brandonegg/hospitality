@@ -53,7 +53,7 @@ test.describe("users page", () => {
   });
 
   test.describe("create user", () => {
-    test('dipslays "Add User" modal when "Add User" button is clicked', async ({
+    adminTest('dipslays "Add User" modal when "Add User" button is clicked', async ({
       page,
     }) => {
       await page.click("text=Add User");

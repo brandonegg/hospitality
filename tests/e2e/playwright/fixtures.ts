@@ -17,7 +17,7 @@ export const adminTest = baseTest.extend<object, { workerStorageState: string }>
   
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
-    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/${id}.json`);
+    const fileName = path.resolve(workerInfo.project.outputDir, `.admin/${id}.json`);
 
     if (fs.existsSync(fileName)) {
       await use(fileName); // Reuse existing authentication state if any.
@@ -27,7 +27,7 @@ export const adminTest = baseTest.extend<object, { workerStorageState: string }>
     // authenticate in a clean environment by unsetting storage state.
     const page = await browser.newPage({ storageState: undefined });
 
-    // Login as patient.
+    // Login as admin.
     await page.goto(`${baseURL}/login`);
     await page.locator("input[name=username]").fill("e2e");
     await page.locator("input[name=password]").fill("password");
@@ -83,7 +83,7 @@ export const doctorTest = baseTest.extend<object, { workerStorageState: string }
   
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
-    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/${id}.json`);
+    const fileName = path.resolve(workerInfo.project.outputDir, `.doctor/${id}.json`);
 
     if (fs.existsSync(fileName)) {
       await use(fileName); // Reuse existing authentication state if any.
@@ -93,7 +93,7 @@ export const doctorTest = baseTest.extend<object, { workerStorageState: string }
     // authenticate in a clean environment by unsetting storage state.
     const page = await browser.newPage({ storageState: undefined });
 
-    // Login as patient.
+    // Login as doctor.
     await page.goto(`${baseURL}/login`);
     await page.locator("input[name=username]").fill("e2e-doctor");
     await page.locator("input[name=password]").fill("password");
