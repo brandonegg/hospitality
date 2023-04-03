@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { patientTest } from './playwright/fixtures'
+
 test.describe('dashboard', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('/dashboard', {
@@ -14,13 +16,7 @@ test.describe('dashboard', () => {
     })
 
     test.describe('logged in', () => {
-        test.use({
-            storageState: async ({browserName}, use) => {
-                await use(`playwright/.auth/${browserName}/user.json`);
-            },
-        });
-
-        test('on the dashboard page', async ({page}) => {
+        patientTest('on the dashboard page', async ({page}) => {
             expect(page.url()).toContain('dashboard');
             await expect(page.getByRole('heading', { name: 'Welcome, e2e' })).toBeVisible();
         });
