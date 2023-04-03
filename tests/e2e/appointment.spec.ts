@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { baseURL } from "../../playwright.config";
+import { patientTest } from "./playwright/fixtures";
 
 
 test.describe("appointment page", () => {
@@ -17,39 +17,20 @@ test.describe("appointment page", () => {
   })
 });
 test.describe('logged in', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}/login`);
-    await page.locator("input[name=username]").fill("e2e-patient");
-    await page.locator("input[name=password]").fill("password");
-    const pageLoaded = page.waitForEvent("load");
-    await page.getByRole("button", { name: "Login" }).click();
-    await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "networkidle",
-    });
-    await page.goto("/appointment", {
-      waitUntil: "load",
-    });
-  });
-  test.use({
-      storageState: async ({browserName}, use) => {
-          await use(`playwright/.auth/${browserName}/user.json`);
-      },
-  });
-  test('on the appointment page', ({page}) => {
+  patientTest('on the appointment page', ({page}) => {
     expect(page.url()).toContain('appointment');
   });
-  test("has appointment title", async ({ page }) => {
+  patientTest("has appointment title", async ({ page }) => {
     await expect(page).toHaveTitle(/Set Appointment/);
   });
 
-  test("has back button", async ({ page }) => {
+  patientTest("has back button", async ({ page }) => {
     const back = page.getByText(/Back/);
     await expect(back).toBeVisible();
     await expect(back).toHaveText(/Back/);
   });
 
-  test("has submit button", async ({ page }) => {
+  patientTest("has submit button", async ({ page }) => {
     const submit = page.getByText(/Submit/);
     await expect(submit).toBeVisible();
     await expect(submit).toHaveText(/Submit/);
