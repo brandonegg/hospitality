@@ -19,6 +19,8 @@
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   "rules": {
     "semi": "error",
+    "eol-last": "error",
+    "no-trailing-spaces": "error",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/order": [
