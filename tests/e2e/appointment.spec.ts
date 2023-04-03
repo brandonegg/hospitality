@@ -17,6 +17,11 @@ test.describe("appointment page", () => {
   })
 });
 test.describe('logged in', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/appointment", {
+      waitUntil: "load",
+    });
+  });
   patientTest('on the appointment page', ({page}) => {
     expect(page.url()).toContain('appointment');
   });
