@@ -3,7 +3,7 @@ import type { Appointment } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import MainHeader from "../components/Header";
 import type { DashBoardNavButtonProperties} from "../components/dashboard/Navigation";
@@ -91,24 +91,31 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
  */
 const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
+    const [updatedDashboardNavLinks, setNavLinks] = useState([] as DashBoardNavButtonProperties[]);
 
-    if (user.role === "DOCTOR"){ // doctors can't make appointments, and patients can't make availabilitys
-        dashboardNavLinks[1] = {
-            label: "Set Availability",
-            href: "/availability",
+    useEffect(() => {
+        console.log(user.role);
+        if (user.role === "DOCTOR"){ // doctors can't make appointments, and patients can't make availabilitys
+            dashboardNavLinks[1] = {
+                label: "Set Availability",
+                href: "/availability",
+            }
+            dashboardNavLinks[2] = {
+                label: "View Availability",
+                href: "/myAvailabilities",
+            }
         }
-        dashboardNavLinks[2] = {
-            label: "View Availability",
-            href: "/myAvailabilities",
+        if (user.role === "ADMIN"){ // admins can't make appointments, and patients can't make availabilitys
+            dashboardNavLinks[1] = {
+                label: "Set Hours",
+                href: "/adminHourSetting",
+            }
+            dashboardNavLinks.splice(2,1);
         }
-    }
-    if (user.role === "ADMIN"){ // admins can't make appointments, and patients can't make availabilitys
-        dashboardNavLinks.splice(1,1);
-        dashboardNavLinks[1] = {
-            label: "Set Hours",
-            href: "/adminHourSetting",
-        }
-    }
+        console.log(dashboardNavLinks);
+        setNavLinks(dashboardNavLinks);
+    }, [user]);
+
     
     /**
      * Event handler for the quick access toggle button.
@@ -117,13 +124,13 @@ const Dashboard = ({user}: DashboardPageProps) => {
         setQuickAccessOpened(!quickAccessOpened);
     }
 
-    const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
+    const dashboardTopNavButtons = updatedDashboardNavLinks.map((linkDetails, index) => {
         return (
             <DashBoardNavButton key={index} {...linkDetails}/>
         );
     });
 
-    const dashboardDropdownNavButtons = dashboardNavLinks.map((linkDetails, index) => {
+    const dashboardDropdownNavButtons = updatedDashboardNavLinks.map((linkDetails, index) => {
         return (
             <DashBoardQuickAccessNavButton key={index} {...linkDetails}/>
         );
@@ -151,6 +158,13 @@ const Dashboard = ({user}: DashboardPageProps) => {
         appoints.length = 5; // only show first 5 appointments
     }
 
+    const [hydrated, setHydrated] = useState(false);
+    useEffect(() => {
+        setHydrated(true);
+    }, []);
+    if (!hydrated) {
+        return null;
+    }
     return <>
     <main className="max-w-[1400px] mx-auto">
         <MainHeader user={user} />

@@ -24,6 +24,9 @@ test.describe('logged in', () => {
     const pageLoaded = page.waitForEvent("load");
     await page.getByRole("button", { name: "Login" }).click();
     await pageLoaded;
+    await page.goto(`${baseURL}/`, {
+      waitUntil: "networkidle",
+    });
     await page.goto("/availability", {
       waitUntil: "load",
     });

@@ -26,7 +26,7 @@ test.describe('dashboard', () => {
         });
 
         test('view dashboard widgets', async ({page}) => {
-            await expect(page.getByRole('heading', { name: 'Upcomming Appointments' })).toBeVisible();
+            await expect(page.getByRole('heading', { name: 'Upcoming Appointments' })).toBeVisible();
             await expect(page.getByRole('heading', { name: 'Insurance' })).toBeVisible();
             await expect(page.getByRole('heading', { name: 'Vitals' })).toBeVisible();
         })
