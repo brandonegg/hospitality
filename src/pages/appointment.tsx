@@ -1,13 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Router from 'next/router'
+import Router from 'next/router';
 import React, { useState } from 'react';
 
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
 // change minutes and j for different minutes. hour 7, <hour 20 means 7 to 7 can be marked as available
 const times: string[] = [];
-const minutes: string[] = ["00", "30"]
+const minutes: string[] = ["00", "30"];
 for (let hour = 7; hour < 20; hour++){
   for (let min = 0; min < 2; min++){
     if (!(hour === 19 && min === 1)){ //don't want to add 7:30s
@@ -54,7 +54,7 @@ const AppointButton = (props:{children:string, text:string, day:string }) => {
   return (
     <button className={text + " " + day + " " + (active ? "selected" : "boxes")} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
-}
+};
 
 /**
  * Like when2meet, a column of appointments
@@ -68,7 +68,7 @@ const ColOfAppoint = (props:{children:string, day:string}) => {
         {times.map((time, index) => <AppointButton key={index} text={time} day={day}> </AppointButton>)}
       </div>
     );
-  }
+  };
 /**
  * Doctor availabilty react component.
  * @returns JSX
@@ -90,24 +90,24 @@ const Appointment: NextPage = () => {
       console.log("Submit pressed");
       const tempDocId = parseInt(doctor); // this will have to change in the future once doctors actually are created and have unique ids
       const times:[string,number,number][] = [];
-      const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+      const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6};
       type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
       checkedBoxes.forEach(box => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
         times.push([time, dayToNum[box.classList[2] as day], tempDocId]);
-      })
+      });
       try {
-        const body = { times }
+        const body = { times };
         await fetch(`/api/storeAppoint`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-        })
-        await Router.push('/')
+        });
+        await Router.push('/');
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
     /**
      * Go to the previous page  
      */

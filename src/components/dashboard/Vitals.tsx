@@ -39,7 +39,7 @@ const demoVitals: VitalsInfo[] = [
         value: "98",
         unit: "%",
     }
-]
+];
 
 /**
  * Vitals widget view
@@ -58,8 +58,8 @@ const VitalsWidget = () => {
                     <p>{value} <span className="italic text-gray-700">{unit}</span></p>
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     /**
      * Single row for vitals
@@ -71,13 +71,13 @@ const VitalsWidget = () => {
                 <VitalsCell {...left} />
                 {right ? <VitalsCell {...right}/> : null}
             </li>
-        )
+        );
     };
 
     const vitalsRows = demoVitals.map((vitalsInfo, index) => {
         // Do two at a time, for left and right
         if (index % 2 === 0) {
-            const left = vitalsInfo
+            const left = vitalsInfo;
             let right: VitalsInfo | undefined;
 
             if (index < demoVitals.length) {
@@ -86,7 +86,7 @@ const VitalsWidget = () => {
 
             return (
                 <VitalsRow key={index} left={left} right={right}/>
-            )
+            );
         }
     });
 
@@ -101,7 +101,7 @@ const VitalsWidget = () => {
                 <h1 className="text-gray-400 text-xs text-right italic">Last recorded on 3/10/2023</h1>
             </div>
         </div>
-    </>
-}
+    </>;
+};
 
 export default VitalsWidget;

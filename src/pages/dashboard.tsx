@@ -40,7 +40,7 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
                     <h1 className="font-bold text-center text-lg">{title}</h1>
                 </div>
             </div>
-        </>
+        </>;
     };
     
     return <>
@@ -50,7 +50,7 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
                 {children}
             </div>
         </div>
-    </>
+    </>;
 };
 
 const dashboardNavLinks: DashBoardNavButtonProperties[] = [
@@ -89,7 +89,7 @@ const Dashboard = ({user}: DashboardPageProps) => {
      */
     const handleQuickAccessTogle = () => {
         setQuickAccessOpened(!quickAccessOpened);
-    }
+    };
 
     const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
         return (
@@ -152,7 +152,7 @@ const Dashboard = ({user}: DashboardPageProps) => {
             </div>
         </div>
     </main>
-    </>
+    </>;
 };
 
 /**
@@ -179,6 +179,6 @@ export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async 
         user: session.user,
       },
     };
-}
+};
 
-export default Dashboard
+export default Dashboard;

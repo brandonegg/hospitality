@@ -16,7 +16,7 @@ const MainHeader = ({user}: {user?: Session['user']}) => {
             </h2>
             <NavigationBar user={user}/>
         </div>
-    )
-}
+    );
+};
 
 export default MainHeader;

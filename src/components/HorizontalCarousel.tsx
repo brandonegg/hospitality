@@ -23,8 +23,8 @@ export const FadedTitleBodyCarouselSlide = ({title, body}: FadedTitleBodyCarouse
             <p className='text-lg text-black'><i>{body}</i></p>
             </div>
         </div>
-    </>
-}
+    </>;
+};
 
 export interface HorizontalCarouselSlideProps {
     backgroundImage: string | undefined;
@@ -77,7 +77,7 @@ const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlid
         }
 
         return;
-    }
+    };
 
     useEffect(() => {
         if (autoCycle) {
@@ -121,6 +121,6 @@ const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlid
         </div>
     </div>
     );
-}
+};
 
-export default HorizontalCarousel
+export default HorizontalCarousel;

@@ -18,7 +18,7 @@ const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonPropertie
                     <span className="text-lg">{label}</span>
                 </div>
             </div>
-        </>
+        </>;
     }
     
     return <>
@@ -27,8 +27,8 @@ const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonPropertie
                 <span className="text-lg">{label}</span>
             </div>
         </Link>
-    </>
-}
+    </>;
+};
 
 /**
  * Nav bar button component for the quick access drop down.
@@ -40,7 +40,7 @@ const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButt
             <li>
                 <span className="text-lg bg-gray-500 py-1 block w-full text-gray-200">{label}</span>
             </li>
-        )
+        );
     }
     
     return (
@@ -49,7 +49,7 @@ const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButt
                 <span className="text-lg hover:bg-gray-500 py-1 block w-full text-gray-200">{label}</span>
             </Link>
         </li>
-    )
+    );
 };
 
 export { DashBoardNavButton, DashBoardQuickAccessNavButton };

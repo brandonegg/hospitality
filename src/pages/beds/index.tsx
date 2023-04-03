@@ -15,7 +15,7 @@ const BedsPage = () => {
         <main className="mx-auto max-w-[1400px]">
             <MainHeader user={sessionData?.user} />
         </main>
-    )
+    );
 };
 
 /**

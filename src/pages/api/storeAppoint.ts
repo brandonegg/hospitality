@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from "../../server/db";
 
@@ -18,7 +18,7 @@ export default async function handle(
   times.forEach((timeIntInt) => {
     const time = timeIntInt[0];
     const day = timeIntInt[1];
-    const docId = timeIntInt[2]
+    const docId = timeIntInt[2];
     const timeAndAmPM = time.split(" ");
     const actualTime = timeAndAmPM[0] as string;
     const hourColonMin = actualTime.split(":");
@@ -34,7 +34,7 @@ export default async function handle(
         else {endHour = "1";}
         endMin = "00";
     }
-    const endTime = `${endHour as string}:${endMin} ${timeAndAmPM[1] as string}`
+    const endTime = `${endHour as string}:${endMin} ${timeAndAmPM[1] as string}`;
     startEndDayInfo.push([time,endTime,day,docId]); //push in start time
   });
   const results = [];
@@ -47,9 +47,9 @@ export default async function handle(
           docId: startEndDayArray[3],
           userName: "testUser"
         },
-      })
+      });
     results.push(result);
   }
   
-  return res.status(201).json(results)
+  return res.status(201).json(results);
 }
