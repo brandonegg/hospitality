@@ -1,9 +1,6 @@
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
