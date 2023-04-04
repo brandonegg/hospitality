@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import MainHeader from "../../components/Header";
 import { AddButton } from "../../components/tables/buttons";
+import { TablePopup } from "../../components/tables/input";
 
 /**
  * Main beds table element.
@@ -37,7 +38,7 @@ const BedsTable = () => {
  */
 const BedsPage = () => {
     const { data: sessionData } = useSession();
-    const [popup, setPopup] = useState<Popup>({ show: false });
+    const [popup, setPopup] = useState<TablePopup<Bed>({ show: false });
 
     return(
         <main className="mx-auto max-w-[1400px]">

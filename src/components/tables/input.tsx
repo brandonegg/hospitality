@@ -1,7 +1,7 @@
 import { Dialog } from "@headlessui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-export type Popup<T> = {
+export type TablePopup<T> = {
     show: boolean;
     type?: "create" | "edit" | "delete";
     data?: T;
@@ -28,17 +28,21 @@ const TablePopupTitle = ({ type, label }: {
     }
 };
 
+interface TablePopupProps<T> {
+    label: string;
+    popup: TablePopup<T>;
+    refetch: () => Promise<void>;
+    setPopup: Dispatch<SetStateAction<TablePopup<T>>>;
+    children: JSX.Element,
+}
+
 /**
  * Table popup for CRUD operations
  *
  * @param label Label of object table is representing
  * @returns JSX
  */
-const TablePopup = ({ label, popup, setPopup }: {
-    label: string,
-    popup: Popup;
-    setPopup: Dispatch<SetStateAction<Popup>>;
-}) => {
+const TablePopup = <T,>({ label, popup, setPopup, children }: TablePopupProps<T>) => {
     return (
         <Dialog
         open={popup.show}
@@ -56,7 +60,7 @@ const TablePopup = ({ label, popup, setPopup }: {
                     <TablePopupTitle label={label} type={popup.type} />
                 </Dialog.Title>
 
-                {/* Place table body here */}
+                {children}
 
                 </Dialog.Panel>
             </div>

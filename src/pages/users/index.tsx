@@ -10,7 +10,7 @@ import { useState } from "react";
 import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
 import { AddButton, DeleteRowButton, EditRowButton } from "../../components/tables/buttons";
-import type { Popup } from "../../components/tables/input";
+import type { TablePopup } from "../../components/tables/input";
 import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
@@ -50,7 +50,7 @@ const UsersPage: NextPage = () => {
 
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
-  const [popup, setPopup] = useState<Popup<User>>({ show: false });
+  const [popup, setPopup] = useState<TablePopup<User>>({ show: false });
 
   const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(
