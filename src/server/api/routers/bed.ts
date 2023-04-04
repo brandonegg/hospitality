@@ -3,6 +3,34 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const bedRouter = createTRPCRouter({
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, cursor } = input;
+      const [count, items] = await ctx.prisma.$transaction([
+        ctx.prisma.bed.count(),
+        ctx.prisma.bed.findMany({
+          take: limit + 1,
+          cursor: cursor ? { id: cursor } : undefined,
+        }),
+      ]);
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        count,
+        items,
+        nextCursor,
+      };
+    }),
   create: protectedProcedure
     .input(
       z.object({

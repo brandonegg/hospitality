@@ -10,6 +10,7 @@ import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import type { RouterOutputs } from "../../utils/api";
+import { api } from "../../utils/api";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 
@@ -48,15 +49,15 @@ const BedsPage: NextPage = () => {
     const [limit] = useState<number>(10);
     const [popup, setPopup] = useState<TablePopup<Bed>>({ show: false });
 
-    // const { data, error, isLoading, fetchNextPage, refetch } =
-    // api.bed.getAll.useInfiniteQuery(
-    //   {
-    //     limit,
-    //   },
-    //   {
-    //     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    //   }
-    // );
+    const { data, error, isLoading, fetchNextPage, refetch } =
+      api.bed.getAll.useInfiniteQuery(
+        {
+          limit,
+        },
+        {
+          getNextPageParam: (lastPage) => lastPage.nextCursor,
+        }
+      );
 
     return(
         <main className="mx-auto max-w-[1400px]">
@@ -72,7 +73,7 @@ const BedsPage: NextPage = () => {
               {/* Popup */}
               { popup.show && (
                 <BedPopup
-                  refetch={async () => {return;}}
+                  refetch={refetch as unknown as () => Promise<void>}
                   popup={popup}
                   setPopup={setPopup}
                 />
