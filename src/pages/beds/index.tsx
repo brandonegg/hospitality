@@ -11,13 +11,40 @@ import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { dateFormatter } from "../../utils/date";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 
 /**
+ * Component for a single row of the bed table
+ */
+const BedsTableRow = ({item}: {
+  item: Bed
+}) => {
+  return (
+    <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
+      <td className="px-6 py-2">{item.room}</td>
+      <td className="px-6 py-2">{item.room}</td>
+      <td className="px-6 py-2">{item.userId ? 'occupied' : 'unoccupied'}</td>
+      <td className="px-6 py-2">
+        {dateFormatter.format(item.lastOccupied as Date)}
+      </td>
+      <td className="px-6 py-2">
+        {dateFormatter.format(item.lastUnoccupied as Date)}
+      </td>
+      <td className="px-6 py-2">
+        { /* <ActionsEntry label="Bed" /> */ }
+      </td>
+    </tr>
+  );
+};
+
+/**
  * Main beds table element.
  */
-const BedsTable = () => {
+const BedsTable = ({items}: {
+  items: Bed[] | undefined
+}) => {
     return (
         <div className="flex flex-col">
             <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
@@ -32,7 +59,9 @@ const BedsTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-
+                  {items?.map((bed, index) => (
+                    <BedsTableRow key={index} item={bed}/>
+                  ))}
                 </tbody>
             </table>
         </div>
@@ -45,11 +74,11 @@ const BedsTable = () => {
  */
 const BedsPage: NextPage = () => {
     const { data: sessionData } = useSession();
-    const [page, setPage] = useState(0);
+    const [page] = useState(0);
     const [limit] = useState<number>(10);
     const [popup, setPopup] = useState<TablePopup<Bed>>({ show: false });
 
-    const { data, error, isLoading, fetchNextPage, refetch } =
+    const { data, refetch } =
       api.bed.getAll.useInfiniteQuery(
         {
           limit,
@@ -58,6 +87,8 @@ const BedsPage: NextPage = () => {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
         }
       );
+
+    const beds = data?.pages[page]?.items;
 
     return(
         <main className="mx-auto max-w-[1400px]">
@@ -80,7 +111,7 @@ const BedsPage: NextPage = () => {
               )}
             </div>
             <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
-              <BedsTable />
+              <BedsTable items={beds} />
             </div>
         </main>
     );

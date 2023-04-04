@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import type { UserRowData } from "../../pages/users";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { dateFormatter } from "../../utils/date";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
@@ -18,13 +19,6 @@ interface UserDeleteProps {
 
 type UserDeleteInput = RouterInputs["user"]["delete"];
 type UserDeleteOutput = RouterOutputs["user"]["delete"];
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "UTC",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
 
 /**
  * UserDelete component

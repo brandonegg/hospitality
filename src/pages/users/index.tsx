@@ -14,16 +14,10 @@ import type { TablePopup } from "../../components/tables/input";
 import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { dateFormatter } from "../../utils/date";
 import { classNames } from "../../utils/text";
 
 export type UserRowData = RouterOutputs["user"]["getAll"]["items"][number];
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "UTC",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
 
 /**
  * Get the initials of a name.
