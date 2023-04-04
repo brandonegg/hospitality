@@ -57,7 +57,7 @@ const StateSelector = <T extends FieldValues,>({label, id, errorMessage, registe
  */
 const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<BedCreateInput | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<BedCreateOutput | undefined>(undefined);
 
   const {
     register,
@@ -143,9 +143,9 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormGap />
         <FormInput<BedCreateInput>
-          label="Zipcode"
+          label="ZIP Code"
           registerDetails={{...register("zipCode", {
-              required: "Zipcode is required"
+              required: "ZIP Code is required"
             })}}
           id="zipCode"
           errorMessage={errors.zipCode ? errors.zipCode.message : undefined}

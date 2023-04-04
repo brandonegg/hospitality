@@ -11,8 +11,8 @@ const ActionsEntry = ({ editDetails, deleteDetails } :
         deleteDetails: ButtonDetails,
     }) => {
         return (
-            <td className="px-6 py-2">
-                <div className="flex gap-2">
+            <td className="">
+                <div className="flex w-full gap-2">
                     <EditRowButton {...editDetails} />
                     <DeleteRowButton {...deleteDetails} />
                 </div>

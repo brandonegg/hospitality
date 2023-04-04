@@ -6,9 +6,11 @@ import { useState } from "react";
 
 import MainHeader from "../../components/Header";
 import BedPopup from "../../components/beds/BedPopup";
+import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
+import { ActionsEntry } from "../../components/tables/rows";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { dateFormatter } from "../../utils/date";
@@ -21,6 +23,14 @@ export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 const BedsTableRow = ({item}: {
   item: Bed
 }) => {
+  const editDetails: ButtonDetails = {
+    onClick: () => {},
+  };
+
+  const deleteDetails: ButtonDetails = {
+    onClick: () => {},
+  };
+
   return (
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
       <td className="px-6 py-2">{item.room}</td>
@@ -32,8 +42,8 @@ const BedsTableRow = ({item}: {
       <td className="px-6 py-2">
         {dateFormatter.format(item.lastUnoccupied as Date)}
       </td>
-      <td className="px-6 py-2">
-        { /* <ActionsEntry label="Bed" /> */ }
+      <td className="grid place-items-end px-2 py-2">
+        <ActionsEntry editDetails={editDetails} deleteDetails={deleteDetails} label="Bed" />
       </td>
     </tr>
   );
@@ -46,16 +56,16 @@ const BedsTable = ({items}: {
   items: Bed[] | undefined
 }) => {
     return (
-        <div className="flex flex-col">
+        <div className="overflow-x-auto flex flex-col">
             <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-slate-800 text-sm uppercase text-gray-300">
                     <tr>
-                        <th className="min-w-[200px] px-6 py-3 lg:w-1/4">Building</th>
-                        <th className="min-w-[100px] px-6 py-3">Room</th>
-                        <th className="min-w-[150px] px-6 py-3">Status</th>
-                        <th className="max-w-[200px] min-w-[100px] px-6 py-3">Last Occupied</th>
-                        <th className="max-w-[260px] min-w-[240px] px-6 py-3">Last Unoccupied</th>
-                        <th className="max-w-[200px] min-w-[100px] px-6 py-3">Actions</th>
+                        <th className="w-[200px] px-6 py-3 lg:w-1/8">Building</th>
+                        <th className="w-[100px] px-6 py-3 lg:w-1/8">Room</th>
+                        <th className="w-[100px] px-6 py-3">Status</th>
+                        <th className="w-[170px] px-6 py-3">Last Occupied</th>
+                        <th className="w-[190px] px-6 py-3">Last Unoccupied</th>
+                        <th className="w-[180px] px-6 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
