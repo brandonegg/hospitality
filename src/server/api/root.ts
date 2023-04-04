@@ -1,3 +1,4 @@
+import { bedRouter } from "./routers/bed";
 import { exampleRouter } from "./routers/example";
 import { userRouter } from "./routers/user";
 import { createTRPCRouter } from "./trpc";
@@ -10,6 +11,7 @@ import { createTRPCRouter } from "./trpc";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   user: userRouter,
+  bed: bedRouter,
 });
 
 // export type definition of API

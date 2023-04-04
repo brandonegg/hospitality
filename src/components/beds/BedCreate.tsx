@@ -56,7 +56,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created a user!</Alert>
+      <Alert type="success">Successfully created a bed!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -70,7 +70,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <h2 className="text-xl font-semibold">Name</h2>
+      <h2 className="text-xl font-semibold">Room</h2>
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <div className="flex flex-grow flex-col">
           <label htmlFor="firstName">First Name</label>
@@ -126,7 +126,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold">Other Information</h2>
+      <h2 className="text-xl font-semibold">Building Address</h2>
       <div className="flex flex-col">
         <label htmlFor="dateOfBirth">Date of Birth</label>
         <input
