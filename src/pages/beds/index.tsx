@@ -9,7 +9,9 @@ import BedPopup from "../../components/beds/BedPopup";
 import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../utils/api";
+
+export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 
 /**
  * Main beds table element.

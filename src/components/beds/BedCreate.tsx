@@ -1,23 +1,22 @@
-import type { Bed } from "@prisma/client";
-import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
-import ErrorMessage from "../ErrorMessage";
+import { FormGap, FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
-type UserCreateInput = RouterInputs["user"]["create"];
-type UserCreateOutput = RouterOutputs["user"]["create"];
+type BedCreateInput = RouterInputs["bed"]["create"];
+type BedCreateOutput = RouterOutputs["bed"]["create"];
 
 interface BedCreateProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**
@@ -26,18 +25,16 @@ interface BedCreateProps {
  */
 const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<
-    UserCreateOutput | undefined
-  >(undefined);
+  const [serverResult, setServerResult] = useState<BedCreateInput | undefined>(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserCreateInput>();
+  } = useForm<BedCreateInput>();
 
-  const { mutate } = api.user.create.useMutation({
-    onSuccess: async (data: UserCreateOutput) => {
+  const { mutate } = api.bed.create.useMutation({
+    onSuccess: async (data: BedCreateOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -50,7 +47,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
    * @param data Form data.
    * @returns
    */
-  const onSubmit: SubmitHandler<UserCreateInput> = (data) => {
+  const onSubmit: SubmitHandler<BedCreateInput> = (data) => {
     mutate(data);
   };
 
@@ -72,134 +69,55 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
 
       <h2 className="text-xl font-semibold">Room</h2>
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            className="rounded border border-gray-300 p-2"
-            {...register("firstName", {
-              required: "First name is required",
-            })}
-          />
-          {errors.firstName && (
-            <ErrorMessage id="firstName-error">
-              {errors.firstName.message}
-            </ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="lastName">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            className="rounded border border-gray-300 p-2"
-            {...register("lastName", {
-              required: "Last name is required",
-            })}
-          />
-          {errors.lastName && (
-            <ErrorMessage id="lastName-error">
-              {errors.lastName.message}
-            </ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="role">Role</label>
-          <select
-            id="role"
-            className="rounded border border-gray-300 p-[9.5px]"
-            {...register("role", {
-              required: "Role is required",
-            })}
-          >
-            <option value={Role.PATIENT}>{Role.PATIENT}</option>
-            <option value={Role.NURSE}>{Role.NURSE}</option>
-            <option value={Role.DOCTOR}>{Role.DOCTOR}</option>
-            <option value={Role.ADMIN}>{Role.ADMIN}</option>
-          </select>
-          {errors.role && (
-            <ErrorMessage id="role-error">{errors.role.message}</ErrorMessage>
-          )}
-        </div>
+        <FormInput<BedCreateInput>
+          label="label for the room"
+          registerDetails={{...register("room", {
+              required: "Room label is required",
+            })}}
+          id="room"
+          errorMessage={errors.room ? errors.room.message : undefined}
+        />
       </div>
 
       <h2 className="text-xl font-semibold">Building Address</h2>
-      <div className="flex flex-col">
-        <label htmlFor="dateOfBirth">Date of Birth</label>
-        <input
-          type="date"
-          id="dateOfBirth"
-          className="rounded border border-gray-300 p-2"
-          {...register("dateOfBirth", {
-            required: "Date of birth is required",
-          })}
+      <FormInput<BedCreateInput>
+        label="Street"
+        registerDetails={{...register("street", {
+            required: "Street is required"
+          })}}
+        id="street"
+        errorMessage={errors.street ? errors.street.message : undefined}
+      />
+
+      <div className="flex flex-col items-stretch gap-2 sm:flex-row">
+        <FormInput<BedCreateInput>
+          label="City"
+          registerDetails={{...register("city", {
+              required: "City is required"
+            })}}
+          id="city"
+          errorMessage={errors.city ? errors.city.message : undefined}
         />
-        {errors.dateOfBirth && (
-          <ErrorMessage id="dateOfBirth-error">
-            {errors.dateOfBirth.message}
-          </ErrorMessage>
-        )}
+        <FormInput<BedCreateInput>
+          label="State"
+          registerDetails={{...register("state", {
+              required: "State is required"
+            })}}
+          id="state"
+          errorMessage={errors.state ? errors.state.message : undefined}
+        />
       </div>
 
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            className="rounded border border-gray-300 p-2"
-            {...register("username", {
-              required: "Username is required",
-            })}
-          />
-          {errors.username && (
-            <ErrorMessage id="username-error">
-              {errors.username.message}
-            </ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            className="rounded border border-gray-300 p-2"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+$/i,
-                message: "Email is invalid",
-              },
-            })}
-          />
-          {errors.email && (
-            <ErrorMessage id="email-error">{errors.email.message}</ErrorMessage>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col">
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          className="rounded border border-gray-300 p-2"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters",
-            },
-          })}
+        <FormGap />
+        <FormInput<BedCreateInput>
+          label="Zipcode"
+          registerDetails={{...register("zipCode", {
+              required: "Zipcode is required"
+            })}}
+          id="zipCode"
+          errorMessage={errors.zipCode ? errors.zipCode.message : undefined}
         />
-        {errors.password && (
-          <ErrorMessage id="password-error">
-            {errors.password.message}
-          </ErrorMessage>
-        )}
       </div>
 
       <div className="flex gap-2">
