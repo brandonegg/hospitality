@@ -2,7 +2,8 @@ import type { Bed, User} from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import type { Dispatch, SetStateAction} from "react";
+import { useState } from "react";
 
 import MainHeader from "../../components/Header";
 import { AddButton } from "../../components/tables/buttons";

@@ -1,6 +1,6 @@
-import type { User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 
+import type { UserRowData } from "../../pages/users";
 import { TablePopup } from "../tables/input";
 
 import UserCreate from "./UserCreate";
@@ -9,10 +9,10 @@ import UserEdit from "./UserEdit";
 
 interface UserPopupBodyProps {
   type?: "create" | "edit" | "delete";
-  user?: User;
+  user?: UserRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<User>;
-  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
+  popup: TablePopup<UserRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
 }
 
 /**
@@ -55,8 +55,8 @@ const UserPopupBody = ({
 
 interface UserPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<User>;
-  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
+  popup: TablePopup<UserRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
 }
 
 /**
@@ -65,7 +65,7 @@ interface UserPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: UserPopupProps) => {
   return (
-    <TablePopup<User> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
+    <TablePopup<UserRowData> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
         <UserPopupBody
             refetch={refetch}
             user={popup.data}

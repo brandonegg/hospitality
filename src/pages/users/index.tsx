@@ -16,7 +16,7 @@ import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { classNames } from "../../utils/text";
 
-export type User = RouterOutputs["user"]["getAll"]["items"][number];
+export type UserRowData = RouterOutputs["user"]["getAll"]["items"][number];
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
@@ -50,7 +50,7 @@ const UsersPage: NextPage = () => {
 
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
-  const [popup, setPopup] = useState<TablePopup<User>>({ show: false });
+  const [popup, setPopup] = useState<TablePopup<UserRowData>>({ show: false });
 
   const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(

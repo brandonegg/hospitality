@@ -1,10 +1,10 @@
+import type { Bed, User } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { UserRowData } from "../../pages/users";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
@@ -14,17 +14,17 @@ import type { TablePopup } from "../tables/input";
 type UserCreateInput = RouterInputs["user"]["create"];
 type UserCreateOutput = RouterOutputs["user"]["create"];
 
-interface UserCreateProps {
+interface BedCreateProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<Bed>;
+  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
 }
 
 /**
  * UserCreate component
  * @returns JSX
  */
-const UserCreate = ({ refetch, setPopup }: UserCreateProps) => {
+const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     UserCreateOutput | undefined
@@ -221,4 +221,4 @@ const UserCreate = ({ refetch, setPopup }: UserCreateProps) => {
   );
 };
 
-export default UserCreate;
+export default BedCreate;

@@ -1,10 +1,10 @@
+import type { User } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { UserRowData } from "../../pages/users";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
@@ -16,9 +16,9 @@ type UserUpdateOutput = RouterOutputs["user"]["update"];
 
 interface UserEditProps {
   refetch: () => Promise<void>;
-  user?: UserRowData;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  user?: User;
+  popup: TablePopup<User>;
+  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
 }
 
 /**

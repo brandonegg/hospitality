@@ -1,8 +1,9 @@
 import type { Bed } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { User } from "../../pages/users";
 import { TablePopup } from "../tables/input";
+
+import BedCreate from "./BedCreate";
 
 interface BedPopupBodyProps {
   type?: "create" | "edit" | "delete";
