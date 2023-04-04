@@ -1,6 +1,6 @@
+import type { User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { User } from "../../pages/users";
 import { TablePopup } from "../tables/input";
 
 import UserCreate from "./UserCreate";
