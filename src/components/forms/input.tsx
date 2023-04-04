@@ -1,4 +1,4 @@
-import type { FieldErrors, FieldValues, Path, UseFormRegisterReturn } from "react-hook-form";
+import type { FieldValues, Path, UseFormRegisterReturn } from "react-hook-form";
 
 import ErrorMessage from "../ErrorMessage";
 
