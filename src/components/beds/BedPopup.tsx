@@ -4,6 +4,8 @@ import type { Dispatch, SetStateAction } from "react";
 import { TablePopup } from "../tables/input";
 
 import BedCreate from "./BedCreate";
+import BedDelete from "./BedDelete";
+import BedEdit from "./BedEdit";
 
 interface BedPopupBodyProps {
   type?: "create" | "edit" | "delete";

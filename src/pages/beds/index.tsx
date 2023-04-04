@@ -1,83 +1,15 @@
-import type { Bed, User} from "@prisma/client";
+import type { Bed} from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
-import type { Dispatch, SetStateAction} from "react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
+import BedPopup from "../../components/beds/BedPopup";
 import { AddButton } from "../../components/tables/buttons";
-import { TablePopup } from "../../components/tables/input";
+import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
-
-interface UserPopupBodyProps {
-  type?: "create" | "edit" | "delete";
-  user?: User;
-  refetch: () => Promise<void>;
-  popup: TablePopup<User>;
-  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
-}
-
-/**
- * User popup body component.
- * @param param0
- * @returns JSX
- */
-const BedPopupBody = ({
-  refetch,
-  user,
-  type,
-  popup,
-  setPopup,
-}: UserPopupBodyProps) => {
-  switch (type) {
-    case "create":
-      return <UserCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
-    case "edit":
-      return (
-        <UserEdit
-          refetch={refetch}
-          user={user}
-          popup={popup}
-          setPopup={setPopup}
-        />
-      );
-    case "delete":
-      return (
-        <UserDelete
-          refetch={refetch}
-          user={user}
-          popup={popup}
-          setPopup={setPopup}
-        />
-      );
-    default:
-      return <></>;
-  }
-};
-
-interface BedPopupProps {
-  refetch: () => Promise<void>;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
-}
-
-/**
- * Main popup component for the beds table
- */
-const BedPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
-  return (
-    <TablePopup<User> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
-        <BedPopupBody
-            refetch={refetch}
-            user={popup.data}
-            type={popup.type}
-            popup={popup}
-            setPopup={setPopup}
-          />
-    </TablePopup>
-  );
-};
+import { api } from "../../utils/api";
 
 /**
  * Main beds table element.
@@ -110,7 +42,19 @@ const BedsTable = () => {
  */
 const BedsPage: NextPage = () => {
     const { data: sessionData } = useSession();
+    const [page, setPage] = useState(0);
+    const [limit] = useState<number>(10);
     const [popup, setPopup] = useState<TablePopup<Bed>>({ show: false });
+
+    // const { data, error, isLoading, fetchNextPage, refetch } =
+    // api.bed.getAll.useInfiniteQuery(
+    //   {
+    //     limit,
+    //   },
+    //   {
+    //     getNextPageParam: (lastPage) => lastPage.nextCursor,
+    //   }
+    // );
 
     return(
         <main className="mx-auto max-w-[1400px]">
@@ -119,14 +63,14 @@ const BedsPage: NextPage = () => {
               <div className="flex items-center justify-between">
                 <TablePageHeader label="Beds" count={0} />
                 <div>
-                  <AddButton label="Bed" />
+                  <AddButton label="Bed" onClick={() => setPopup({ show: true, type: "create" })} />
                 </div>
               </div>
 
               {/* Popup */}
               { popup.show && (
                 <BedPopup
-                  refetch={refetch as unknown as () => Promise<void>}
+                  refetch={async () => {return;}}
                   popup={popup}
                   setPopup={setPopup}
                 />

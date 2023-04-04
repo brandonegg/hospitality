@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { Bed } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -11,9 +11,9 @@ import type { TablePopup } from "../tables/input";
 
 interface UserDeleteProps {
   refetch: () => Promise<void>;
-  user?: User;
-  popup: TablePopup<User>;
-  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
+  bed?: Bed;
+  popup: TablePopup<Bed>;
+  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
 }
 
 type UserDeleteInput = RouterInputs["user"]["delete"];
@@ -31,7 +31,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
  * @param param0
  * @returns JSX
  */
-const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
+const UserDelete = ({ refetch, bed, setPopup }: UserDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     UserDeleteOutput | undefined
@@ -75,49 +75,8 @@ const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
 
       <p>Do you want to this delete this user?</p>
 
-      <input type="hidden" value={user?.id} {...register("id")} />
+      <input type="hidden" value={bed?.id} {...register("id")} />
 
-      <div className="space-y-1">
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Name:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.name}</p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Email:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.email}</p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">
-            Date of Birth:
-          </p>
-          <p className="col-span-10 sm:col-span-8">
-            {dateFormatter.format(user?.dateOfBirth as Date)}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Role:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.role}</p>
-        </div>
-      </div>
-
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
-        >
-          Confirm
-        </button>
-        <button
-          type="button"
-          onClick={() => setPopup({ show: false })}
-          className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
-        >
-          Cancel
-        </button>
-      </div>
     </form>
   );
 };

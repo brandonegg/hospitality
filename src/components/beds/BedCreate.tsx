@@ -1,4 +1,4 @@
-import type { Bed, User } from "@prisma/client";
+import type { Bed } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";

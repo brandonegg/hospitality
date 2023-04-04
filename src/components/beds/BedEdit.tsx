@@ -1,4 +1,4 @@
-import type { User } from "@prisma/client";
+import type { Bed} from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
@@ -16,9 +16,9 @@ type UserUpdateOutput = RouterOutputs["user"]["update"];
 
 interface UserEditProps {
   refetch: () => Promise<void>;
-  user?: User;
-  popup: TablePopup<User>;
-  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
+  bed?: Bed;
+  popup: TablePopup<Bed>;
+  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
 }
 
 /**
@@ -26,7 +26,7 @@ interface UserEditProps {
  * @param param0
  * @returns JSX
  */
-const UserEdit = ({ refetch, user, setPopup }: UserEditProps) => {
+const UserEdit = ({ refetch, bed, setPopup }: UserEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     UserUpdateOutput | undefined
@@ -37,7 +37,7 @@ const UserEdit = ({ refetch, user, setPopup }: UserEditProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<UserUpdateInput>({
-    defaultValues: user,
+    defaultValues: bed,
   });
 
   const { mutate } = api.user.update.useMutation({
