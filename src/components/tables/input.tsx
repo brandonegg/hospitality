@@ -1,7 +1,11 @@
 import { Dialog } from "@headlessui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { Popup } from "../../pages/users";
+export type Popup<T> = {
+    show: boolean;
+    type?: "create" | "edit" | "delete";
+    data?: T;
+  };
 
 /**
  * User popup title component.
@@ -12,16 +16,16 @@ const TablePopupTitle = ({ type, label }: {
     type?: "create" | "edit" | "delete";
     label: string;
 }) => {
-switch (type) {
-    case "create":
-    return <>Create {label}</>;
-    case "edit":
-    return <>Edit {label}</>;
-    case "delete":
-    return <>Delete {label}</>;
-    default:
-    return <></>;
-}
+    switch (type) {
+        case "create":
+        return <>Create {label}</>;
+        case "edit":
+        return <>Edit {label}</>;
+        case "delete":
+        return <>Delete {label}</>;
+        default:
+        return <></>;
+    }
 };
 
 /**

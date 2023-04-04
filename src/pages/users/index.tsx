@@ -10,6 +10,7 @@ import { useState } from "react";
 import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
 import { AddButton, DeleteRowButton, EditRowButton } from "../../components/tables/buttons";
+import type { Popup } from "../../components/tables/input";
 import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
@@ -39,12 +40,6 @@ const getInitial = (name: string) => {
   return initials;
 };
 
-export type Popup = {
-  show: boolean;
-  type?: "create" | "edit" | "delete";
-  user?: User;
-};
-
 /**
  * Users page
  * @param props
@@ -55,7 +50,7 @@ const UsersPage: NextPage = () => {
 
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
-  const [popup, setPopup] = useState<Popup>({ show: false });
+  const [popup, setPopup] = useState<Popup<User>>({ show: false });
 
   const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(
@@ -192,10 +187,10 @@ const UsersPage: NextPage = () => {
                       <td className="px-6 py-2">
                         <div className="flex gap-2">
                           <EditRowButton testId={`edit-${index}`} onClick={() =>
-                              setPopup({ show: true, type: "edit", user })
+                              setPopup({ show: true, type: "edit", data: user })
                           }/>
                           <DeleteRowButton testId={`delete-${index}`} onClick={() =>
-                              setPopup({ show: true, type: "delete", user })
+                              setPopup({ show: true, type: "delete", data: user })
                           }/>
                         </div>
                       </td>
