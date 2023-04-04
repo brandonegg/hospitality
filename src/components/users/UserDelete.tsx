@@ -3,16 +3,17 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { Popup, User } from "../../pages/users";
+import type {User } from "../../pages/users";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
+import type { TablePopup } from "../tables/input";
 
 interface UserDeleteProps {
   refetch: () => Promise<void>;
   user?: User;
-  popup: Popup;
-  setPopup: Dispatch<SetStateAction<Popup>>;
+  popup: TablePopup<User>;
+  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
 }
 
 type UserDeleteInput = RouterInputs["user"]["delete"];

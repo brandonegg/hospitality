@@ -1,22 +1,23 @@
+import type { User } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { Popup } from "../../pages/users";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
+import type { TablePopup } from "../tables/input";
 
 type UserCreateInput = RouterInputs["user"]["create"];
 type UserCreateOutput = RouterOutputs["user"]["create"];
 
 interface UserCreateProps {
   refetch: () => Promise<void>;
-  popup: Popup;
-  setPopup: Dispatch<SetStateAction<Popup>>;
+  popup: TablePopup<User>;
+  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
 }
 
 /**

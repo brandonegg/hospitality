@@ -1,11 +1,82 @@
+import type { Bed, User} from "@prisma/client";
 import { Role } from "@prisma/client";
-import type { GetServerSidePropsContext } from "next";
+import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import MainHeader from "../../components/Header";
 import { AddButton } from "../../components/tables/buttons";
 import { TablePopup } from "../../components/tables/input";
+import { TablePageHeader } from "../../components/tables/labels";
+
+interface UserPopupBodyProps {
+  type?: "create" | "edit" | "delete";
+  user?: User;
+  refetch: () => Promise<void>;
+  popup: TablePopup<User>;
+  setPopup: Dispatch<SetStateAction<TablePopup<User>>>;
+}
+
+/**
+ * User popup body component.
+ * @param param0
+ * @returns JSX
+ */
+const BedPopupBody = ({
+  refetch,
+  user,
+  type,
+  popup,
+  setPopup,
+}: UserPopupBodyProps) => {
+  switch (type) {
+    case "create":
+      return <UserCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
+    case "edit":
+      return (
+        <UserEdit
+          refetch={refetch}
+          user={user}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      );
+    case "delete":
+      return (
+        <UserDelete
+          refetch={refetch}
+          user={user}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      );
+    default:
+      return <></>;
+  }
+};
+
+interface BedPopupProps {
+  refetch: () => Promise<void>;
+  popup: TablePopup<Bed>;
+  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+}
+
+/**
+ * Main popup component for the beds table
+ */
+const BedPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
+  return (
+    <TablePopup<User> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
+        <BedPopupBody
+            refetch={refetch}
+            user={popup.data}
+            type={popup.type}
+            popup={popup}
+            setPopup={setPopup}
+          />
+    </TablePopup>
+  );
+};
 
 /**
  * Main beds table element.
@@ -36,21 +107,29 @@ const BedsTable = () => {
  * Beds Table view for creating, modifying, and deleting beds
  * @returns
  */
-const BedsPage = () => {
+const BedsPage: NextPage = () => {
     const { data: sessionData } = useSession();
-    const [popup, setPopup] = useState<TablePopup<Bed>({ show: false });
+    const [popup, setPopup] = useState<TablePopup<Bed>>({ show: false });
 
     return(
         <main className="mx-auto max-w-[1400px]">
             <MainHeader user={sessionData?.user} />
-            <div className="font-bold mx-6 text-xl py-2 flex flex-row justify-between">
-              <div className="flex flex-col">
-                <h1 className="text-3xl">All Beds</h1>
-                <p className="font-normal">0 beds</p>
+            <div className="m-6 gap-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <TablePageHeader label="Beds" count={0} />
+                <div>
+                  <AddButton label="Bed" />
+                </div>
               </div>
-              <div className="mt-auto">
-                <AddButton label="Bed" />
-              </div>
+
+              {/* Popup */}
+              { popup.show && (
+                <BedPopup
+                  refetch={refetch as unknown as () => Promise<void>}
+                  popup={popup}
+                  setPopup={setPopup}
+                />
+              )}
             </div>
             <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
               <BedsTable />
