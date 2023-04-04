@@ -1,12 +1,15 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
-import type { SubmitHandler } from "react-hook-form";
+import type { FieldValues, SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
 import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { STATES } from "../../utils/constants";
 import Alert from "../Alert";
+import ErrorMessage from "../ErrorMessage";
+import type { FormInputProps } from "../forms/input";
 import { FormGap, FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
@@ -18,6 +21,35 @@ interface BedCreateProps {
   popup: TablePopup<BedRowData>;
   setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
+
+/**
+ * Input state selector for the popup create form.
+ */
+const StateSelector = <T extends FieldValues,>({label, id, errorMessage, registerDetails}: FormInputProps<T>) => {
+  return (
+    <div className="flex flex-col">
+      <label htmlFor="state">{label}</label>
+      <select
+        className={"h-[42px] rounded border border-gray-300 p-2"}
+        {...registerDetails}
+      >
+        {STATES.map((state) => (
+          <option
+            key={state.abbreviation}
+            value={state.abbreviation}
+          >
+            {state.name}
+          </option>
+        ))}
+      </select>
+      {errorMessage && (
+        <ErrorMessage id={id}>
+          {errorMessage}
+        </ErrorMessage>
+      )}
+    </div>
+  );
+};
 
 /**
  * UserCreate component
@@ -98,7 +130,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
           id="city"
           errorMessage={errors.city ? errors.city.message : undefined}
         />
-        <FormInput<BedCreateInput>
+        <StateSelector<BedCreateInput>
           label="State"
           registerDetails={{...register("state", {
               required: "State is required"

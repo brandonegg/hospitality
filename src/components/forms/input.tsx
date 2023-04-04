@@ -2,7 +2,7 @@ import type { FieldValues, Path, UseFormRegisterReturn } from "react-hook-form";
 
 import ErrorMessage from "../ErrorMessage";
 
-interface FormInputProps<T extends FieldValues> {
+export interface FormInputProps<T extends FieldValues> {
     label?: string;
     id: string;
     registerDetails: UseFormRegisterReturn<Path<T>>;
