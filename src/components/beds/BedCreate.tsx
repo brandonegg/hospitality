@@ -102,7 +102,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <h2 className="text-xl font-semibold">Room</h2>
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
-          label="label for the room"
+          label="room label"
           registerDetails={{...register("room", {
               required: "Room label is required",
             })}}
@@ -112,23 +112,14 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       </div>
 
       <h2 className="text-xl font-semibold">Building Address</h2>
-      <FormInput<BedCreateInput>
-        label="Street"
-        registerDetails={{...register("street", {
-            required: "Street is required"
-          })}}
-        id="street"
-        errorMessage={errors.street ? errors.street.message : undefined}
-      />
-
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
-          label="City"
-          registerDetails={{...register("city", {
-              required: "City is required"
+          label="Street"
+          registerDetails={{...register("street", {
+              required: "Street is required"
             })}}
-          id="city"
-          errorMessage={errors.city ? errors.city.message : undefined}
+          id="street"
+          errorMessage={errors.street ? errors.street.message : undefined}
         />
         <StateSelector<BedCreateInput>
           label="State"
@@ -141,7 +132,14 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       </div>
 
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-        <FormGap />
+        <FormInput<BedCreateInput>
+          label="City"
+          registerDetails={{...register("city", {
+              required: "City is required"
+            })}}
+          id="city"
+          errorMessage={errors.city ? errors.city.message : undefined}
+        />
         <FormInput<BedCreateInput>
           label="ZIP Code"
           registerDetails={{...register("zipCode", {
