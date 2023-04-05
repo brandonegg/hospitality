@@ -1,9 +1,9 @@
-import type { Bed} from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
@@ -15,9 +15,9 @@ type BedUpdateOutput = RouterOutputs["bed"]["update"];
 
 interface BedEditProps {
   refetch: () => Promise<void>;
-  bed?: Bed;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+  bed?: BedRowData;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**

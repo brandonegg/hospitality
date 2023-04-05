@@ -1,4 +1,3 @@
-import type { Bed} from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
@@ -15,14 +14,15 @@ import { ActionsEntry } from "../../components/tables/rows";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { dateFormatter } from "../../utils/date";
+import { addressToString } from "../../utils/text";
 
-type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
+export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 
 /**
  * Component for a single row of the bed table
  */
 const BedsTableRow = ({item, setPopup}: {
-  item: Bed
+  item: BedRowData
   setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
 }) => {
   const editDetails: ButtonDetails = {
@@ -35,9 +35,13 @@ const BedsTableRow = ({item, setPopup}: {
 
   return (
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
+      <td className="px-6 py-2">{addressToString(item.building)}</td>
       <td className="px-6 py-2">{item.room}</td>
-      <td className="px-6 py-2">{item.room}</td>
-      <td className="px-6 py-2">{item.userId ? 'occupied' : 'unoccupied'}</td>
+      {item.userId ? (
+        <td className="px-6 py-2 font-bold text-rose-600">occupied</td>
+      ): (
+        <td className="px-6 py-2 font-bold text-green-500">unoccupied</td>
+      )}
       <td className="px-6 py-2">
         {dateFormatter.format(item.lastOccupied as Date)}
       </td>
@@ -55,7 +59,7 @@ const BedsTableRow = ({item, setPopup}: {
  * Main beds table element.
  */
 const BedsTable = ({items, setPopup}: {
-  items: Bed[] | undefined
+  items: BedRowData[] | undefined,
   setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
 }) => {
     return (
@@ -89,7 +93,7 @@ const BedsPage: NextPage = () => {
     const { data: sessionData } = useSession();
     const [page] = useState(0);
     const [limit] = useState<number>(10);
-    const [popup, setPopup] = useState<TablePopup<Bed>>({ show: false });
+    const [popup, setPopup] = useState<TablePopup<BedRowData>>({ show: false });
 
     const { data, refetch } =
       api.bed.getAll.useInfiniteQuery(

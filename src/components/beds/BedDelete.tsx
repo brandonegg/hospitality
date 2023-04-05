@@ -1,19 +1,19 @@
-import type { Bed } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
-interface UserDeleteProps {
+interface BedDeleteProps {
   refetch: () => Promise<void>;
-  bed?: Bed;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+  bed?: BedRowData;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 type BedDeleteInput = RouterInputs["bed"]["delete"];
@@ -24,7 +24,7 @@ type BedDeleteOutput = RouterOutputs["bed"]["delete"];
  * @param param0
  * @returns JSX
  */
-const UserDelete = ({ refetch, bed, setPopup }: UserDeleteProps) => {
+const BedDelete = ({ refetch, bed, setPopup }: BedDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<BedDeleteOutput | undefined>(undefined);
 
@@ -94,4 +94,4 @@ const UserDelete = ({ refetch, bed, setPopup }: UserDeleteProps) => {
   );
 };
 
-export default UserDelete;
+export default BedDelete;

@@ -15,6 +15,9 @@ export const bedRouter = createTRPCRouter({
       const [count, items] = await ctx.prisma.$transaction([
         ctx.prisma.bed.count(),
         ctx.prisma.bed.findMany({
+          include: {
+            building: true,
+          },
           take: limit + 1,
           cursor: cursor ? { id: cursor } : undefined,
         }),
@@ -25,6 +28,7 @@ export const bedRouter = createTRPCRouter({
         const nextItem = items.pop(); // return the last item from the array
         nextCursor = nextItem?.id;
       }
+
       return {
         count,
         items,

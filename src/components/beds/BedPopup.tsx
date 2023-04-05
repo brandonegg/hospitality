@@ -1,6 +1,6 @@
-import type { Bed } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 
+import type { BedRowData } from "../../pages/beds";
 import { TablePopup } from "../tables/input";
 
 import BedCreate from "./BedCreate";
@@ -9,10 +9,10 @@ import BedEdit from "./BedEdit";
 
 interface BedPopupBodyProps {
   type?: "create" | "edit" | "delete";
-  bed?: Bed;
+  bed?: BedRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**
@@ -55,8 +55,8 @@ const BedPopupBody = ({
 
 interface BedPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<Bed>;
-  setPopup: Dispatch<SetStateAction<TablePopup<Bed>>>;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**
@@ -65,7 +65,7 @@ interface BedPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
   return (
-    <TablePopup<Bed> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
+    <TablePopup<BedRowData> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
         <BedPopupBody
             refetch={refetch}
             bed={popup.data}
