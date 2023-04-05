@@ -134,6 +134,60 @@ async function main() {
         addressId: hospitalAddress.id,
         room: "1100",
       },
+      {
+        addressId: hospitalAddress.id,
+        room: "403B",
+        userId: admin.id,
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "404",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "405",
+        userId: admin.id,
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "406",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "407",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "408",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "409",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "410",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "411",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "220",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "104",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "106B",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "107",
+      },
     ]
   });
 }
