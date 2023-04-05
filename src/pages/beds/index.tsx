@@ -13,10 +13,31 @@ import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
-import { dateFormatter } from "../../utils/date";
 import { addressToString } from "../../utils/text";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
+export type BedOccupantData = BedRowData["occupant"];
+
+/**
+ * UI component for the assigned patient table cell.
+ */
+const AssignedPatientCell = ({occupant}: {
+  occupant: BedOccupantData,
+}) => {
+  if (!occupant) {
+    return (
+      <p>
+        No patient assigned
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      {occupant?.name}
+    </div>
+  );
+};
 
 /**
  * Component for a single row of the bed table
@@ -43,18 +64,7 @@ const BedsTableRow = ({item, setPopup}: {
         <td className="px-6 py-2 font-bold text-green-500">unoccupied</td>
       )}
       <td className="px-6 py-2">
-        {item.lastOccupied ?
-          dateFormatter.format(item.lastOccupied)
-          :
-          "never"
-        }
-      </td>
-      <td className="px-6 py-2">
-        {item.lastUnoccupied ?
-          dateFormatter.format(item.lastUnoccupied)
-          :
-          "never"
-        }
+        <AssignedPatientCell occupant={item.occupant} />
       </td>
       <td className="grid place-items-end px-2 py-2">
         <ActionsEntry editDetails={editDetails} deleteDetails={deleteDetails} label="Bed" />
@@ -75,12 +85,11 @@ const BedsTable = ({items, setPopup}: {
             <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead className="bg-slate-800 text-sm uppercase text-gray-300">
                     <tr>
-                        <th className="w-[200px] px-6 py-3 lg:w-1/8">Building</th>
-                        <th className="w-[100px] px-6 py-3 lg:w-1/8">Room</th>
-                        <th className="w-[100px] px-6 py-3">Status</th>
-                        <th className="w-[170px] px-6 py-3">Last Occupied</th>
-                        <th className="w-[190px] px-6 py-3">Last Unoccupied</th>
-                        <th className="w-[180px] px-6 py-3">Actions</th>
+                        <th className="w-[200px] px-6 py-3 lg:w-1/2">Building</th>
+                        <th className="w-[100px] px-6 py-3 lg:w-1/4">Room</th>
+                        <th className="w-[100px] px-6 py-3 lg:w-1/4">Status</th>
+                        <th className="w-[200px] px-6 py-3 lg:w-1/2">Assigned Patient</th>
+                        <th className="w-[200px] px-6 py-3 lg:w-1/3">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

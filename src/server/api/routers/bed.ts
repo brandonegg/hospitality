@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+import { defaultUserSelect } from "./user";
+
 export const bedRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
@@ -17,6 +19,9 @@ export const bedRouter = createTRPCRouter({
         ctx.prisma.bed.findMany({
           include: {
             building: true,
+            occupant: {
+              select: defaultUserSelect,
+            },
           },
           take: limit + 1,
           cursor: cursor ? { id: cursor } : undefined,
