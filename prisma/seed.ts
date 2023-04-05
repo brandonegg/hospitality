@@ -109,7 +109,33 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log({ admin });
+  const hospitalAddress = await prisma.address.upsert({
+    where: {
+      id: "uiowa_hopsital_address",
+    },
+    create: {
+      id: "uiowa_hopsital_address",
+      street: "200 Hawkins Dr.",
+      city: "Iowa City",
+      state: "Iowa",
+      zipCode: 52242,
+    },
+    update: {},
+  });
+
+  await prisma.bed.createMany({
+    data: [
+      {
+        addressId: hospitalAddress.id,
+        room: "401A",
+        userId: admin.id,
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "1100",
+      },
+    ]
+  });
 }
 
 main()
