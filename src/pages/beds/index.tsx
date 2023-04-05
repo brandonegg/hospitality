@@ -26,7 +26,7 @@ const AssignedPatientCell = ({occupant}: {
 }) => {
   if (!occupant) {
     return (
-      <p>
+      <p className="italic text-neutral-400">
         No patient assigned
       </p>
     );
