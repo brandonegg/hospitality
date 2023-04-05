@@ -129,10 +129,13 @@ async function main() {
         addressId: hospitalAddress.id,
         room: "401A",
         userId: admin.id,
+        lastUnoccupied: new Date('2/4/2023'),
       },
       {
         addressId: hospitalAddress.id,
         room: "1100",
+        lastOccupied: new Date('1/29/2023'),
+        lastUnoccupied: new Date(),
       },
     ]
   });

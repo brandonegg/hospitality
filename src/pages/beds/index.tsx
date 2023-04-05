@@ -43,10 +43,18 @@ const BedsTableRow = ({item, setPopup}: {
         <td className="px-6 py-2 font-bold text-green-500">unoccupied</td>
       )}
       <td className="px-6 py-2">
-        {dateFormatter.format(item.lastOccupied as Date)}
+        {item.lastOccupied ?
+          dateFormatter.format(item.lastOccupied)
+          :
+          "never"
+        }
       </td>
       <td className="px-6 py-2">
-        {dateFormatter.format(item.lastUnoccupied as Date)}
+        {item.lastUnoccupied ?
+          dateFormatter.format(item.lastUnoccupied)
+          :
+          "never"
+        }
       </td>
       <td className="grid place-items-end px-2 py-2">
         <ActionsEntry editDetails={editDetails} deleteDetails={deleteDetails} label="Bed" />
