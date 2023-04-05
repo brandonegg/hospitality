@@ -122,6 +122,7 @@ const BedsPage: NextPage = () => {
         }
       );
 
+    const bedsLength = data?.pages[page]?.count;
     const beds = data?.pages[page]?.items;
 
     return(
@@ -129,7 +130,7 @@ const BedsPage: NextPage = () => {
             <MainHeader user={sessionData?.user} />
             <div className="m-6 gap-4 space-y-2">
               <div className="flex items-center justify-between">
-                <TablePageHeader label="Beds" count={0} />
+                <TablePageHeader label="Beds" count={bedsLength} />
                 <div>
                   <AddButton label="Bed" onClick={() => setPopup({ show: true, type: "create" })} />
                 </div>
