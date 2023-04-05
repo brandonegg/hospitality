@@ -1,5 +1,4 @@
 import type { Bed} from "@prisma/client";
-import { Role } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -8,13 +7,13 @@ import { useForm } from "react-hook-form";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
-import ErrorMessage from "../ErrorMessage";
+import { FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
-type UserUpdateInput = RouterInputs["user"]["update"];
-type UserUpdateOutput = RouterOutputs["user"]["update"];
+type BedUpdateInput = RouterInputs["bed"]["update"];
+type BedUpdateOutput = RouterOutputs["bed"]["update"];
 
-interface UserEditProps {
+interface BedEditProps {
   refetch: () => Promise<void>;
   bed?: Bed;
   popup: TablePopup<Bed>;
@@ -26,22 +25,20 @@ interface UserEditProps {
  * @param param0
  * @returns JSX
  */
-const UserEdit = ({ refetch, bed, setPopup }: UserEditProps) => {
+const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<
-    UserUpdateOutput | undefined
-  >(undefined);
+  const [serverResult, setServerResult] = useState<BedUpdateOutput | undefined>(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserUpdateInput>({
+  } = useForm<BedUpdateInput>({
     defaultValues: bed,
   });
 
-  const { mutate } = api.user.update.useMutation({
-    onSuccess: async (data: UserUpdateOutput) => {
+  const { mutate } = api.bed.update.useMutation({
+    onSuccess: async (data: BedUpdateOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -54,13 +51,13 @@ const UserEdit = ({ refetch, bed, setPopup }: UserEditProps) => {
    * @param data Form data.
    * @returns
    */
-  const onSubmit: SubmitHandler<UserUpdateInput> = (data) => {
+  const onSubmit: SubmitHandler<BedUpdateInput> = (data) => {
     mutate(data);
   };
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated a user!</Alert>
+      <Alert type="success">Successfully updated bed!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -76,37 +73,14 @@ const UserEdit = ({ refetch, bed, setPopup }: UserEditProps) => {
 
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            className="rounded border border-gray-300 p-2"
-            {...register("name", {
-              required: "Name is required",
-            })}
+          <FormInput<BedUpdateInput>
+            label="Room Label"
+            registerDetails={{...register("room", {
+                required: "Room label is required",
+              })}}
+            id="room"
+            errorMessage={errors.room ? errors.room.message : undefined}
           />
-          {errors.name && (
-            <ErrorMessage id="name-error">{errors.name.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="role">Role</label>
-          <select
-            id="role"
-            className="rounded border border-gray-300 p-[9.5px]"
-            {...register("role", {
-              required: "Role is required",
-            })}
-          >
-            <option value={Role.PATIENT}>{Role.PATIENT}</option>
-            <option value={Role.NURSE}>{Role.NURSE}</option>
-            <option value={Role.DOCTOR}>{Role.DOCTOR}</option>
-            <option value={Role.ADMIN}>{Role.ADMIN}</option>
-          </select>
-          {errors.role && (
-            <ErrorMessage id="role-error">{errors.role.message}</ErrorMessage>
-          )}
         </div>
       </div>
 
@@ -129,4 +103,4 @@ const UserEdit = ({ refetch, bed, setPopup }: UserEditProps) => {
   );
 };
 
-export default UserEdit;
+export default BedEdit;

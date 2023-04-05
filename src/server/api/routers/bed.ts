@@ -74,6 +74,22 @@ export const bedRouter = createTRPCRouter({
 
       return bed;
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        room: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, room } = input;
+
+      // Update the user
+      return await ctx.prisma.bed.update({
+        where: { id },
+        data: { room },
+      });
+    }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {

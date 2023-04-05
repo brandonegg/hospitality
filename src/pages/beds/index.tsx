@@ -2,6 +2,7 @@ import type { Bed} from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
+import type { Dispatch, SetStateAction} from "react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
@@ -20,15 +21,16 @@ export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 /**
  * Component for a single row of the bed table
  */
-const BedsTableRow = ({item}: {
+const BedsTableRow = ({item, setPopup}: {
   item: Bed
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
 }) => {
   const editDetails: ButtonDetails = {
-    onClick: () => {},
+    onClick: () => setPopup({ show: true, type: "edit", data: item }),
   };
 
   const deleteDetails: ButtonDetails = {
-    onClick: () => {},
+    onClick: () => setPopup({ show: true, type: "delete", data: item }),
   };
 
   return (
@@ -52,8 +54,9 @@ const BedsTableRow = ({item}: {
 /**
  * Main beds table element.
  */
-const BedsTable = ({items}: {
+const BedsTable = ({items, setPopup}: {
   items: Bed[] | undefined
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
 }) => {
     return (
         <div className="overflow-x-auto flex flex-col">
@@ -70,7 +73,7 @@ const BedsTable = ({items}: {
                 </thead>
                 <tbody>
                   {items?.map((bed, index) => (
-                    <BedsTableRow key={index} item={bed}/>
+                    <BedsTableRow setPopup={setPopup} key={index} item={bed}/>
                   ))}
                 </tbody>
             </table>
@@ -121,7 +124,7 @@ const BedsPage: NextPage = () => {
               )}
             </div>
             <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
-              <BedsTable items={beds} />
+              <BedsTable setPopup={setPopup} items={beds} />
             </div>
         </main>
     );

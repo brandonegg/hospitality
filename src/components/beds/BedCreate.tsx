@@ -10,11 +10,11 @@ import { STATES } from "../../utils/constants";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { FormInputProps } from "../forms/input";
-import { FormGap, FormInput } from "../forms/input";
+import { FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
-type BedCreateInput = RouterInputs["bed"]["create"];
-type BedCreateOutput = RouterOutputs["bed"]["create"];
+export type BedCreateInput = RouterInputs["bed"]["create"];
+export type BedCreateOutput = RouterOutputs["bed"]["create"];
 
 interface BedCreateProps {
   refetch: () => Promise<void>;
@@ -102,7 +102,7 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <h2 className="text-xl font-semibold">Room</h2>
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
-          label="room label"
+          label="Room Label"
           registerDetails={{...register("room", {
               required: "Room label is required",
             })}}
