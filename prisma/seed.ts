@@ -123,6 +123,8 @@ async function main() {
     update: {},
   });
 
+  await prisma.bed.deleteMany();
+
   await prisma.bed.createMany({
     data: [
       {
@@ -137,7 +139,6 @@ async function main() {
       {
         addressId: hospitalAddress.id,
         room: "403B",
-        userId: admin.id,
       },
       {
         addressId: hospitalAddress.id,
@@ -146,7 +147,6 @@ async function main() {
       {
         addressId: hospitalAddress.id,
         room: "405",
-        userId: admin.id,
       },
       {
         addressId: hospitalAddress.id,
