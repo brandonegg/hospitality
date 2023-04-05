@@ -16,7 +16,7 @@ import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { dateFormatter } from "../../utils/date";
 
-export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
+type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 
 /**
  * Component for a single row of the bed table
