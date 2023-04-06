@@ -1,41 +1,41 @@
 import { expect, test } from "@playwright/test";
 
-import { doctorTest } from "./playwright/fixtures";
+import { adminTest } from "./playwright/fixtures";
 
 
-test.describe("availability page", () => {
+test.describe("setHours page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/availability', {
+    await page.goto('/adminHourSetting', {
         waitUntil: "load",
     });
   });
 
   test.describe('logged out', () => {
     test('redirect off the page', ({page}) => {
-        expect(page.url()).not.toContain('availability');
+        expect(page.url()).not.toContain('adminHourSetting');
     });
   })
 });
 test.describe('logged in', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/availability", {
+    await page.goto("/adminHourSetting", {
       waitUntil: "load",
     });
   });
-  doctorTest('on the availability page', ({page}) => {
-    expect(page.url()).toContain('availability');
+  adminTest('on the set hours page', ({page}) => {
+    expect(page.url()).toContain('adminHourSetting');
   });
-  doctorTest("has availability title", async ({ page }) => {
-    await expect(page).toHaveTitle(/Set Availability/);
+  adminTest("has set hours title", async ({ page }) => {
+    await expect(page).toHaveTitle(/Set Hours/);
   });
 
-  doctorTest("has back button", async ({ page }) => {
+  adminTest("has back button", async ({ page }) => {
     const back = page.getByText(/Back/);
     await expect(back).toBeVisible();
     await expect(back).toHaveText(/Back/);
   });
 
-  doctorTest("has submit button", async ({ page }) => {
+  adminTest("has submit button", async ({ page }) => {
     const submit = page.getByText(/Submit/);
     await expect(submit).toBeVisible();
     await expect(submit).toHaveText(/Submit/);

@@ -54,6 +54,23 @@ async function globalSetup() {
     },
     update: {},
   });
+  // create patient test user
+  await prisma.user.upsert({
+    where: {
+      email: "e2e-doctor@e2e.com",
+    },
+    create: {
+      name: "e2e-doctor",
+      dateOfBirth: new Date(),
+      username: "e2e-doctor",
+      email: "e2e-doctor@e2e.com",
+      password: await argon2.hash("password"),
+      addressId: address.id,
+      role: Role.DOCTOR,
+    },
+    update: {},
+  });
+  
 }
 
 export default globalSetup;

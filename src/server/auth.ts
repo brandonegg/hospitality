@@ -29,7 +29,6 @@ declare module "next-auth" {
       email: string;
       role: Role;
       // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
 
@@ -40,7 +39,6 @@ declare module "next-auth" {
     email: string;
     role: Role;
     // ...other properties
-    // role: UserRole;
   }
 }
 
@@ -80,7 +78,6 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.role = token.role;
-
         // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;

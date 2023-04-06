@@ -1,5 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 import type { Address, PrismaClient, User } from "@prisma/client";
+import { Role } from "@prisma/client";
 import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 
@@ -103,13 +104,6 @@ describe("sign up router", () => {
     // mock the prisma client db
     const prismaMock = mockDeep<PrismaClient>();
 
-    const mockOutput: RouterOutputs["user"]["signup"] = {
-      id: "test-id",
-      name: "test user",
-      email: "test-user@example.com",
-      username: "test-username",
-    };
-
     const caller = appRouter.createCaller({
       session: null,
       prisma: prismaMock,
@@ -124,10 +118,18 @@ describe("sign up router", () => {
       state: "Test State",
       zipCode: "12345",
       dateOfBirth: "1990-01-01",
-      username: "test-username",
+      username: "test-fart",
       email: "test-user@example.com",
       password: "password",
       confirmPassword: "password",
+    };
+
+    const mockOutput: RouterOutputs["user"]["signup"] = {
+      id: "test-id",
+      name: input.firstName.concat(" ", input.lastName),
+      email: input.email,
+      username: input.username,
+      role: Role.PATIENT,
     };
 
     prismaMock.user.findFirst.mockResolvedValue(emptyUser);
@@ -137,5 +139,8 @@ describe("sign up router", () => {
     const result = await caller.user.signup(input);
 
     expect(result).toBe(mockOutput);
+    expect(result.username).toBe(input.username);
+    expect(result.email).toBe(input.email);
+    expect(result.name).toBe(input.firstName.concat(" ", input.lastName));
   });
 });

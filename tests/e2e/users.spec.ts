@@ -2,18 +2,11 @@ import { expect, test } from "@playwright/test";
 
 import { baseURL } from "../../playwright.config";
 
-test.describe("redirect if users is not admin", () => {
-  test('redirects to "/dashboard" if user is not admin', async ({ page }) => {
-    await page.goto(`${baseURL}/login`);
-    await page.locator("input[name=username]").fill("e2e-patient");
-    await page.locator("input[name=password]").fill("password");
-    const pageLoaded = page.waitForEvent("load");
-    await page.getByRole("button", { name: "Login" }).click();
-    await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "networkidle",
-    });
+import { adminTest, patientTest } from "./playwright/fixtures";
 
+
+test.describe("redirect if users is not admin", () => {
+  patientTest('redirects to "/dashboard" if user is not admin', async ({ page }) => {
     await page.goto("/users", {
       waitUntil: "load",
     });
@@ -32,45 +25,35 @@ test.describe("redirect if users is not admin", () => {
 
 test.describe("users page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${baseURL}/login`);
-    await page.locator("input[name=username]").fill("e2e");
-    await page.locator("input[name=password]").fill("password");
-    const pageLoaded = page.waitForEvent("load");
-    await page.getByRole("button", { name: "Login" }).click();
-    await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "networkidle",
-    });
-
-    await page.goto("/users", {
-      waitUntil: "load",
+    await page.goto(`${baseURL}/users`, {
+      waitUntil: "domcontentloaded",
     });
   });
 
-  test("has users text", async ({ page }) => {
+  adminTest("has users text", async ({ page }) => {
     await expect(
       page.getByRole("heading", { name: "All Users" })
     ).toBeVisible();
   });
 
-  test("has users table", async ({ page }) => {
+  adminTest("has users table", async ({ page }) => {
     await expect(page.getByRole("table")).toBeVisible();
   });
 
-  test("has 'Add User' button", async ({ page }) => {
+  adminTest("has 'Add User' button", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Add User" })).toBeVisible();
   });
 
-  test("has 'Edit' button", async ({ page }) => {
+  adminTest("has 'Edit' button", async ({ page }) => {
     await expect(page.getByTestId("edit-0")).toBeVisible();
   });
 
-  test("has 'Delete' button", async ({ page }) => {
+  adminTest("has 'Delete' button", async ({ page }) => {
     await expect(page.getByTestId("delete-0")).toBeVisible();
   });
 
   test.describe("create user", () => {
-    test('dipslays "Add User" modal when "Add User" button is clicked', async ({
+    adminTest('dipslays "Add User" modal when "Add User" button is clicked', async ({
       page,
     }) => {
       await page.click("text=Add User");
@@ -87,7 +70,7 @@ test.describe("users page", () => {
   });
 
   test.describe("edit user", () => {
-    test('dipslays "Edit User" modal when "Edit" button is clicked', async ({
+    adminTest('dipslays "Edit User" modal when "Edit" button is clicked', async ({
       page,
     }) => {
       await page.getByTestId("edit-0").click();
@@ -99,7 +82,7 @@ test.describe("users page", () => {
   });
 
   test.describe("delete user", () => {
-    test('dipslays "Delete User" modal when "Delete" button is clicked', async ({
+    adminTest('dipslays "Delete User" modal when "Delete" button is clicked', async ({
       page,
     }) => {
       await page.getByTestId("delete-0").click();
