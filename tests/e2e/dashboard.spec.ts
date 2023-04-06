@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { patientTest } from './playwright/fixtures'
+import { patientTest } from './playwright/fixtures';
 
 test.describe('dashboard', () => {
     test.beforeEach(async ({ page }) => {
