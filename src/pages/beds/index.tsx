@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
@@ -108,11 +109,11 @@ const BedsTable = ({items, setPopup}: {
  */
 const BedsPage: NextPage = () => {
     const { data: sessionData } = useSession();
-    const [page] = useState(0);
+    const [page, setPage] = useState(0);
     const [limit] = useState<number>(10);
     const [popup, setPopup] = useState<TablePopup<BedRowData>>({ show: false });
 
-    const { data, refetch } =
+    const { data, refetch, fetchNextPage } =
       api.bed.getAll.useInfiniteQuery(
         {
           limit,
@@ -121,6 +122,23 @@ const BedsPage: NextPage = () => {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
         }
       );
+
+    /**
+     * Fetch next page of users.
+     * @returns
+     */
+    const handleFetchNextPage = async () => {
+      await fetchNextPage();
+      setPage((prev) => prev + 1);
+    };
+
+    /**
+     * Fetch previous page of users.
+     * @returns
+     */
+    const handleFetchPreviousPage = () => {
+      setPage((prev) => prev - 1);
+    };
 
     const bedsLength = data?.pages[page]?.count;
     const beds = data?.pages[page]?.items;
@@ -135,16 +153,54 @@ const BedsPage: NextPage = () => {
                   <AddButton label="Bed" onClick={() => setPopup({ show: true, type: "create" })} />
                 </div>
               </div>
-
-              {/* Popup */}
-              { popup.show && (
-                <BedPopup
-                  refetch={refetch as unknown as () => Promise<void>}
-                  popup={popup}
-                  setPopup={setPopup}
-                />
-              )}
             </div>
+
+            {/* Popup */}
+            { popup.show && (
+              <BedPopup
+                refetch={refetch as unknown as () => Promise<void>}
+                popup={popup}
+                setPopup={setPopup}
+              />
+            )}
+
+            { /* Page Selectors */ }
+            <div className="mx-auto justify-center place-items-center flex space-x-4 flex-row mb-2">
+              <div className="flex">
+                {page !== 0 ?
+                (
+                  <button
+                    className="w-28 text-center inline-flex justify-center cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 text-sm text-white hover:bg-blue-700"
+                    onClick={handleFetchPreviousPage}
+                  >
+                    <ChevronLeftIcon className="h-4 w-4" />
+                    Previous
+                  </button>
+                ) : (
+                  <div className="w-28">
+                  </div>
+                )}
+              </div>
+              <span className="flex justify-center font-semibold">
+                Page {page + 1}
+              </span>
+              <div className="flex justify-end">
+                {beds?.length === limit ?
+                (
+                  <button
+                    className="w-28 inline-flex justify-center cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 text-sm text-white hover:bg-blue-700"
+                    onClick={handleFetchNextPage}
+                  >
+                      Next <ChevronRightIcon className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <div className="w-28">
+                  </div>
+                )}
+              </div>
+            </div>
+
+            { /* Main Table */ }
             <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
               <BedsTable setPopup={setPopup} items={beds} />
             </div>
