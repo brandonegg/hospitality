@@ -22,7 +22,7 @@ describe("appointment", () => {
   test("no appointment in database", () => {
     const prismaMock = mockDeep<PrismaClient>();
 
-    const caller = appRouter.createCaller({
+    appRouter.createCaller({
       session: null,
       prisma: prismaMock,
     });
@@ -33,7 +33,7 @@ describe("appointment", () => {
   test("user in database", () => {
     const prismaMock = mockDeep<PrismaClient>();
 
-    const caller = appRouter.createCaller({
+    appRouter.createCaller({
       session: null,
       prisma: prismaMock,
     });
