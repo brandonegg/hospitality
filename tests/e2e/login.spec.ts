@@ -22,8 +22,12 @@ test.describe("login page", () => {
   });
 
   test('has "Back" link that redirects to the previous page', async ({ page }) => {
-    await page.goto("/");
-    await page.goto("/login");
+    await page.goto("/",{
+      waitUntil: "load",
+    });
+    await page.goto("/login", {
+      waitUntil: "load",
+    });
     const back = page.getByText(/Back/);
     await back.click();
     await expect(page).toHaveURL("/");
