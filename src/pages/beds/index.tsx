@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Role } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
+import type { Session } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
 import type { Dispatch, SetStateAction} from "react";
 import { useState } from "react";
@@ -15,6 +16,7 @@ import { ActionsEntry } from "../../components/tables/rows";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import { addressToString } from "../../utils/text";
+
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 export type BedOccupantData = BedRowData["occupant"];
@@ -109,8 +111,9 @@ const BedsTable = ({items, setPopup}: {
  * Beds Table view for creating, modifying, and deleting beds
  * @returns
  */
-const BedsPage: NextPage = () => {
-    const { data: sessionData } = useSession();
+const BedsPage = ({user}: {
+  user: Session['user'],
+}) => {
     const [page, setPage] = useState(0);
     const [limit] = useState<number>(10);
     const [popup, setPopup] = useState<TablePopup<BedRowData>>({ show: false });
@@ -147,7 +150,7 @@ const BedsPage: NextPage = () => {
 
     return(
         <main className="mx-auto max-w-[1400px]">
-            <MainHeader user={sessionData?.user} />
+            <MainHeader user={user} />
             <div className="m-6 gap-4 space-y-2">
               <div className="flex items-center justify-between">
                 <TablePageHeader label="Beds" count={bedsLength} />
@@ -231,8 +234,10 @@ export const getServerSideProps = async (
       };
     }
 
+    const authorizedUsers: Role[] = [Role.ADMIN, Role.DOCTOR, Role.NURSE];
+
     // If the user is not an admin, redirect to the dashboard
-    if (session.user.role !== Role.ADMIN) {
+    if (authorizedUsers.includes(session.user.role)) {
       return {
         redirect: {
           destination: "/dashboard",
@@ -241,7 +246,11 @@ export const getServerSideProps = async (
       };
     }
 
-    return { props: {} };
+    return {
+      props: {
+        user: session.user,
+      }
+    };
   };
 
 export default BedsPage;
