@@ -19,7 +19,8 @@ npm run dev
 Tests are run with Playwright (end-to-end) and JUnit (unit tests). Before running tests you'll need to install the required playwright browser dependencies:
 ```bash
 npx playwright install --with-deps 
-# Note: with-deps will cause an error on some Linux environments. This flag can be omitted but will prevent you from running Webkit tests. Webkit is not officially supported but playwright for most modern linux distributions at this time.
+# Note: with-deps will cause an error on some Linux environments. This flag can be omitted but will prevent you from running Webkit tests.
+# Webkit is not officially supported by playwright for most modern linux distributions at this time.
 ```
 
 ## Docker
@@ -42,10 +43,6 @@ To remove volumes from docker-compose: `docker-compose down -v`
 
 To run command inside a docker container: `docker exec -it {CONTAINER_NAME} sh -c "{COMMAND}"`
 
-**For example:**
-
-When installing a package, you would run `npm install {PACKAGE}` in your local terminal. Your local environment is not sync with the NextJS docker image. Hence, you would also need to install the same package in the NextJS docker image as well by running this command `docker exec -it nextjs sh -c "npm install {PACKAGE}"`. Similar process for uninstall a package from your local environment.
-
 **Setting up Prisma with MySQL:**
 
 Ensure the DATABASE_URL variable is set in your environment. This is what Prisma will use to connect to your MySQL server.
@@ -56,13 +53,13 @@ npx prisma migrate dev
 ```
 *Note:* Running this command will also generate the prisma type definition file. If the project displays various type errors related to the database models it may be necessary to run this or `npx prisma db push`
 
-You can also seed your database with some example data provided:
+You can also seed your database with some sample data provided:
 ```bash
 npx prisma db seed
 ```
 
 ## Sonar (deprecated)
-*Sonar is a outdated method for maintaining quality code standards. It was implemented into this repository due to class requirements but is not recommend for an actual modern developer environment.*
+*Sonar is an outdated method for maintaining quality code standards. It was implemented into this repository due to class requirements but is not recommend for an actual modern developer environment. We recommend following eslint and prettier rules defined in this project rather than depending on Sonar.*
 
 Sonar scans the repository to check for potential bugs, formatting issues, coverage, and much more. The sonar utility can be run using `npm run scan` which is just an alias for the `sonar-scanner` command. Sonar requires manual configuration to setup at this time.
 
