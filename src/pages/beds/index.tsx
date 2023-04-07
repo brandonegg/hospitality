@@ -39,10 +39,10 @@ const BedsActionsEntry = ({user, assignDetails, editDetails, deleteDetails}: {
 
   return (
     <td className="">
-        <div className="flex w-full gap-2">
+        <div className="p-2 flex justify-end w-full gap-2 justify-right">
             <button
               data-testid={assignDetails.testId}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-300 py-2 px-3 font-semibold text-white cursor-not-allowed"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
               onClick={assignDetails.onClick}
             >
               <PencilSquareIcon className="h-4 w-4" />

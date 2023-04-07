@@ -12,7 +12,7 @@ const ActionsEntry = ({ editDetails, deleteDetails } :
     }) => {
         return (
             <td className="">
-                <div className="flex w-full gap-2">
+                <div className="flex justify-end p-2 w-full gap-2">
                     <EditRowButton {...editDetails} />
                     <DeleteRowButton {...deleteDetails} />
                 </div>
