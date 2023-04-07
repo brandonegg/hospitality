@@ -51,10 +51,21 @@ test.describe('beds > CRUD operations', () => {
     test.describe('edit', () => {
         test.skip('with valid new room label', async ({page}) => {
             await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
+            await page.getByLabel('Room Label').click();
+            await page.getByLabel('Room Label').fill('404B');
+            await page.getByRole('button', { name: 'Confirm' }).click();
+
+            await expect(page.getByText('Successfully updated bed!')).toBeVisible();
         });
 
-        test.skip('with empty room label', () => {
+        test.skip('with empty room label', async ({page}) => {
             // TODO: clear the room label, try to update
+            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
+            await page.getByLabel('Room Label').click();
+            await page.getByLabel('Room Label').fill('');
+            await page.getByRole('button', { name: 'Confirm' }).click();
+
+            await expect(page.getByText('Room label is required')).toBeVisible();
         });
     });
 
