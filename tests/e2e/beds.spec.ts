@@ -1,42 +1,69 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
+import { adminTest, patientTest } from './playwright/fixtures';
 
 test.describe('beds > page access', () => {
-    test('admin can access', () => {
-        // TODO: navigate to beds page, verify they can see the delete button
+    adminTest('admin can access', async ({page}) => {
+        await page.goto('/beds');
+        await expect(page.getByRole('heading', { name: 'All Beds' })).toBeVisible();
     });
 
-    test('patient cant access', () => {
-        // TODO: navigate to beds page, verify they are redirected to dashboard
+    patientTest('patient is redirected to dashboard', async ({page}) => {
+        await page.goto('/beds');
+        await expect(page.getByRole('heading', { name: 'Welcome, e2e' })).toBeVisible();
     });
 });
 
 test.describe('beds > CRUD operations', () => {
     test.describe('create', () => {
-        test('with valid inputs', () => {
-            // TODO: Enter valid inputs, verify bed is created
+        adminTest('with valid inputs', async ({page}) => {
+            await page.getByRole('button', { name: 'Add Bed' }).click();
+            await page.getByLabel('Room Label').click();
+            await page.getByLabel('Room Label').fill('TestRoom');
+            await page.getByLabel('Street').click();
+            await page.getByLabel('Street').fill('123 Lane');
+            await page.getByLabel('Street').press('Tab');
+            await page.getByRole('combobox').selectOption('IA');
+            await page.getByRole('combobox').press('Tab');
+            await page.getByLabel('City').fill('Iowa City');
+            await page.getByLabel('City').press('Tab');
+            await page.getByLabel('ZIP Code').fill('52240');
+            await page.getByRole('button', { name: 'Confirm' }).click();
+
+            await expect(page.getByText('Successfully created a bed!')).toBeVisible();
         });
 
-        test('missing room number', () => {
-            // TODO: Enter valid address but missing room, verify field has error
+        test.skip('missing room number', async ({page}) => {
+            await page.getByLabel('Street').click();
+            await page.getByLabel('Street').fill('123 Lane');
+            await page.getByLabel('Street').press('Tab');
+            await page.getByRole('combobox').selectOption('IA');
+            await page.getByRole('combobox').press('Tab');
+            await page.getByLabel('City').fill('Iowa City');
+            await page.getByLabel('City').press('Tab');
+            await page.getByLabel('ZIP Code').fill('52240');
+            await page.getByRole('button', { name: 'Confirm' }).click();
+
+            await expect(page.getByText('Room label is required')).toBeVisible();
         });
     });
 
     test.describe('edit', () => {
-        test('with valid new room label', () => {
-            // TODO: Enter valid room label, verify bed is created
+        test.skip('with valid new room label', async ({page}) => {
+            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
         });
 
-        test('with empty room label', () => {
+        test.skip('with empty room label', () => {
             // TODO: clear the room label, try to update
         });
     });
 
     test.describe('delete', () => {
-        test('unassigned bed', () => {
+        test.skip('unassigned bed', () => {
             // TODO: Admin presses delete button and bed deletes successfully
         });
 
-        test('assigned bed', () => {
+        test.skip('assigned bed', () => {
             // TODO: Admin presses delete button and bed is not deleted
         });
     });
