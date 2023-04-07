@@ -80,12 +80,18 @@ test.describe('beds > CRUD operations', () => {
     });
 
     test.describe('delete', () => {
-        test.skip('unassigned bed', () => {
-            // TODO: Admin presses delete button and bed deletes successfully
+        test.beforeEach(async ({page}) => {
+            await page.goto('/beds');
         });
 
-        test.skip('assigned bed', () => {
-            // TODO: Admin presses delete button and bed is not deleted
+        adminTest('unassigned bed', async ({page}) => {
+            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 1100 unoccupied No patient assigned Edit Delete' }).getByRole('button', { name: 'Delete' }).click();
+            await page.getByRole('button', { name: 'Confirm' }).click();
+            await page.getByText('Successfully deleted bed!').dblclick();
+        });
+
+        adminTest('assigned bed', async ({page}) => {
+            await expect(page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Delete' })).toBeDisabled();
         });
     });
 });
