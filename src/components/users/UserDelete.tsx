@@ -10,11 +10,13 @@ import { dateFormatter } from "../../utils/date";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
+import type { UserPopupTypes } from "./UserPopup";
+
 interface UserDeleteProps {
   refetch: () => Promise<void>;
   user?: UserRowData;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<UserRowData, UserPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData, UserPopupTypes>>>;
 }
 
 type UserDeleteInput = RouterInputs["user"]["delete"];

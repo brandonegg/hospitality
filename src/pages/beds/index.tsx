@@ -1,12 +1,13 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Role, User } from "@prisma/client";
-import type { GetServerSidePropsContext, NextPage } from "next";
+import { ChevronLeftIcon, ChevronRightIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
+import { Role } from "@prisma/client";
+import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction} from "react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
+import type { BedPopupTypes } from "../../components/beds/BedPopup";
 import BedPopup from "../../components/beds/BedPopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
@@ -20,6 +21,37 @@ import { addressToString } from "../../utils/text";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 export type BedOccupantData = BedRowData["occupant"];
+
+/**
+ * Renders action entries for beds table according to account type.
+ */
+const BedsActionsEntry = ({user, assignDetails, editDetails, deleteDetails}: {
+  user: Session['user'],
+  editDetails: ButtonDetails,
+  deleteDetails: ButtonDetails,
+  assignDetails: ButtonDetails,
+}) => {
+  if (user.role === Role.ADMIN) {
+    return (
+      <ActionsEntry editDetails={editDetails} deleteDetails={deleteDetails} label="Bed" />
+    );
+  }
+
+  return (
+    <td className="">
+        <div className="flex w-full gap-2">
+            <button
+              data-testid={assignDetails.testId}
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-300 py-2 px-3 font-semibold text-white cursor-not-allowed"
+              onClick={assignDetails.onClick}
+            >
+              <PencilSquareIcon className="h-4 w-4" />
+              Assign
+            </button>
+        </div>
+    </td>
+  );
+};
 
 /**
  * UI component for the assigned patient table cell.
@@ -45,9 +77,10 @@ const AssignedPatientCell = ({occupant}: {
 /**
  * Component for a single row of the bed table
  */
-const BedsTableRow = ({item, setPopup}: {
-  item: BedRowData
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
+const BedsTableRow = ({item, setPopup, user}: {
+  item: BedRowData,
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>,
+  user: Session['user'],
 }) => {
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
@@ -56,6 +89,11 @@ const BedsTableRow = ({item, setPopup}: {
 
   const deleteDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "delete", data: item }),
+    disabled: item.occupant !== null,
+  };
+
+  const assignDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "assign", data: item }),
     disabled: item.occupant !== null,
   };
 
@@ -71,9 +109,7 @@ const BedsTableRow = ({item, setPopup}: {
       <td className="px-6 py-2">
         <AssignedPatientCell occupant={item.occupant} />
       </td>
-      <td className="grid place-items-end px-2 py-2">
-        <ActionsEntry editDetails={editDetails} deleteDetails={deleteDetails} label="Bed" />
-      </td>
+      <BedsActionsEntry user={user} editDetails={editDetails} deleteDetails={deleteDetails} assignDetails={assignDetails}/>
     </tr>
   );
 };
@@ -81,9 +117,10 @@ const BedsTableRow = ({item, setPopup}: {
 /**
  * Main beds table element.
  */
-const BedsTable = ({items, setPopup}: {
+const BedsTable = ({items, setPopup, user}: {
   items: BedRowData[] | undefined,
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>,
+  user: Session['user'],
 }) => {
     return (
         <div className="overflow-x-auto flex flex-col">
@@ -99,7 +136,7 @@ const BedsTable = ({items, setPopup}: {
                 </thead>
                 <tbody>
                   {items?.map((bed, index) => (
-                    <BedsTableRow setPopup={setPopup} key={index} item={bed}/>
+                    <BedsTableRow user={user} setPopup={setPopup} key={index} item={bed}/>
                   ))}
                 </tbody>
             </table>
@@ -116,7 +153,7 @@ const BedsPage = ({user}: {
 }) => {
     const [page, setPage] = useState(0);
     const [limit] = useState<number>(10);
-    const [popup, setPopup] = useState<TablePopup<BedRowData>>({ show: false });
+    const [popup, setPopup] = useState<TablePopup<BedRowData, BedPopupTypes>>({ show: false });
 
     const { data, refetch, fetchNextPage } =
       api.bed.getAll.useInfiniteQuery(
@@ -207,7 +244,7 @@ const BedsPage = ({user}: {
 
             { /* Main Table */ }
             <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
-              <BedsTable setPopup={setPopup} items={beds} />
+              <BedsTable user={user} setPopup={setPopup} items={beds} />
             </div>
         </main>
     );
@@ -237,7 +274,7 @@ export const getServerSideProps = async (
     const authorizedUsers: Role[] = [Role.ADMIN, Role.DOCTOR, Role.NURSE];
 
     // If the user is not an admin, redirect to the dashboard
-    if (authorizedUsers.includes(session.user.role)) {
+    if (!authorizedUsers.includes(session.user.role)) {
       return {
         redirect: {
           destination: "/dashboard",

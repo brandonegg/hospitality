@@ -7,12 +7,14 @@ import BedCreate from "./BedCreate";
 import BedDelete from "./BedDelete";
 import BedEdit from "./BedEdit";
 
+export type BedPopupTypes = "create" | "edit" | "delete" | "assign";
+
 interface BedPopupBodyProps {
-  type?: "create" | "edit" | "delete";
+  type?: BedPopupTypes;
   bed?: BedRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<BedRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
+  popup: TablePopup<BedRowData, BedPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
 
 /**
@@ -48,6 +50,10 @@ const BedPopupBody = ({
           setPopup={setPopup}
         />
       );
+    case "assign":
+      return (
+        <p>todo</p>
+      );
     default:
       return <></>;
   }
@@ -55,8 +61,8 @@ const BedPopupBody = ({
 
 interface BedPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<BedRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
+  popup: TablePopup<BedRowData, BedPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
 
 /**
@@ -65,7 +71,7 @@ interface BedPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
   return (
-    <TablePopup<BedRowData> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
+    <TablePopup<BedRowData, BedPopupTypes> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
         <BedPopupBody
             refetch={refetch}
             bed={popup.data}

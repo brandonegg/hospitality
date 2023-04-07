@@ -7,12 +7,14 @@ import UserCreate from "./UserCreate";
 import UserDelete from "./UserDelete";
 import UserEdit from "./UserEdit";
 
+export type UserPopupTypes = "create" | "edit" | "delete";
+
 interface UserPopupBodyProps {
   type?: "create" | "edit" | "delete";
   user?: UserRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<UserRowData, UserPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData, UserPopupTypes>>>;
 }
 
 /**
@@ -55,8 +57,8 @@ const UserPopupBody = ({
 
 interface UserPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<UserRowData, UserPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData, UserPopupTypes>>>;
 }
 
 /**
@@ -65,7 +67,7 @@ interface UserPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: UserPopupProps) => {
   return (
-    <TablePopup<UserRowData> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
+    <TablePopup<UserRowData, UserPopupTypes> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
         <UserPopupBody
             refetch={refetch}
             user={popup.data}

@@ -11,14 +11,16 @@ import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
+import type { UserPopupTypes } from "./UserPopup";
+
 type UserUpdateInput = RouterInputs["user"]["update"];
 type UserUpdateOutput = RouterOutputs["user"]["update"];
 
 interface UserEditProps {
   refetch: () => Promise<void>;
   user?: UserRowData;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<UserRowData, UserPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData, UserPopupTypes>>>;
 }
 
 /**

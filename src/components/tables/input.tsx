@@ -1,21 +1,24 @@
 import { Dialog } from "@headlessui/react";
 import type { Dispatch, SetStateAction } from "react";
 
-export type TablePopup<T> = {
+export type TablePopup<T, V> = {
     show: boolean;
-    type?: "create" | "edit" | "delete";
+    type?: V;
     data?: T;
   };
+
+
+interface TablePopupTitleProps<V> {
+    type?: V;
+    label: string;
+}
 
 /**
  * User popup title component.
  * @param type Popup type.
  * @returns JSX
  */
-const TablePopupTitle = ({ type, label }: {
-    type?: "create" | "edit" | "delete";
-    label: string;
-}) => {
+const TablePopupTitle = <V,>({ type, label }: TablePopupTitleProps<V>) => {
     switch (type) {
         case "create":
         return <>Create {label}</>;
@@ -28,11 +31,11 @@ const TablePopupTitle = ({ type, label }: {
     }
 };
 
-interface TablePopupProps<T> {
+interface TablePopupProps<T, V> {
     label: string;
-    popup: TablePopup<T>;
+    popup: TablePopup<T, V>;
     refetch: () => Promise<void>;
-    setPopup: Dispatch<SetStateAction<TablePopup<T>>>;
+    setPopup: Dispatch<SetStateAction<TablePopup<T, V>>>;
     children: JSX.Element,
 }
 
@@ -42,7 +45,7 @@ interface TablePopupProps<T> {
  * @param label Label of object table is representing
  * @returns JSX
  */
-const TablePopup = <T,>({ label, popup, setPopup, children }: TablePopupProps<T>) => {
+const TablePopup = <T, V,>({ label, popup, setPopup, children }: TablePopupProps<T, V>) => {
     return (
         <Dialog
         open={popup.show}
@@ -57,7 +60,7 @@ const TablePopup = <T,>({ label, popup, setPopup, children }: TablePopupProps<T>
             <div className="fixed inset-0 flex items-center justify-center p-4 ">
                 <Dialog.Panel className="mx-auto w-full max-w-2xl space-y-2 rounded-xl border border-gray-600 bg-slate-100 p-4 drop-shadow-lg">
                 <Dialog.Title className="text-3xl font-bold">
-                    <TablePopupTitle label={label} type={popup.type} />
+                    <TablePopupTitle<V> label={label} type={popup.type} />
                 </Dialog.Title>
 
                 {children}
