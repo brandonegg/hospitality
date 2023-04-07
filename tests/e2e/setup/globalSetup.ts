@@ -126,30 +126,6 @@ async function globalSetup() {
         addressId: hospitalAddress.id,
         room: "409",
       },
-      {
-        addressId: hospitalAddress.id,
-        room: "410",
-      },
-      {
-        addressId: hospitalAddress.id,
-        room: "411",
-      },
-      {
-        addressId: hospitalAddress.id,
-        room: "220",
-      },
-      {
-        addressId: hospitalAddress.id,
-        room: "104",
-      },
-      {
-        addressId: hospitalAddress.id,
-        room: "106B",
-      },
-      {
-        addressId: hospitalAddress.id,
-        room: "107",
-      },
     ]
   });
 }
