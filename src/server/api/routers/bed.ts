@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import { defaultUserSelect } from "./user";
+import { TRPCError } from "@trpc/server";
 
 export const bedRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -103,6 +104,24 @@ export const bedRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
+
+      const bed = await ctx.prisma.bed.findUnique({
+        where: { id },
+      });
+
+      if (!bed) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No bed found with provided ID",
+        });
+      }
+
+      if (bed.userId !== null) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Bed is currently occupied. Please remove occupant first.",
+        });
+      }
 
       // Delete the bed
       return await ctx.prisma.bed.delete({
