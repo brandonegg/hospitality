@@ -41,10 +41,10 @@ const MyAvailability = ({user}: myAvailPageProps) => {
     appoints.sort(timeSort);
 
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = async () => {
-      await Router.push('/')
+      await Router.push('/');
     };
 
     /**
@@ -52,7 +52,7 @@ const MyAvailability = ({user}: myAvailPageProps) => {
      */
     const prevWeek = () => {
       setWeekCount(weekCount - 1);
-    }
+    };
 
     /**
      * look at the next weeks avail
@@ -66,7 +66,7 @@ const MyAvailability = ({user}: myAvailPageProps) => {
      */
     const resetWeek = () => {
       setWeekCount(0);
-    }
+    };
 
     return (
       <>
@@ -75,7 +75,7 @@ const MyAvailability = ({user}: myAvailPageProps) => {
           <meta name="description" content="Hospitality Doctor Appointments" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <div className="pt-5 pr-10 ">
@@ -88,11 +88,11 @@ const MyAvailability = ({user}: myAvailPageProps) => {
           </div>
           <div className="flex justify-between pl-10 pr-10">
             <button onClick={goBack} style={realButtons}> Back </button>
-            <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+            <button onClick={resetWeek} style={realButtons}> Current Week </button>
           </div>
             <div className="appoints flex flex-row flex-wrap items-start justify-center gap-2 px-2 py-0 ">
             {
-                appoints?.map((appoint, index) => 
+                appoints?.map((appoint, index) =>
                 <p key={index} className={appoint.id + " w-1/3"}>{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
             )}
             </div>
@@ -104,8 +104,8 @@ const MyAvailability = ({user}: myAvailPageProps) => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<myAvailPageProps> = async (context: GetServerSidePropsContext) => {
   // Get the user session
@@ -126,6 +126,6 @@ export const getServerSideProps: GetServerSideProps<myAvailPageProps> = async (c
       },
     };
   }
-}
-  
+};
+
 export default MyAvailability;

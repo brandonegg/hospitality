@@ -1,10 +1,10 @@
 import type { Availability, User } from "@prisma/client";
+import type { GetServerSideProps, GetServerSidePropsContext} from "next";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Router from 'next/router';
-import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
-import { getSession,useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import React, { useEffect, useState } from 'react';
 
 
@@ -15,14 +15,14 @@ export const timeSort = function (a:Availability,b:Availability) { // sort by da
     const aM = a.startTime.split(" ")[1] as string;
     const bM = b.startTime.split(" ")[1] as string;
     if (aM === bM) {
-      if ((aNums.split(":")[0]) === (bNums.split(":")[0])) return (aNums.split(":")[1] as string).localeCompare(bNums.split(":")[1] as string) // if same hour, sort by minutes
+      if ((aNums.split(":")[0]) === (bNums.split(":")[0])) return (aNums.split(":")[1] as string).localeCompare(bNums.split(":")[1] as string); // if same hour, sort by minutes
       if (parseInt((aNums.split(":")[0] as string)) === 12) return -1; // if 12pm, put it at the beginning
       if (parseInt((bNums.split(":")[0] as string)) === 12) return 1; // if 12pm, put it at the beginning
       return parseInt((aNums.split(":")[0] as string)) - parseInt((bNums.split(":")[0] as string)) ; // if both am or both pm sort by time
     }
     else return aM.localeCompare(bM); // if one is am and one is pm, sort by am/pm
   }
-  else return (new Date(a.date).getTime()) - (new Date(b.date).getTime())
+  else return (new Date(a.date).getTime()) - (new Date(b.date).getTime());
 };
 
 interface AppointPageProps {
@@ -33,7 +33,7 @@ const today = new Date();
 const todayDay = today.getDay();
 
 // convert from number used for storage and string used for display
-const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6};
 type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
 
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
@@ -44,7 +44,7 @@ const times: Availability[] = [];
  */
 const getAvailability = async function(docId:string, weekCount=0) {
   try {
-    const body = { docId, weekCount }
+    const body = { docId, weekCount };
     await fetch((`/api/getAvail`),{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -59,12 +59,12 @@ const getAvailability = async function(docId:string, weekCount=0) {
         });
       });
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 let availGetter = getAvailability("AllDoctors");
 
-// 
+//
 const doctors: User[] = [];
 /**
  * instead of displaying all hours, grab the available times for the current doctor
@@ -85,16 +85,16 @@ const getDoctors = async function() {
         });
       });
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 const docGetter = getDoctors();
 
 
 /**
  * make a button for Appointment
  * @param props
- * @returns 
+ * @returns
  */
 const AppointButton = (props:{children:string, text:string, day:string }) => {
   const text = props.text;
@@ -120,7 +120,7 @@ const AppointButton = (props:{children:string, text:string, day:string }) => {
   return (
     <button className={text + " " + day + " " + (active ? "selected" : "boxes")} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
-}
+};
 
 /**
  * Like when2meet, a column of appointments
@@ -132,9 +132,9 @@ const ColOfAppoint = (props:{children:string, day:string, week:number}) => {
   const offset = todayDay - (dayToNum[day as day] + weekCount * 7);
   const newDay = new Date(today.getTime());
   newDay.setDate(newDay.getDate()-offset); // properly handles day and increments month when necessary
-  
+
   const [dayTimes, updateTimes] = React.useState<string[]>([]);
-  
+
   useEffect (() => {
     /**
     * Wait for available times to be fetched then display
@@ -149,18 +149,18 @@ const ColOfAppoint = (props:{children:string, day:string, week:number}) => {
       updateTimes(thisDaysUniqueTimes);
     }
     void getTimes();
-  },[day, weekCount])
+  },[day, weekCount]);
 
   return (
       <div className="appointSetter flex flex-col items-center justify-center px-2 py-0">
         <span> {`${day} ${newDay.getMonth() + 1}/${newDay.getDate()}`} </span>
         {
-        dayTimes.map((time, index) => 
+        dayTimes.map((time, index) =>
           <AppointButton key={index} text={time} day={day}> </AppointButton>
         )}
       </div>
     );
-  }
+  };
 /**
  * Doctor availabilty react component.
  * @returns JSX
@@ -187,29 +187,29 @@ const Appointment: NextPage = () => {
         const time = (box.classList[0] as string) + " " + (box.classList[1] as string);
         if (sessionData?.user?.id) times.push([time, dayToNum[box.classList[2] as day], doctor, weekCount, sessionData.user.id,]); // also pass in the correct date here
         else console.error("Can't access user id to make appointment");
-      })
+      });
       try {
-        const body = { times }
+        const body = { times };
         await fetch(`/api/storeAppoint`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
-        })
-        await Router.push('/')
+        });
+        await Router.push('/');
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    }
+    };
 
     const [doctor, setValue] = React.useState("AllDoctors");
 
     const [weekCount, setWeekCount] = useState(0);
 
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = async () => {
-      await Router.push('/')
+      await Router.push('/');
     };
 
     /**
@@ -226,7 +226,7 @@ const Appointment: NextPage = () => {
     const prevWeek = () => {
       setWeekCount(weekCount - 1);
       resetCheckedBoxes(weekCount - 1);
-    }
+    };
 
     /**
      * look at the next weeks avail
@@ -242,7 +242,7 @@ const Appointment: NextPage = () => {
     const resetWeek = () => {
       setWeekCount(0);
       resetCheckedBoxes(0);
-    }
+    };
 
     /**
      * update state when dropdown changes
@@ -268,8 +268,8 @@ const Appointment: NextPage = () => {
     }
       return () => {
         ignore = true;
-      }
-    })
+      };
+    });
 
     return (
       <>
@@ -278,7 +278,7 @@ const Appointment: NextPage = () => {
           <meta name="description" content="Hospitality Doctor Appointments" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <div className="pt-5 pr-10 ">
@@ -293,14 +293,14 @@ const Appointment: NextPage = () => {
             <select id="dropdown" value={doctor} onChange={changeDropDown}>
               <option value="AllDoctors">Any Doctor</option>
               {
-              docts.map((user, index) => 
+              docts.map((user, index) =>
                 <option key={index} value={user.id}>{user.name}</option>
               )}
             </select>
           </div>
           <div className="flex justify-between pl-10 pr-10">
             <button onClick={goBack} style={realButtons}> Back </button>
-            <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+            <button onClick={resetWeek} style={realButtons}> Current Week </button>
           </div>
           <div className="appointSetter flex flex-row items-start justify-center gap-2 px-2 py-0 ">
             <ColOfAppoint day = "Sunday" week = {weekCount}> </ColOfAppoint>
@@ -321,8 +321,8 @@ const Appointment: NextPage = () => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<AppointPageProps> = async (context: GetServerSidePropsContext) => {
   // Get the user session
@@ -343,6 +343,6 @@ export const getServerSideProps: GetServerSideProps<AppointPageProps> = async (c
       },
     };
   }
-}
-  
+};
+
 export default Appointment;

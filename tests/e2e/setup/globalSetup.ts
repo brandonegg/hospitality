@@ -22,7 +22,7 @@ async function globalSetup() {
   });
 
   // create admin test user
-  await prisma.user.upsert({
+  const adminUser = await prisma.user.upsert({
     where: {
       email: "e2e@e2e.com",
     },
@@ -70,7 +70,64 @@ async function globalSetup() {
     },
     update: {},
   });
-  
+
+  const hospitalAddress = await prisma.address.upsert({
+    where: {
+      id: "uiowa_hopsital_address",
+    },
+    create: {
+      id: "uiowa_hopsital_address",
+      street: "200 Hawkins Dr.",
+      city: "Iowa City",
+      state: "Iowa",
+      zipCode: 52242,
+    },
+    update: {},
+  });
+
+  await prisma.bed.deleteMany();
+
+  await prisma.bed.createMany({
+    data: [
+      {
+        addressId: hospitalAddress.id,
+        room: "401A",
+        userId: adminUser.id,
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "1100",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "403B",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "404",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "405",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "406",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "407",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "408",
+      },
+      {
+        addressId: hospitalAddress.id,
+        room: "409",
+      },
+    ]
+  });
 }
 
 export default globalSetup;

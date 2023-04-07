@@ -9,7 +9,7 @@ import MainHeader from "../components/Header";
 import type { DashBoardNavButtonProperties} from "../components/dashboard/Navigation";
 import { DashBoardNavButton, DashBoardQuickAccessNavButton } from "../components/dashboard/Navigation";
 import VitalsWidget from "../components/dashboard/Vitals";
-import { timeSort } from "../pages/appointment"
+import { timeSort } from "../pages/appointment";
 import { api } from "../utils/api";
 
 
@@ -25,13 +25,13 @@ interface SquareWidgetProperties {
 
 /**
  * A square widget element for displaying useful information in the dashboard
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
     /**
      * Widget title generation
-     * @returns 
+     * @returns
      */
     const Title = () => {
         if (!title) {
@@ -44,9 +44,9 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
                     <h1 className="font-bold text-center text-lg">{title}</h1>
                 </div>
             </div>
-        </>
+        </>;
     };
-    
+
     return <>
         <div className={(width == 2 ? 'col-span-2' : 'col-span-1')}>
             <div className="border overflow-hidden border-gray-600 rounded-xl drop-shadow-lg">
@@ -54,7 +54,7 @@ const SquareWidget = ({title, width, children}: SquareWidgetProperties) => {
                 {children}
             </div>
         </div>
-    </>
+    </>;
 };
 
 const dashboardNavLinks: DashBoardNavButtonProperties[] = [
@@ -87,7 +87,7 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
 
 /**
  * User dashboard page
- * @returns 
+ * @returns
  */
 const Dashboard = ({user}: DashboardPageProps) => {
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
@@ -99,30 +99,29 @@ const Dashboard = ({user}: DashboardPageProps) => {
             dashboardNavLinks[1] = {
                 label: "Set Availability",
                 href: "/availability",
-            }
+            };
             dashboardNavLinks[2] = {
                 label: "View Availability",
                 href: "/myAvailabilities",
-            }
+            };
         }
         if (user.role === "ADMIN"){ // admins can't make appointments, and patients can't make availabilitys
             dashboardNavLinks[1] = {
                 label: "Set Hours",
                 href: "/adminHourSetting",
-            }
+            };
             dashboardNavLinks.splice(2,1);
         }
         console.log(dashboardNavLinks);
         setNavLinks(dashboardNavLinks);
     }, [user]);
 
-    
     /**
      * Event handler for the quick access toggle button.
      */
     const handleQuickAccessTogle = () => {
         setQuickAccessOpened(!quickAccessOpened);
-    }
+    };
 
     const dashboardTopNavButtons = updatedDashboardNavLinks.map((linkDetails, index) => {
         return (
@@ -136,7 +135,7 @@ const Dashboard = ({user}: DashboardPageProps) => {
         );
     });
 
-    //appointment stuff 
+    //appointment stuff
     let appoints:Appointment[] = [];
     if (user.role === "DOCTOR"){
         const {data} = api.getAppoint.getDocAppoint.useQuery({
@@ -198,7 +197,7 @@ const Dashboard = ({user}: DashboardPageProps) => {
                     <SquareWidget title="Upcoming Appointments" width={2}>
                         <div className="p-2 bg-yellow-100 h-full">
                             {
-                            appoints?.map((appoint, index) => 
+                            appoints?.map((appoint, index) =>
                                 <p key={index} className="italic">{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
                             )}
                         </div>
@@ -218,13 +217,13 @@ const Dashboard = ({user}: DashboardPageProps) => {
             </div>
         </div>
     </main>
-    </>
+    </>;
 };
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async (context: GetServerSidePropsContext) => {
     // Get the user session
@@ -238,13 +237,13 @@ export const getServerSideProps: GetServerSideProps<DashboardPageProps> = async 
             },
         };
     }
-  
+
     // If the user is authenticated, continue with rendering the page
     return {
       props: {
         user: session.user,
       },
     };
-}
+};
 
-export default Dashboard
+export default Dashboard;

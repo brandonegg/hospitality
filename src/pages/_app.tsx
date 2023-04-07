@@ -10,8 +10,8 @@ import "../styles/globals.css";
 
 /**
  * .
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

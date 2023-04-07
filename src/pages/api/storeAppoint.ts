@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { makeCorrectDate } from '../../server/api/routers/storeAvail';
 import {makeEndTime}  from "../../server/api/routers/storeAvail";
 import { prisma } from "../../server/db";
 
 /**
- * helper for storeAppoints to help with testing  
+ * helper for storeAppoints to help with testing
  * @param times startTime,day,docId,weekCount,userId
  */
 export function storeTestHelper(times:[string,number,string,number,string][], overrideAllDoctorId:string | undefined = undefined){
@@ -15,7 +15,7 @@ export function storeTestHelper(times:[string,number,string,number,string][], ov
     const startTime = timeIntInt[0];
     const day = timeIntInt[1];
     const docId = timeIntInt[2];
-    const weekCount = timeIntInt[3]; 
+    const weekCount = timeIntInt[3];
     const userId = timeIntInt[4];
     const endTime = makeEndTime(startTime);
     startEndDayInfo.push([startTime,endTime,day,docId,userId,weekCount]); //push in start time
@@ -26,7 +26,7 @@ export function storeTestHelper(times:[string,number,string,number,string][], ov
     const weekCount = startEndDayArray[5];
     const newDay = makeCorrectDate(new Date((new Date()).toDateString()), storeDay, weekCount);
     let doctorId = startEndDayArray[3];
-    
+
     let twoDigMonth = (newDay.getMonth() + 1).toString();
     if (twoDigMonth.length == 1) twoDigMonth = "0" + twoDigMonth;
     let twoDigDay = newDay.getDate().toString();
@@ -40,10 +40,10 @@ export function storeTestHelper(times:[string,number,string,number,string][], ov
       if (overrideAllDoctorId) doctorId = overrideAllDoctorId;
     }
     //const removeAvailability = await prisma.$executeRawUnsafe(`DELETE FROM Availability WHERE day=${storeDay} AND startTime="${startEndDayArray[0]}" AND docId="${doctorId}" AND date="${newDayString}"`)
-    results.push({day:storeDay,startTime: startEndDayArray[0],endTime: startEndDayArray[1],docId: doctorId,userId: startEndDayArray[4],date: newDay})
+    results.push({day:storeDay,startTime: startEndDayArray[0],endTime: startEndDayArray[1],docId: doctorId,userId: startEndDayArray[4],date: newDay});
     // const result = await prisma.appointment.create({
     //   data: {
-    //     day:storeDay, 
+    //     day:storeDay,
     //     startTime: startEndDayArray[0],
     //     endTime: startEndDayArray[1],
     //     docId: doctorId,
@@ -53,7 +53,7 @@ export function storeTestHelper(times:[string,number,string,number,string][], ov
     // })
     // results.push(result);
     // results.push(removeAvailability);
-    return results
+    return results;
   }
 }
 
@@ -73,7 +73,7 @@ export default async function storeAppoints(
     const startTime = timeIntInt[0];
     const day = timeIntInt[1];
     const docId = timeIntInt[2];
-    const weekCount = timeIntInt[3]; 
+    const weekCount = timeIntInt[3];
     const userId = timeIntInt[4];
     const endTime = makeEndTime(startTime);
     startEndDayInfo.push([startTime,endTime,day,docId,userId,weekCount]); //push in start time
@@ -87,10 +87,10 @@ export default async function storeAppoints(
     let doctorId = startEndDayArray[3];
 
     if (doctorId === "AllDoctors"){ // find the first doctor and set this doctor id for the appointment to be made
-      const tempDoctorId: {docId: string;}[] = await prisma.$queryRawUnsafe(`SELECT docId FROM Availability WHERE day=${storeDay} AND startTime="${startEndDayArray[0]}" AND date="${newDay.toDateString()}" LIMIT 1`)
+      const tempDoctorId: {docId: string;}[] = await prisma.$queryRawUnsafe(`SELECT docId FROM Availability WHERE day=${storeDay} AND startTime="${startEndDayArray[0]}" AND date="${newDay.toDateString()}" LIMIT 1`);
       if (tempDoctorId[0]) doctorId = tempDoctorId[0].docId;
     }
-    const removeAvailability = await prisma.$executeRawUnsafe(`DELETE FROM Availability WHERE day=${storeDay} AND startTime="${startEndDayArray[0]}" AND docId="${doctorId}" AND date="${newDay.toDateString()}"`)
+    const removeAvailability = await prisma.$executeRawUnsafe(`DELETE FROM Availability WHERE day=${storeDay} AND startTime="${startEndDayArray[0]}" AND docId="${doctorId}" AND date="${newDay.toDateString()}"`);
 
     const result = await prisma.appointment.create({
       data: {
@@ -101,10 +101,10 @@ export default async function storeAppoints(
         userId: startEndDayArray[4],
         date: newDay, // later get the correct date
       },
-    })
+    });
     results.push(result);
     results.push(removeAvailability);
   }
-  
-  return res.status(201).json(results)
+
+  return res.status(201).json(results);
 }

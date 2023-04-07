@@ -15,13 +15,13 @@ const today = new Date();
 const todayDay = today.getDay();
 
 // convert from number used for storage and string used for display
-const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6}
+const dayToNum = {Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6};
 type day = "Sunday"|"Monday"|"Tuesday"|"Wednesday"|"Thursday"|"Friday"|"Saturday";
 
 /**
  * make a button for availability
  * @param props
- * @returns 
+ * @returns
  */
 const AvailButton = (props:{children:string, text:string, day:string }) => {
   const text = props.text;
@@ -46,7 +46,7 @@ const AvailButton = (props:{children:string, text:string, day:string }) => {
   return (
     <button className={text + " " + day + " " + (active ? "selected" : "boxes")} onClick={changeColor} style={buttonStyle}> {text} </button>
   );
-}
+};
 
 /**
  * Like when2meet, a column of avaialability
@@ -104,16 +104,16 @@ const ColOfAvail= (props:{children:string, day:string, week:number}) => {
       }
       setTimes(timeSetting);
     }
-	}, [data, status])
+	}, [data, status]);
 
-  
+
   return (
       <div className="availabilitySetter flex flex-col items-center justify-center px-2 py-0">
         <span> {`${day} ${newDay.getMonth() + 1}/${newDay.getDate()}`} </span>
         {status === "success" && times?.map((time, index) => <AvailButton key={index} text={time} day={day}> </AvailButton>)}
       </div>
     );
-  }
+  };
 /**
  * Doctor availabilty react component.
  * @returns JSX
@@ -144,13 +144,13 @@ const Availability = ({user}: AvailPageProps) => {
         mutate(data);
         resetCheckedBoxes();
       }
-    })
-  }
+    });
+  };
 
   const [weekCount, setWeekCount] = useState(0);
 
   /**
-   * Go to the previous page  
+   * Go to the previous page
    */
   const goBack = () => {
     router.back();
@@ -169,7 +169,7 @@ const Availability = ({user}: AvailPageProps) => {
   const prevWeek = () => {
     setWeekCount(weekCount - 1);
     resetCheckedBoxes();
-  }
+  };
 
   /**
    * look at the next weeks avail
@@ -185,7 +185,7 @@ const Availability = ({user}: AvailPageProps) => {
   const resetWeek = () => {
     setWeekCount(0);
     resetCheckedBoxes();
-  }
+  };
 
   const router = useRouter();
 
@@ -196,7 +196,7 @@ const Availability = ({user}: AvailPageProps) => {
         <meta name="description" content="Hospitality Doctor Availabilty" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+
       <main className="min-h-screen">
         <div className="flex flex-row items-center justify-center " >
           <div className="pt-5 pr-10 ">
@@ -209,7 +209,7 @@ const Availability = ({user}: AvailPageProps) => {
         </div>
         <div className="flex justify-between pl-10 pr-10">
           <button onClick={goBack} style={realButtons}> Back </button>
-          <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+          <button onClick={resetWeek} style={realButtons}> Current Week </button>
         </div>
         <div className="availabilitySetter flex flex-row items-center justify-center gap-2 px-2 py-0 ">
           <ColOfAvail day = "Sunday" week = {weekCount}> </ColOfAvail>
@@ -230,13 +230,13 @@ const Availability = ({user}: AvailPageProps) => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<AvailPageProps> = async (context: GetServerSidePropsContext) => {
   // Get the user session
   const session = await getSession(context);
-  
+
   if (session?.user?.role !== "DOCTOR") {
       return {
           redirect: {
@@ -252,6 +252,6 @@ export const getServerSideProps: GetServerSideProps<AvailPageProps> = async (con
       },
     };
   }
-}
+};
 
 export default Availability;

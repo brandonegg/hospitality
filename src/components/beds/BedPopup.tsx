@@ -1,18 +1,18 @@
 import type { Dispatch, SetStateAction } from "react";
 
-import type { UserRowData } from "../../pages/users";
+import type { BedRowData } from "../../pages/beds";
 import { TablePopup } from "../tables/input";
 
-import UserCreate from "./UserCreate";
-import UserDelete from "./UserDelete";
-import UserEdit from "./UserEdit";
+import BedCreate from "./BedCreate";
+import BedDelete from "./BedDelete";
+import BedEdit from "./BedEdit";
 
-interface UserPopupBodyProps {
+interface BedPopupBodyProps {
   type?: "create" | "edit" | "delete";
-  user?: UserRowData;
+  bed?: BedRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**
@@ -20,30 +20,30 @@ interface UserPopupBodyProps {
  * @param param0
  * @returns JSX
  */
-const UserPopupBody = ({
+const BedPopupBody = ({
   refetch,
-  user,
+  bed,
   type,
   popup,
   setPopup,
-}: UserPopupBodyProps) => {
+}: BedPopupBodyProps) => {
   switch (type) {
     case "create":
-      return <UserCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
+      return <BedCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
     case "edit":
       return (
-        <UserEdit
+        <BedEdit
           refetch={refetch}
-          user={user}
+          bed={bed}
           popup={popup}
           setPopup={setPopup}
         />
       );
     case "delete":
       return (
-        <UserDelete
+        <BedDelete
           refetch={refetch}
-          user={user}
+          bed={bed}
           popup={popup}
           setPopup={setPopup}
         />
@@ -53,22 +53,22 @@ const UserPopupBody = ({
   }
 };
 
-interface UserPopupProps {
+interface BedPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
 /**
  * User popup component.
  * @returns JSX
  */
-const UserPopup = ({ refetch, popup, setPopup }: UserPopupProps) => {
+const UserPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
   return (
-    <TablePopup<UserRowData> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
-        <UserPopupBody
+    <TablePopup<BedRowData> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
+        <BedPopupBody
             refetch={refetch}
-            user={popup.data}
+            bed={popup.data}
             type={popup.type}
             popup={popup}
             setPopup={setPopup}

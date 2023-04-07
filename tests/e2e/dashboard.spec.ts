@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { patientTest } from './playwright/fixtures'
+import { patientTest } from './playwright/fixtures';
 
 test.describe('dashboard', () => {
     test.beforeEach(async ({ page }) => {
@@ -13,7 +13,7 @@ test.describe('dashboard', () => {
         test('redirect to login page', ({page}) => {
             expect(page.url()).toContain('login');
         });
-    })
+    });
 
     test.describe('logged in', () => {
         patientTest('on the dashboard page', async ({page}) => {
@@ -25,6 +25,6 @@ test.describe('dashboard', () => {
             await expect(page.getByRole('heading', { name: 'Upcoming Appointments' })).toBeVisible();
             await expect(page.getByRole('heading', { name: 'Insurance' })).toBeVisible();
             await expect(page.getByRole('heading', { name: 'Vitals' })).toBeVisible();
-        })
-    })
+        });
+    });
 });

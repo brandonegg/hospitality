@@ -19,7 +19,7 @@ const Home: NextPage = () => {
     const slideProps: HorizontalCarouselSlideProps = {
       backgroundImage: slideData.backgroundImage,
       body: <FadedTitleBodyCarouselSlide title={slideData.title} body={slideData.body} />
-    }
+    };
 
     return slideProps;
   });

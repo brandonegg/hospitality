@@ -40,10 +40,10 @@ const Appointment = ({user}: myAppointPageProps) => {
     appoints.sort(timeSort);
 
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = async () => {
-      await Router.push('/')
+      await Router.push('/');
     };
 
     const { mutate } = api.myAppoint.removeAppoint.useMutation();
@@ -55,14 +55,14 @@ const Appointment = ({user}: myAppointPageProps) => {
         const index = appoints.findIndex((appoint) => appoint.id === sqlId);
         if (index > -1) appoints.splice(index,1);
         mutate({id:sqlId});
-    }
+    };
 
     /**
      * look at the previous weeks avail
      */
     const prevWeek = () => {
       setWeekCount(weekCount - 1);
-    }
+    };
 
     /**
      * look at the next weeks avail
@@ -76,7 +76,7 @@ const Appointment = ({user}: myAppointPageProps) => {
      */
     const resetWeek = () => {
       setWeekCount(0);
-    }
+    };
 
     return (
       <>
@@ -85,7 +85,7 @@ const Appointment = ({user}: myAppointPageProps) => {
           <meta name="description" content="Hospitality Doctor Appointments" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <div className="pt-5 pr-10 ">
@@ -98,18 +98,18 @@ const Appointment = ({user}: myAppointPageProps) => {
           </div>
           <div className="flex justify-between pl-10 pr-10">
             <button onClick={goBack} style={realButtons}> Back </button>
-            <button onClick={resetWeek} style={realButtons}> Current Week </button>          
+            <button onClick={resetWeek} style={realButtons}> Current Week </button>
           </div>
           <div className="flex inline-block justify-center">
             <div className="appoints flex flex-col items-start justify-center gap-2 px-2 py-0 ">
             {
-                appoints?.map((appoint, index) => 
+                appoints?.map((appoint, index) =>
                 <p key={index} className={appoint.id}>{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
             )}
             </div>
             <div className="appoints flex flex-col items-start justify-center gap-2 px-2 py-0 ">
             {
-                appoints?.map((appoint, index) => 
+                appoints?.map((appoint, index) =>
                     <button className={appoint.id} key={index} onClick={() => { void remove(appoint.id); }}> X </button>
             )}
             </div>
@@ -122,8 +122,8 @@ const Appointment = ({user}: myAppointPageProps) => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<myAppointPageProps> = async (context: GetServerSidePropsContext) => {
   // Get the user session
@@ -144,6 +144,6 @@ export const getServerSideProps: GetServerSideProps<myAppointPageProps> = async 
       },
     };
   }
-}
-  
+};
+
 export default Appointment;

@@ -22,7 +22,7 @@ export const hoursRouter = createTRPCRouter({
                 });
             }
             const result:Hours[] = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Hours`);
-            const hourSetting = result[0] as Hours; 
+            const hourSetting = result[0] as Hours;
             const insertId = hourSetting.id;
             await ctx.prisma.$executeRawUnsafe(`UPDATE Hours SET startHour=${input.startHour}, endHour=${input.endHour} WHERE id="${insertId}"`);
 

@@ -20,7 +20,7 @@ interface ResetToken {
  * The default select for a user.
  * This is used to ensure that we don't accidentally expose sensitive data.
  */
-const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
+export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   id: true,
   name: true,
   email: true,

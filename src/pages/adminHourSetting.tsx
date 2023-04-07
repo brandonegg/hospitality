@@ -17,7 +17,7 @@ interface myAvailPageProps {
 const times: string[] = [];
 times.push("12:00 am");
 times.push("12:30 am");
-const minutes: string[] = ["00", "30"]
+const minutes: string[] = ["00", "30"];
 for (let hour = 1; hour < 24; hour++){
   for (let min = 0; min < 2; min++){
     if (hour > 11) { // pm
@@ -49,10 +49,10 @@ const AdminHourSetting = () => {
     };
 
     /**
-     * Go to the previous page  
+     * Go to the previous page
      */
     const goBack = async () => {
-      await Router.push('/')
+      await Router.push('/');
     };
 
     const { mutate } = api.hours.setHours.useMutation();
@@ -62,11 +62,11 @@ const AdminHourSetting = () => {
      */
     const submitToDB = () => {
       if (startHour > endHour) {
-        alert("Start Time must be before the End Time")
+        alert("Start Time must be before the End Time");
         return;
       }
-      mutate({startHour: startHour, endHour: endHour})
-    }
+      mutate({startHour: startHour, endHour: endHour});
+    };
 
     const [startHour, setStartHour] = React.useState(14);
 
@@ -85,7 +85,7 @@ const AdminHourSetting = () => {
     const changeEndHourDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
       setEndHour(parseInt(event.target.value));
     };
-  
+
 
     return (
       <>
@@ -94,7 +94,7 @@ const AdminHourSetting = () => {
           <meta name="description" content="Hospitality Doctor Appointments" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        
+
         <main className="min-h-screen">
           <div className="flex flex-row items-center justify-center " >
             <span className="text-2xl "> Set Doctors Earliest and Latest Availability </span>
@@ -107,17 +107,17 @@ const AdminHourSetting = () => {
               <span> Start Time </span>
               <select id="startDropdown" value={startHour} onChange={changeStartHourDropDown}>
                 {
-                  times.map((time, index) => 
+                  times.map((time, index) =>
                       <option key={index} value={index}>{time}</option>
                 )}
               </select>
               <span> End Time </span>
               <select id="endDropdown" value={endHour} onChange={changeEndHourDropDown}>
                 {
-                  times.map((time, index) => 
+                  times.map((time, index) =>
                       <option key={index} value={index}>{time}</option>
                 )}
-              </select> 
+              </select>
             </div>
           </div>
           <div className="availabilitySetter flex flex-col items-center justify-center gap-2 pt-10 pb-10">
@@ -130,8 +130,8 @@ const AdminHourSetting = () => {
 
 /**
  * Server side page setup
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 export const getServerSideProps: GetServerSideProps<myAvailPageProps> = async (context: GetServerSidePropsContext) => {
   // Get the user session
@@ -152,6 +152,6 @@ export const getServerSideProps: GetServerSideProps<myAvailPageProps> = async (c
       },
     };
   }
-}
-  
+};
+
 export default AdminHourSetting;

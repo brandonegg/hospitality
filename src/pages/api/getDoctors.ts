@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { Role } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from "../../server/db";
 
@@ -14,6 +14,6 @@ export default async function getDoctors(
     const doctor = {role: ("DOCTOR" as Role)};
     const result = await prisma.user.findMany({
         where: doctor,
-    })
-    return res.status(201).json(result)
+    });
+    return res.status(201).json(result);
 }

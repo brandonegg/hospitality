@@ -11,8 +11,8 @@ interface FadedTitleBodyCarouselSlideProps {
 /**
  * Component for creating the faded background title/body slide elements
  * for the horizontal carousel
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export const FadedTitleBodyCarouselSlide = ({title, body}: FadedTitleBodyCarouselSlideProps) => {
     return <>
@@ -23,8 +23,8 @@ export const FadedTitleBodyCarouselSlide = ({title, body}: FadedTitleBodyCarouse
             <p className='text-lg text-black'><i>{body}</i></p>
             </div>
         </div>
-    </>
-}
+    </>;
+};
 
 export interface HorizontalCarouselSlideProps {
     backgroundImage: string | undefined;
@@ -34,7 +34,7 @@ export interface HorizontalCarouselSlideProps {
 /**
  * Carousel component
  * @param slides Slides to shuffle through
- * @param autoCycle The time (in seconds) to auto shuffle between slides. Undefined will be no auto shuffle. 
+ * @param autoCycle The time (in seconds) to auto shuffle between slides. Undefined will be no auto shuffle.
  */
 const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlideProps[], autoCycle?: number}) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -71,13 +71,13 @@ const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlid
      */
     const backgroundImageUrl = () => {
         const currentSlide = slides[currentIndex];
-    
+
         if (currentSlide && currentSlide.backgroundImage) {
             return `url(${currentSlide.backgroundImage})`;
         }
 
         return;
-    }
+    };
 
     useEffect(() => {
         if (autoCycle) {
@@ -121,6 +121,6 @@ const HorizontalCarousel = ({slides, autoCycle}: {slides: HorizontalCarouselSlid
         </div>
     </div>
     );
-}
+};
 
-export default HorizontalCarousel
+export default HorizontalCarousel;

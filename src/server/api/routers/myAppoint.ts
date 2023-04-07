@@ -11,11 +11,11 @@ export const removeAppointRouter = createTRPCRouter({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            
+
             const id = input.id;
             const today = new Date();
             const nextWeek =  new Date(today.getTime());
-            nextWeek.setDate(today.getDate()+7); // find the Date for the last day of the week 
+            nextWeek.setDate(today.getDate()+7); // find the Date for the last day of the week
 
             // grab info on the appointment to re add it to availability
             const result:Appointment[] = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Appointment WHERE id="${id}"`);

@@ -4,8 +4,8 @@ const _clientEnv = clientSchema.safeParse(clientEnv);
 
 /**
  * Formats errors for client side
- * @param {*} errors 
- * @returns 
+ * @param {*} errors
+ * @returns
  */
 export const formatErrors = (
   /** @type {import('zod').ZodFormattedError<Map<string,string>,string>} */

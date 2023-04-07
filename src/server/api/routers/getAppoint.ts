@@ -4,7 +4,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 /**
      * convert Date to the String stored in db
-     * @param newDay 
+     * @param newDay
      */
 function dateToString(newDay:Date){
     let twoDigMonth = (newDay.getMonth() + 1).toString();
@@ -23,18 +23,18 @@ export const getAppointRouter = createTRPCRouter({
             })
         )
         .query(async ({ ctx, input }) => {
-            
+
             const doctorId = input.docId;
             const today = new Date();
             today.setDate(today.getDate() + (input.weekCount * 7));
             const nextWeek =  new Date(today.getTime());
-            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week 
+            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week
 
             // get this weeks appointments for a doctor, past todays date for upcoming date
             const result = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Appointment WHERE docId="${doctorId}" AND date BETWEEN "${dateToString(today)}" AND "${dateToString(nextWeek)}"`);
             return result;
         }),
-    getDocAvail: publicProcedure  
+    getDocAvail: publicProcedure
         .input(
             z.object({
                 docId: z.string(),
@@ -42,16 +42,16 @@ export const getAppointRouter = createTRPCRouter({
             })
         )
         .query(async ({ ctx, input }) => {
-            
+
             const doctorId = input.docId;
             const today = new Date();
             today.setDate(today.getDate() + (input.weekCount * 7));
             const nextWeek =  new Date(today.getTime());
-            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week 
+            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week
 
             // get this weeks availability for a doctor, past todays date for upcoming date
             const result = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM OriginalAvailability WHERE docId="${doctorId}" AND date BETWEEN "${dateToString(today)}" AND "${dateToString(nextWeek)}"`);
-            return result; 
+            return result;
         }),
     getPatientAppoint: publicProcedure
         .input(
@@ -61,12 +61,12 @@ export const getAppointRouter = createTRPCRouter({
             })
         )
         .query(async ({ ctx, input }) => {
-            
+
             const userId = input.userId;
             const today = new Date();
             today.setDate(today.getDate() + (input.weekCount * 7));
             const nextWeek =  new Date(today.getTime());
-            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week 
+            nextWeek.setDate(today.getDate()+6); // find the Date for the last day of the week
 
             // get this weeks appointments for a doctor, past todays date for upcoming date
             const result = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Appointment WHERE userId="${userId}" AND date BETWEEN "${dateToString(today)}" AND "${dateToString(nextWeek)}"`);

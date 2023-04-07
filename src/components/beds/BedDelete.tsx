@@ -3,38 +3,35 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { UserRowData } from "../../pages/users";
+import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
-import { dateFormatter } from "../../utils/date";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
-interface UserDeleteProps {
+interface BedDeleteProps {
   refetch: () => Promise<void>;
-  user?: UserRowData;
-  popup: TablePopup<UserRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<UserRowData>>>;
+  bed?: BedRowData;
+  popup: TablePopup<BedRowData>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
 }
 
-type UserDeleteInput = RouterInputs["user"]["delete"];
-type UserDeleteOutput = RouterOutputs["user"]["delete"];
+type BedDeleteInput = RouterInputs["bed"]["delete"];
+type BedDeleteOutput = RouterOutputs["bed"]["delete"];
 
 /**
- * UserDelete component
+ * BedDelete component
  * @param param0
  * @returns JSX
  */
-const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
+const BedDelete = ({ refetch, bed, setPopup }: BedDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<
-    UserDeleteOutput | undefined
-  >(undefined);
+  const [serverResult, setServerResult] = useState<BedDeleteOutput | undefined>(undefined);
 
-  const { register, handleSubmit } = useForm<UserDeleteInput>();
+  const { register, handleSubmit } = useForm<BedDeleteInput>();
 
-  const { mutate } = api.user.delete.useMutation({
-    onSuccess: async (data: UserDeleteOutput) => {
+  const { mutate } = api.bed.delete.useMutation({
+    onSuccess: async (data: BedDeleteOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -47,13 +44,13 @@ const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
    * @param data Form data.
    * @returns
    */
-  const onSubmit: SubmitHandler<UserDeleteInput> = (data) => {
+  const onSubmit: SubmitHandler<BedDeleteInput> = (data) => {
     mutate(data);
   };
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted a user!</Alert>
+      <Alert type="success">Successfully deleted bed!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -67,35 +64,16 @@ const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <p>Do you want to this delete this user?</p>
-
-      <input type="hidden" value={user?.id} {...register("id")} />
+      <p>Do you want to this delete this bed?</p>
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Name:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.name}</p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Email:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.email}</p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">
-            Date of Birth:
-          </p>
-          <p className="col-span-10 sm:col-span-8">
-            {dateFormatter.format(user?.dateOfBirth as Date)}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Role:</p>
-          <p className="col-span-10 sm:col-span-8">{user?.role}</p>
+          <p className="col-span-10 font-semibold sm:col-span-2">Room Label:</p>
+          <p className="col-span-10 sm:col-span-8">{bed?.room}</p>
         </div>
       </div>
+
+      <input type="hidden" value={bed?.id} {...register("id")} />
 
       <div className="flex gap-2">
         <button
@@ -116,4 +94,4 @@ const UserDelete = ({ refetch, user, setPopup }: UserDeleteProps) => {
   );
 };
 
-export default UserDelete;
+export default BedDelete;

@@ -1,9 +1,6 @@
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
@@ -12,19 +9,15 @@ import { useState } from "react";
 
 import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
+import { AddButton, DeleteRowButton, EditRowButton } from "../../components/tables/buttons";
+import type { TablePopup } from "../../components/tables/input";
 import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { dateFormatter } from "../../utils/date";
 import { classNames } from "../../utils/text";
 
-export type User = RouterOutputs["user"]["getAll"]["items"][number];
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "UTC",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
+export type UserRowData = RouterOutputs["user"]["getAll"]["items"][number];
 
 /**
  * Get the initials of a name.
@@ -41,12 +34,6 @@ const getInitial = (name: string) => {
   return initials;
 };
 
-export type Popup = {
-  show: boolean;
-  type?: "create" | "edit" | "delete";
-  user?: User;
-};
-
 /**
  * Users page
  * @param props
@@ -57,7 +44,7 @@ const UsersPage: NextPage = () => {
 
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
-  const [popup, setPopup] = useState<Popup>({ show: false });
+  const [popup, setPopup] = useState<TablePopup<UserRowData>>({ show: false });
 
   const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(
@@ -102,14 +89,9 @@ const UsersPage: NextPage = () => {
 
           {/* add user button */}
           {toShow && (
+
             <div className="">
-              <button
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
-                onClick={() => setPopup({ show: true, type: "create" })}
-              >
-                <PlusIcon className="h-4 w-4" />
-                Add User
-              </button>
+              <AddButton label="User" onClick={() => setPopup({ show: true, type: "create" })} />
             </div>
           )}
         </div>
@@ -198,26 +180,12 @@ const UsersPage: NextPage = () => {
                       <td className="px-6 py-2">{user.role}</td>
                       <td className="px-6 py-2">
                         <div className="flex gap-2">
-                          <button
-                            data-testid={`edit-${index}`}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
-                            onClick={() =>
-                              setPopup({ show: true, type: "edit", user })
-                            }
-                          >
-                            <PencilSquareIcon className="h-4 w-4" />
-                            Edit
-                          </button>
-                          <button
-                            data-testid={`delete-${index}`}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
-                            onClick={() =>
-                              setPopup({ show: true, type: "delete", user })
-                            }
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                            Delete
-                          </button>
+                          <EditRowButton testId={`edit-${index}`} onClick={() =>
+                              setPopup({ show: true, type: "edit", data: user })
+                          }/>
+                          <DeleteRowButton testId={`delete-${index}`} onClick={() =>
+                              setPopup({ show: true, type: "delete", data: user })
+                          }/>
                         </div>
                       </td>
                     </tr>
