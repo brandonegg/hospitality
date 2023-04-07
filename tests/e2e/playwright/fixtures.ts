@@ -14,7 +14,7 @@ export * from '@playwright/test';
  */
 export const adminTest = baseTest.extend<object, { workerStorageState: string }>({
   storageState: ({ workerStorageState }, use) => use(workerStorageState),
-  
+
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
     const fileName = path.resolve(workerInfo.project.outputDir, `.auth/admin/${id}.json`);
@@ -34,9 +34,6 @@ export const adminTest = baseTest.extend<object, { workerStorageState: string }>
     const pageLoaded = page.waitForEvent("load");
     await page.getByRole("button", { name: "Login" }).click();
     await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "domcontentloaded",
-    });
 
     // Save state
     await page.context().storageState({ path: fileName });
@@ -47,7 +44,7 @@ export const adminTest = baseTest.extend<object, { workerStorageState: string }>
 
 export const patientTest = baseTest.extend<object, { workerStorageState: string }>({
   storageState: ({ workerStorageState }, use) => use(workerStorageState),
-  
+
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
     const fileName = path.resolve(workerInfo.project.outputDir, `.auth/patient/${id}.json`);
@@ -67,9 +64,6 @@ export const patientTest = baseTest.extend<object, { workerStorageState: string 
     const pageLoaded = page.waitForEvent("load");
     await page.getByRole("button", { name: "Login" }).click();
     await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "domcontentloaded",
-    });
 
     // Save state
     await page.context().storageState({ path: fileName });
@@ -80,7 +74,7 @@ export const patientTest = baseTest.extend<object, { workerStorageState: string 
 
 export const doctorTest = baseTest.extend<object, { workerStorageState: string }>({
   storageState: ({ workerStorageState }, use) => use(workerStorageState),
-  
+
   workerStorageState: [async ({ browser }, use, workerInfo) => {
     const id = workerInfo.workerIndex;
     const fileName = path.resolve(workerInfo.project.outputDir, `.auth/doctor/${id}.json`);
@@ -100,9 +94,6 @@ export const doctorTest = baseTest.extend<object, { workerStorageState: string }
     const pageLoaded = page.waitForEvent("load");
     await page.getByRole("button", { name: "Login" }).click();
     await pageLoaded;
-    await page.goto(`${baseURL}/`, {
-      waitUntil: "domcontentloaded",
-    });
 
     // Save state
     await page.context().storageState({ path: fileName });
