@@ -27,7 +27,7 @@ interface BedEditProps {
  * @param param0
  * @returns JSX
  */
-const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
+const BedAssign = ({ refetch, bed, setPopup }: BedEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<BedUpdateOutput | undefined>(undefined);
 
@@ -105,4 +105,4 @@ const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
   );
 };
 
-export default BedEdit;
+export default BedAssign;

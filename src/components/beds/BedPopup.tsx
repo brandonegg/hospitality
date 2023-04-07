@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { BedRowData } from "../../pages/beds";
 import { TablePopup } from "../tables/input";
 
+import BedAssign from "./BedAssign";
 import BedCreate from "./BedCreate";
 import BedDelete from "./BedDelete";
 import BedEdit from "./BedEdit";
@@ -52,7 +53,12 @@ const BedPopupBody = ({
       );
     case "assign":
       return (
-        <p>todo</p>
+        <BedAssign
+          refetch={refetch}
+          bed={bed}
+          popup={popup}
+          setPopup={setPopup}
+        />
       );
     default:
       return <></>;
