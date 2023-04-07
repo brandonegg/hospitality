@@ -1,9 +1,10 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import { defaultUserSelect } from "./user";
-import { TRPCError } from "@trpc/server";
+
 
 export const bedRouter = createTRPCRouter({
   getAll: protectedProcedure
