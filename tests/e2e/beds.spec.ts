@@ -3,19 +3,25 @@ import { expect, test } from '@playwright/test';
 import { adminTest, patientTest } from './playwright/fixtures';
 
 test.describe('beds > page access', () => {
-    adminTest('admin can access', async ({page}) => {
+    test.beforeEach(async ({page}) => {
         await page.goto('/beds');
+    });
+
+    adminTest('admin can access', async ({page}) => {
         await expect(page.getByRole('heading', { name: 'All Beds' })).toBeVisible();
     });
 
     patientTest('patient is redirected to dashboard', async ({page}) => {
-        await page.goto('/beds');
         await expect(page.getByRole('heading', { name: 'Welcome, e2e' })).toBeVisible();
     });
 });
 
 test.describe('beds > CRUD operations', () => {
     test.describe('create', () => {
+        test.beforeEach(async ({page}) => {
+            await page.goto('/beds');
+        });
+
         adminTest('with valid inputs', async ({page}) => {
             await page.getByRole('button', { name: 'Add Bed' }).click();
             await page.getByLabel('Room Label').click();
@@ -33,7 +39,8 @@ test.describe('beds > CRUD operations', () => {
             await expect(page.getByText('Successfully created a bed!')).toBeVisible();
         });
 
-        test.skip('missing room number', async ({page}) => {
+        adminTest('missing room number', async ({page}) => {
+            await page.getByRole('button', { name: 'Add Bed' }).click();
             await page.getByLabel('Street').click();
             await page.getByLabel('Street').fill('123 Lane');
             await page.getByLabel('Street').press('Tab');
@@ -49,7 +56,11 @@ test.describe('beds > CRUD operations', () => {
     });
 
     test.describe('edit', () => {
-        test.skip('with valid new room label', async ({page}) => {
+        test.beforeEach(async ({page}) => {
+            await page.goto('/beds');
+        });
+
+        adminTest('with valid new room label', async ({page}) => {
             await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
             await page.getByLabel('Room Label').click();
             await page.getByLabel('Room Label').fill('404B');
@@ -58,8 +69,7 @@ test.describe('beds > CRUD operations', () => {
             await expect(page.getByText('Successfully updated bed!')).toBeVisible();
         });
 
-        test.skip('with empty room label', async ({page}) => {
-            // TODO: clear the room label, try to update
+        adminTest('with empty room label', async ({page}) => {
             await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
             await page.getByLabel('Room Label').click();
             await page.getByLabel('Room Label').fill('');
