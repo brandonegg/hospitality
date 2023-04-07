@@ -61,7 +61,7 @@ test.describe('beds > CRUD operations', () => {
         });
 
         adminTest('with valid new room label', async ({page}) => {
-            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
+            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 405 unoccupied No patient assigned Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
             await page.getByLabel('Room Label').click();
             await page.getByLabel('Room Label').fill('404B');
             await page.getByRole('button', { name: 'Confirm' }).click();
@@ -70,7 +70,7 @@ test.describe('beds > CRUD operations', () => {
         });
 
         adminTest('with empty room label', async ({page}) => {
-            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
+            await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 405 unoccupied No patient assigned Edit Delete' }).getByRole('button', { name: 'Edit' }).click();
             await page.getByLabel('Room Label').click();
             await page.getByLabel('Room Label').fill('');
             await page.getByRole('button', { name: 'Confirm' }).click();
@@ -84,14 +84,15 @@ test.describe('beds > CRUD operations', () => {
             await page.goto('/beds');
         });
 
+        adminTest('assigned bed', async ({page}) => {
+            await expect(page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Delete' })).toBeDisabled();
+        });
+
         adminTest('unassigned bed', async ({page}) => {
             await page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 1100 unoccupied No patient assigned Edit Delete' }).getByRole('button', { name: 'Delete' }).click();
             await page.getByRole('button', { name: 'Confirm' }).click();
-            await page.getByText('Successfully deleted bed!').dblclick();
-        });
 
-        adminTest('assigned bed', async ({page}) => {
-            await expect(page.getByRole('row', { name: '200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete' }).getByRole('button', { name: 'Delete' })).toBeDisabled();
+            await expect(page.getByText('Successfully deleted bed!')).toBeVisible();
         });
     });
 });
