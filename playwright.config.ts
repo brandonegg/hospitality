@@ -1,6 +1,7 @@
-import { PlaywrightTestOptions, PlaywrightWorkerOptions, Project, defineConfig, devices } from "@playwright/test";
-import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-dotenv.config()
+import type { PlaywrightTestOptions, PlaywrightWorkerOptions, Project} from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
+import * as dotenv from 'dotenv'; // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 
 // Use process.env.PORT by default and fallback to port 3000
 const PORT = process.env.PORT || 3000;
@@ -9,9 +10,15 @@ const BROWSERS = process.env.BROWSERS ?? '*';
 // Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
 export const baseURL = `http://localhost:${PORT}`;
 
+/**
+ * Generates the projects based on browsers specified in .env
+ *
+ * @param browsersStr .env browser str (formatted with commas to separate browsers)
+ * @returns project list
+ */
 function buildProjectsList(browsersStr: string): Project<PlaywrightTestOptions, PlaywrightWorkerOptions>[] | undefined {
   let browsers: string[] = browsersStr.trim().split(',');
-  let projects: Project<PlaywrightTestOptions, PlaywrightWorkerOptions>[] = [];
+  const projects: Project<PlaywrightTestOptions, PlaywrightWorkerOptions>[] = [];
 
   if (browsersStr.trim() === '*') {
     browsers = ['chromium', 'webkit', 'firefox'];
@@ -21,21 +28,21 @@ function buildProjectsList(browsersStr: string): Project<PlaywrightTestOptions, 
     projects.push({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-    })
+    });
   }
 
   if (browsers.includes('firefox')) {
     projects.push({
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
-    })
+    });
   }
 
   if (browsers.includes('webkit')) {
     projects.push({
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
-    })
+    });
   }
 
   return projects;
