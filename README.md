@@ -8,45 +8,61 @@ TODO: A brief description of the project
 
 This project uses npm for package management, we recommend installing nvm for managing nodejs and npm versions. More details on how to install and setup nvm can be found [here](https://github.com/nvm-sh/nvm#installing-and-updating)
 
+
+### NextJS
+We recommend using the default NextJS development tools for running your site locally. A live site can be deployed with the following:
+```bash
+npm run dev
+```
+
+### Testing
+Tests are run with Playwright (end-to-end) and JUnit (unit tests). Before running tests you'll need to install the required playwright browser dependencies:
+```bash
+npx playwright install --with-deps 
+# Note: with-deps will cause an error on some Linux environments. This flag can be omitted but will prevent you from running Webkit tests. Webkit is not officially supported but playwright for most modern linux distributions at this time.
+```
+
 ## Docker
 
-Docker is used to containerized our application so that you don't have to run multiple commands or install different requirements to get the application up and running. `Docker Compose` is used to run multiple images at the same time so that you don't need different terminal windows to run the `mySQL` server and the `NextJS` application.
+For convenience we have provided a docker-compose.yml for setting up and configuring a MySQL server you can use with Prisma if you prefer a containerized solution.
 
 **To Setup:**
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 2. Create a copy of the file labeled _.env.example_ and rename it to _.env_
-3. Fill in the necessary information for the _.env_ file
+3. Fill in the necessary information for the _.env_ file (for MySQL you'll need to set MYSQL_DATABASE, and MYSQL_ROOT_PASSWORD)
 4. Run `npm run docker:build` to build the containers (you only have to do this once).
 5. Run `npm run docker:up` to start the containers.
-6. (optional): To access the NextJS image terminal, run the command `docker exec -it nextjs sh`. This might be useful for install new packages to the NextJS image.
 
 You can now use the `MySQL` credentials stored in the _.env_ file to connect the `MySQL` server using your favorite database management tool..
 
 To stop the running containers, run `npm run docker:down` or press `CTRL-C`.
 
-To remove volumes from docker-compose: docker-compose down -v
+To remove volumes from docker-compose: `docker-compose down -v`
 
-To run command inside a docker container: docker exec -it {CONTAINER_NAME} sh -c "{COMMAND}"
+To run command inside a docker container: `docker exec -it {CONTAINER_NAME} sh -c "{COMMAND}"`
 
 **For example:**
 
 When installing a package, you would run `npm install {PACKAGE}` in your local terminal. Your local environment is not sync with the NextJS docker image. Hence, you would also need to install the same package in the NextJS docker image as well by running this command `docker exec -it nextjs sh -c "npm install {PACKAGE}"`. Similar process for uninstall a package from your local environment.
 
-**Setting up MySQL database in Docker container:**
+**Setting up Prisma with MySQL:**
 
-1. Add new connection
-2. Enter connection name, e.g. Docker MySQL
-3. Change the default port from 3306 to 3300
-4. Enter the username (default to **root**) and password (from the .env you entered) for the database connection
+Ensure the DATABASE_URL variable is set in your environment. This is what Prisma will use to connect to your MySQL server.
 
 Once connected, run the following commands to run migrations on your database:
-
+```bash
+npx prisma migrate dev
 ```
-docker exec -it nextjs sh -c "npx prisma migrate dev"
+*Note:* Running this command will also generate the prisma type definition file. If the project displays various type errors related to the database models it may be necessary to run this or `npx prisma db push`
+
+You can also seed your database with some example data provided:
+```bash
+npx prisma db seed
 ```
 
-## Sonar
+## Sonar (deprecated)
+*Sonar is a outdated method for maintaining quality code standards. It was implemented into this repository due to class requirements but is not recommend for an actual modern developer environment.*
 
 Sonar scans the repository to check for potential bugs, formatting issues, coverage, and much more. The sonar utility can be run using `npm run scan` which is just an alias for the `sonar-scanner` command. Sonar requires manual configuration to setup at this time.
 
