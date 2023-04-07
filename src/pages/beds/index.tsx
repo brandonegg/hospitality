@@ -49,10 +49,12 @@ const BedsTableRow = ({item, setPopup}: {
 }) => {
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
+    disabled: false,
   };
 
   const deleteDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "delete", data: item }),
+    disabled: item.occupant !== null,
   };
 
   return (

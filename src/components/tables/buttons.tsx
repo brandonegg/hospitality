@@ -4,15 +4,29 @@ import type { MouseEventHandler } from "react";
 export interface ButtonDetails {
     onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
     testId?: string;
+    disabled?: boolean;
 }
 
 /**
  * Adds a '+ Add {item}' button to table view.
  */
-const AddButton = ({ onClick, label }: ButtonDetails &
+const AddButton = ({ onClick, label, disabled=false }: ButtonDetails &
 {
     label: string,
 }) => {
+    if (disabled) {
+        return (
+            <button
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-300 py-2 text-sm px-3 font-semibold text-white cursor-not-allowed"
+                onClick={onClick}
+                disabled
+                >
+                <PlusIcon className="h-4 w-4" />
+                Add {label}
+            </button>
+        );
+    }
+
     return (
         <button
             className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 text-sm px-3 font-semibold text-white hover:bg-blue-700"
@@ -27,7 +41,20 @@ const AddButton = ({ onClick, label }: ButtonDetails &
 /**
  * Button for editing the row of a table.
  */
-const EditRowButton = ({ onClick, testId }: ButtonDetails) => {
+const EditRowButton = ({ onClick, testId, disabled=false }: ButtonDetails) => {
+    if (disabled) {
+        return (
+            <button
+                data-testid={testId}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-300 py-2 px-3 font-semibold text-white cursor-not-allowed"
+                onClick={onClick}
+            >
+                <PencilSquareIcon className="h-4 w-4" />
+                Edit
+            </button>
+        );
+    }
+
     return (
         <button
             data-testid={testId}
@@ -43,7 +70,21 @@ const EditRowButton = ({ onClick, testId }: ButtonDetails) => {
 /**
  * Delete row button for table.
  */
-const DeleteRowButton = ({ onClick, testId } : ButtonDetails) => {
+const DeleteRowButton = ({ onClick, testId, disabled=false } : ButtonDetails) => {
+    if (disabled) {
+        return (
+            <button
+                data-testid={testId}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-red-300 py-2 px-3 font-semibold text-white cursor-not-allowed"
+                onClick={onClick}
+                disabled
+            >
+                <TrashIcon className="h-4 w-4" />
+                Delete
+            </button>
+        );
+    }
+
     return (
         <button
             data-testid={testId}
