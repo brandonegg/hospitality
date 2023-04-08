@@ -129,24 +129,12 @@ export const bedRouter = createTRPCRouter({
       });
     }),
   assign: protectedProcedure
-    .input(z.object({ bedId: z.string(), patientId: z.string() }))
+    .input(z.object({ bedId: z.string(), patientId: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: input.patientId,
-        }
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "No user was found with this ID.",
-        });
-      }
 
       return await ctx.prisma.bed.update({
         where: { id: input.bedId },
-        data: { userId: input.patientId },
+        data: { userId: input.patientId ? input.patientId : null },
       });
     }),
 });

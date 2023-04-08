@@ -1,4 +1,5 @@
-import type { ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import type { ChangeEventHandler, Dispatch, SetStateAction} from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -40,16 +41,23 @@ const SelectPatientButton = ({patient, setPatientID, selectedPatientID}: {
     setPatientID(patient.id);
   };
 
+  /**
+   * Handle patient button on click event when it is selected
+   */
+  const unsetPatient = () => {
+    setPatientID(undefined);
+  };
+
   if (selectedPatientID === patient.id) {
     return (
-      <button>
+      <button onClick={unsetPatient} type="button" className="text-left p-2 bg-gray-800 text-white">
         {patient.name}
       </button>
     );
   }
 
   return (
-    <button onClick={handleClick}>
+    <button type="button" onClick={handleClick} className="text-left p-2 hover:bg-gray-800 hover:text-white">
       {patient.name}
     </button>
   );
@@ -65,7 +73,7 @@ const SearchResults = ({results, setPatientID, selectedPatientID}: {
 }) => {
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-2 border overflow-hidden border-neutral-500 bg-white mx-2 rounded-xl divide-y-[1px] divide-neutral-300">
       {results?.map((item, id) => {
         return (
           <SelectPatientButton key={id} selectedPatientID={selectedPatientID} setPatientID={setPatientID} patient={item} />
@@ -118,7 +126,7 @@ const UserSearch = ({setPatientID, patientID}: {
  * @returns JSX
  */
 const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
-  const [patientID, setPatientID] = useState<string | undefined>(undefined);
+  const [patientID, setPatientID] = useState<string | undefined>(bed?.userId ?? undefined);
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<BedAssignOutput | undefined>(undefined);
 
@@ -126,9 +134,10 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<BedAssignInput>();
 
-  const { mutate } = api.bed.update.useMutation({
+  const { mutate } = api.bed.assign.useMutation({
     onSuccess: async (data: BedAssignOutput) => {
       setServerResult(data);
 
@@ -136,6 +145,12 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
     },
     onError: (error) => setServerError(error.message),
   });
+
+  useEffect(() => {
+    // update the patientID state with the watched patientId field
+    setValue('bedId', bed?.id ?? "");
+    setValue('patientId', patientID ?? "");
+  }, [bed, patientID, setValue]);
 
   /**
    * Form submit handler.
@@ -167,20 +182,35 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
 
         <div className="flex flex-grow flex-col">
           <UserSearch setPatientID={setPatientID} patientID={patientID} />
+          {errors.patientId?.message && (
+              <ErrorMessage id={`$patient-id-error`}>
+                {errors.patientId.message}
+              </ErrorMessage>
+          )}
+
           <div className="hidden">
+            { /** Hidden patientID field selected by search results */ }
             <input
               type="text"
               id="patientId"
               className="rounded border border-gray-300 p-2"
               {...register("patientId", {
-                required: "Please provide a patient to assign"
               })}
             />
-            {errors.patientId?.message && (
-              <ErrorMessage id={`$patient-id-error`}>
-                {errors.patientId.message}
-              </ErrorMessage>
-            )}
+
+            { /** Hidden bed ID field */ }
+            {bed?.id ?
+              <input
+                type="text"
+                id="bedId"
+                value={bed.id ?? ""}
+                className="rounded border border-gray-300 p-2"
+                {...register("bedId", {
+                  required: "Internal error occured, no bed ID provided.",
+                  minLength: 1,
+                })}
+              />
+            : undefined}
           </div>
         </div>
       </div>
@@ -190,7 +220,7 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Assign
+          {(bed?.userId && !patientID) ? 'Unassign' : 'Assign'}
         </button>
         <button
           type="button"
