@@ -7,10 +7,11 @@ import type { BedRowData } from "../../pages/beds";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
-import { FormInput } from "../forms/input";
+import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
 import type { BedPopupTypes } from "./BedPopup";
+
 
 type BedUpdateInput = RouterInputs["bed"]["update"];
 type BedUpdateOutput = RouterOutputs["bed"]["update"];
@@ -21,6 +22,23 @@ interface BedEditProps {
   popup: TablePopup<BedRowData, BedPopupTypes>;
   setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
+
+/**
+ * Component for searching patients
+ */
+const UserSearch = () => {
+  return (
+    <div className="flex flex-1 flex-col">
+      <label htmlFor="user-search">Search for patient</label>
+      <input
+        type="text"
+        id="user-search"
+        placeholder="patient name"
+        className="rounded border border-gray-300 p-2"
+      />
+    </div>
+  );
+};
 
 /**
  * UserEdit component
@@ -59,7 +77,7 @@ const BedAssign = ({ refetch, bed, setPopup }: BedEditProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated bed!</Alert>
+      <Alert type="success">Successfully assigned patient!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -72,17 +90,27 @@ const BedAssign = ({ refetch, bed, setPopup }: BedEditProps) => {
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
+      <h2 className="text-xl font-semibold">Assign Patient to {bed?.room}</h2>
 
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
+
         <div className="flex flex-grow flex-col">
-          <FormInput<BedUpdateInput>
-            label="Room Label"
-            registerDetails={{...register("room", {
-                required: "Room label is required",
-              })}}
-            id="room"
-            errorMessage={errors.room ? errors.room.message : undefined}
-          />
+          <UserSearch />
+          <div className="hidden">
+            <input
+              type="text"
+              id="patient-id"
+              className="rounded border border-gray-300 p-2"
+              {...register("room", {
+                required: "Please provide a patient to assign"
+              })}
+            />
+            {errors.room?.message && (
+              <ErrorMessage id={`$patient-id-error`}>
+                {errors.room.message}
+              </ErrorMessage>
+            )}
+          </div>
         </div>
       </div>
 
@@ -91,7 +119,7 @@ const BedAssign = ({ refetch, bed, setPopup }: BedEditProps) => {
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Confirm
+          Assign
         </button>
         <button
           type="button"
