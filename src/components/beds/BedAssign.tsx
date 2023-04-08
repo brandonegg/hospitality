@@ -66,15 +66,27 @@ const SelectPatientButton = ({patient, setPatientID, selectedPatientID}: {
 /**
  * Search results component shown below
  */
-const SearchResults = ({results, setPatientID, selectedPatientID}: {
+const SearchResults = ({bed, results, setPatientID, selectedPatientID}: {
+  bed?: BedRowData;
   selectedPatientID: string | undefined,
   results: UserSearchOutput | undefined,
   setPatientID: Dispatch<SetStateAction<string | undefined>>,
 }) => {
 
+  const filteredResults = results?.filter((value) => {
+    return value.id !== bed?.occupant?.id;
+  });
+
   return (
     <div className="flex flex-col mt-2 border overflow-hidden border-neutral-500 bg-white mx-2 rounded-xl divide-y-[1px] divide-neutral-300">
-      {results?.map((item, id) => {
+      {bed?.occupant  ?
+        <SelectPatientButton selectedPatientID={selectedPatientID} setPatientID={setPatientID} patient={{
+          id: bed.occupant.id,
+          name: bed.occupant.name,
+          dateOfBirth: null,
+        }} />
+      : undefined}
+      {filteredResults?.map((item, id) => {
         return (
           <SelectPatientButton key={id} selectedPatientID={selectedPatientID} setPatientID={setPatientID} patient={item} />
         );
@@ -86,7 +98,8 @@ const SearchResults = ({results, setPatientID, selectedPatientID}: {
 /**
  * Component for searching patients
  */
-const UserSearch = ({setPatientID, patientID}: {
+const UserSearch = ({bed, setPatientID, patientID}: {
+  bed?: BedRowData,
   setPatientID: Dispatch<SetStateAction<string | undefined>>,
   patientID: string | undefined,
 }) => {
@@ -115,7 +128,7 @@ const UserSearch = ({setPatientID, patientID}: {
         placeholder="patient name"
         className="rounded border border-gray-300 p-2"
       />
-      <SearchResults selectedPatientID={patientID} results={matchedPatients.data} setPatientID={setPatientID} />
+      <SearchResults bed={bed} selectedPatientID={patientID} results={matchedPatients.data} setPatientID={setPatientID} />
     </div>
   );
 };
@@ -181,7 +194,7 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
 
         <div className="flex flex-grow flex-col">
-          <UserSearch setPatientID={setPatientID} patientID={patientID} />
+          <UserSearch bed={bed} setPatientID={setPatientID} patientID={patientID} />
           {errors.patientId?.message && (
               <ErrorMessage id={`$patient-id-error`}>
                 {errors.patientId.message}
