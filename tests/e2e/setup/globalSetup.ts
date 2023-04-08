@@ -54,7 +54,7 @@ async function globalSetup() {
     },
     update: {},
   });
-  // create patient test user
+  // create doctor test user
   await prisma.user.upsert({
     where: {
       email: "e2e-doctor@e2e.com",
