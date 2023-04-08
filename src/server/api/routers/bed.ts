@@ -5,7 +5,6 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import { defaultUserSelect } from "./user";
 
-
 export const bedRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
@@ -127,6 +126,27 @@ export const bedRouter = createTRPCRouter({
       // Delete the bed
       return await ctx.prisma.bed.delete({
         where: { id },
+      });
+    }),
+  assign: protectedProcedure
+    .input(z.object({ bedId: z.string(), patientId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: input.patientId,
+        }
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No user was found with this ID.",
+        });
+      }
+
+      return await ctx.prisma.bed.update({
+        where: { id: input.bedId },
+        data: { userId: input.patientId },
       });
     }),
 });
