@@ -54,6 +54,7 @@ async function globalSetup() {
     },
     update: {},
   });
+
   // create doctor test user
   await prisma.user.upsert({
     where: {
@@ -67,6 +68,23 @@ async function globalSetup() {
       password: await argon2.hash("password"),
       addressId: address.id,
       role: Role.DOCTOR,
+    },
+    update: {},
+  });
+
+  // create nurse test user
+  await prisma.user.upsert({
+    where: {
+      email: "e2e-nurse@e2e.com",
+    },
+    create: {
+      name: "e2e-nurse",
+      dateOfBirth: new Date(),
+      username: "e2e-nurse",
+      email: "e2e-nurse@e2e.com",
+      password: await argon2.hash("password"),
+      addressId: address.id,
+      role: Role.NURSE,
     },
     update: {},
   });

@@ -50,7 +50,7 @@ const SelectPatientButton = ({patient, setPatientID, selectedPatientID}: {
 
   if (selectedPatientID === patient.id) {
     return (
-      <button onClick={unsetPatient} type="button" className="text-left p-2 bg-gray-800 text-white">
+      <button data-testid="assigned" onClick={unsetPatient} type="button" className="text-left p-2 bg-gray-800 text-white">
         {patient.name}
       </button>
     );
