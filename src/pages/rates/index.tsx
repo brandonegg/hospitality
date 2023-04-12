@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
+import RatePopup from "../../components/rates/RatePopup";
 import {
   AddButton,
   DeleteRowButton,
@@ -100,6 +101,15 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
             />
           </div>
         </div>
+
+        {/* popup */}
+        {popup.show && (
+          <RatePopup
+            refetch={refetch as unknown as () => Promise<void>}
+            popup={popup}
+            setPopup={setPopup}
+          />
+        )}
 
         <RateTable items={rates} />
       </div>
