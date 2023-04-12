@@ -32,4 +32,21 @@ export const rateRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        rate: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { name, description, rate } = input;
+
+      const newRate = await ctx.prisma.$executeRawUnsafe(
+        `INSERT INTO "Rate" ("name", "description", "rate") VALUES (${name}, ${description}, ${rate})`
+      );
+
+      return newRate;
+    }),
 });
