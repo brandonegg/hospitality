@@ -2,17 +2,17 @@ import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
+import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
 import MainHeader from "../../components/Header";
+import type { RatePopupTypes } from "../../components/rates/RatePopup";
 import RatePopup from "../../components/rates/RatePopup";
-import {
-  AddButton,
-  DeleteRowButton,
-  EditRowButton,
-} from "../../components/tables/buttons";
+import type { ButtonDetails } from "../../components/tables/buttons";
+import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
+import { ActionsEntry } from "../../components/tables/rows";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
@@ -23,18 +23,31 @@ export type RateRowData = RouterOutputs["rate"]["getAll"]["items"][number];
  * Rate table row.
  * @returns
  */
-const RateTableRow = ({ item }: { item: RateRowData }) => {
+const RateTableRow = ({
+  item,
+  setPopup,
+}: {
+  item: RateRowData;
+  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
+}) => {
+  const editDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "edit", data: item }),
+  };
+
+  const deleteDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "delete", data: item }),
+  };
+
   return (
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
       <td className="px-6 py-2">{item.name}</td>
       <td className="px-6 py-2">{item.description}</td>
       <td className="px-6 py-2">{item.rate}</td>
-      <td className="px-6 py-2">
-        <div className="flex gap-2">
-          <EditRowButton />
-          <DeleteRowButton />
-        </div>
-      </td>
+      <ActionsEntry
+        editDetails={editDetails}
+        deleteDetails={deleteDetails}
+        label="Rate"
+      />
     </tr>
   );
 };
@@ -43,7 +56,13 @@ const RateTableRow = ({ item }: { item: RateRowData }) => {
  * Rate table.
  * @returns
  */
-const RateTable = ({ items }: { items: RateRowData[] | undefined }) => {
+const RateTable = ({
+  items,
+  setPopup,
+}: {
+  items: RateRowData[] | undefined;
+  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
+}) => {
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
@@ -52,12 +71,12 @@ const RateTable = ({ items }: { items: RateRowData[] | undefined }) => {
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Description</th>
             <th className="w-[175px] px-6 py-3">Rate</th>
-            <th className="w-[220px] px-6 py-3">Actions</th>
+            <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
           {items?.map((rate, i) => (
-            <RateTableRow key={i} item={rate} />
+            <RateTableRow key={i} item={rate} setPopup={setPopup} />
           ))}
         </tbody>
       </table>
@@ -111,7 +130,7 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
           />
         )}
 
-        <RateTable items={rates} />
+        <RateTable items={rates} setPopup={setPopup} />
       </div>
     </main>
   );
