@@ -5,7 +5,6 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 import { defaultUserSelect } from "./user";
 
-
 export const bedRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(
@@ -127,6 +126,15 @@ export const bedRouter = createTRPCRouter({
       // Delete the bed
       return await ctx.prisma.bed.delete({
         where: { id },
+      });
+    }),
+  assign: protectedProcedure
+    .input(z.object({ bedId: z.string(), patientId: z.string().optional() }))
+    .mutation(async ({ ctx, input }) => {
+
+      return await ctx.prisma.bed.update({
+        where: { id: input.bedId },
+        data: { userId: input.patientId ? input.patientId : null },
       });
     }),
 });

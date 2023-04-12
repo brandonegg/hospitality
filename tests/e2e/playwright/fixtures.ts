@@ -101,3 +101,33 @@ export const doctorTest = baseTest.extend<object, { workerStorageState: string }
     await use(fileName);
   }, { scope: 'worker' }],
 });
+
+export const nurseTest = baseTest.extend<object, { workerStorageState: string }>({
+  storageState: ({ workerStorageState }, use) => use(workerStorageState),
+
+  workerStorageState: [async ({ browser }, use, workerInfo) => {
+    const id = workerInfo.workerIndex;
+    const fileName = path.resolve(workerInfo.project.outputDir, `.auth/nurse/${id}.json`);
+
+    if (fs.existsSync(fileName)) {
+      await use(fileName); // Reuse existing authentication state if any.
+      return;
+    }
+
+    // authenticate in a clean environment by unsetting storage state.
+    const page = await browser.newPage({ storageState: undefined });
+
+    // Login as doctor.
+    await page.goto(`${baseURL}/login`);
+    await page.locator("input[name=username]").fill("e2e-nurse");
+    await page.locator("input[name=password]").fill("password");
+    const pageLoaded = page.waitForEvent("load");
+    await page.getByRole("button", { name: "Login" }).click();
+    await pageLoaded;
+
+    // Save state
+    await page.context().storageState({ path: fileName });
+    await page.close();
+    await use(fileName);
+  }, { scope: 'worker' }],
+});

@@ -9,11 +9,13 @@ import { api } from "../../utils/api";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
+import type { BedPopupTypes } from "./BedPopup";
+
 interface BedDeleteProps {
   refetch: () => Promise<void>;
   bed?: BedRowData;
-  popup: TablePopup<BedRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
+  popup: TablePopup<BedRowData, BedPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
 
 type BedDeleteInput = RouterInputs["bed"]["delete"];

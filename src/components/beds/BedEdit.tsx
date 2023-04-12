@@ -10,14 +10,16 @@ import Alert from "../Alert";
 import { FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
+import type { BedPopupTypes } from "./BedPopup";
+
 type BedUpdateInput = RouterInputs["bed"]["update"];
 type BedUpdateOutput = RouterOutputs["bed"]["update"];
 
 interface BedEditProps {
   refetch: () => Promise<void>;
   bed?: BedRowData;
-  popup: TablePopup<BedRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
+  popup: TablePopup<BedRowData, BedPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
 
 /**

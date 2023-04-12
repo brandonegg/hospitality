@@ -13,14 +13,16 @@ import type { FormInputProps } from "../forms/input";
 import { FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
+import type { BedPopupTypes } from "./BedPopup";
+
 
 export type BedCreateInput = RouterInputs["bed"]["create"];
 export type BedCreateOutput = RouterOutputs["bed"]["create"];
 
 interface BedCreateProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<BedRowData>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData>>>;
+  popup: TablePopup<BedRowData, BedPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
 }
 
 /**

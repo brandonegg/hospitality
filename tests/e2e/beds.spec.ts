@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { adminTest, patientTest } from './playwright/fixtures';
+import { adminTest, doctorTest, nurseTest, patientTest } from './playwright/fixtures';
 
 test.describe('beds > page access', () => {
     test.beforeEach(async ({page}) => {
@@ -93,6 +93,47 @@ test.describe('beds > CRUD operations', () => {
             await page.getByRole('button', { name: 'Confirm' }).click();
 
             await expect(page.getByText('Successfully deleted bed!')).toBeVisible();
+        });
+    });
+});
+
+test.describe('assign bed functionality', () => {
+    test.beforeEach(async ({page}) => {
+        await page.goto('/beds');
+    });
+
+    test.describe('button access', () => {
+        adminTest("admins can't assign beds", async ({page}) => {
+            await expect(page.getByRole('button', { name: 'Assign' }).first()).toBeHidden();
+        });
+
+        doctorTest("doctors can assign beds", async ({page}) => {
+            await expect(page.getByRole('button', { name: 'Assign' }).first()).toBeVisible();
+        });
+
+        nurseTest("nurses can assign beds", async ({page}) => {
+            await expect(page.getByRole('button', { name: 'Assign' }).first()).toBeVisible();
+        });
+    });
+
+    test.describe('assign patient', () => {
+        doctorTest('unoccupied bed', async ({page}) => {
+            await page.getByRole('row', { name: /.+ unoccupied.+/ }).getByRole('button', { name: 'Assign' }).last().click();
+            await page.getByRole('button', { name: 'e2e-patient' }).click();
+            await page.getByRole('button', { name: 'Assign' }).click();
+
+            await expect(page.getByText('Successfully assigned patient!')).toBeVisible();
+        });
+
+    });
+
+    test.describe('unassign patient', () => {
+        doctorTest('occupied bed', async ({page}) => {
+            await page.getByRole('row', { name: /.+ occupied.+/ }).getByRole('button', { name: 'Assign' }).last().click();
+            await page.getByTestId('assigned').click();
+            await page.getByRole('button', { name: 'Unassign' }).click();
+
+            await expect(page.getByText('Successfully assigned patient!')).toBeVisible();
         });
     });
 });

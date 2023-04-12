@@ -11,6 +11,7 @@ import Alert from "../../components/Alert";
 import MainHeader from "../../components/Header";
 import { AddButton, DeleteRowButton, EditRowButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
+import type { UserPopupTypes } from "../../components/users/UserPopup";
 import UserPopup from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
@@ -44,7 +45,7 @@ const UsersPage: NextPage = () => {
 
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
-  const [popup, setPopup] = useState<TablePopup<UserRowData>>({ show: false });
+  const [popup, setPopup] = useState<TablePopup<UserRowData, UserPopupTypes>>({ show: false });
 
   const { data, error, isLoading, fetchNextPage, refetch } =
     api.user.getAll.useInfiniteQuery(
