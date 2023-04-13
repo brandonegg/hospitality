@@ -37,7 +37,7 @@ const RateEdit = ({ refetch, rate, setPopup }: RateEditProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<RateUpdateInput>({
-    defaultValues: rate,
+    defaultValues: { ...rate, rate: rate?.rate.toString() },
   });
 
   const { mutate } = api.rate.update.useMutation({
