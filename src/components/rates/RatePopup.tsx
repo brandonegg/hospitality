@@ -70,7 +70,13 @@ const RatePopup = ({ refetch, popup, setPopup }: RatePopupProps) => {
       setPopup={setPopup}
       refetch={refetch}
     >
-      <RatePopupBody refetch={refetch} popup={popup} setPopup={setPopup} />
+      <RatePopupBody
+        rate={popup.data}
+        type={popup.type}
+        refetch={refetch}
+        popup={popup}
+        setPopup={setPopup}
+      />
     </TablePopup>
   );
 };
