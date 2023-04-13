@@ -43,7 +43,7 @@ const RateTableRow = ({
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
       <td className="px-6 py-2">{item.name}</td>
       <td className="px-6 py-2">{item.description}</td>
-      <td className="px-6 py-2">{item.rate}</td>
+      <td className="px-6 py-2">{item.price}</td>
       <ActionsEntry
         editDetails={editDetails}
         deleteDetails={deleteDetails}
@@ -71,7 +71,7 @@ const RateTable = ({
           <tr>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Description</th>
-            <th className="w-[125px] px-6 py-3">Rate</th>
+            <th className="w-[125px] px-6 py-3">Price</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
