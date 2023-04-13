@@ -144,7 +144,29 @@ async function globalSetup() {
         addressId: hospitalAddress.id,
         room: "409",
       },
-    ]
+    ],
+  });
+
+  await prisma.rate.deleteMany();
+
+  await prisma.rate.createMany({
+    data: [
+      {
+        name: "Standard",
+        description: "Standard rate",
+        price: 100,
+      },
+      {
+        name: "Premium",
+        description: "Premium rate",
+        price: 200,
+      },
+      {
+        name: "Deluxe",
+        description: "Deluxe rate",
+        price: 300,
+      },
+    ],
   });
 }
 
