@@ -206,6 +206,26 @@ async function main() {
       },
     ],
   });
+
+  await prisma.rate.createMany({
+    data: [
+      {
+        name: "Standard",
+        description: "Standard rate",
+        rate: 100,
+      },
+      {
+        name: "Premium",
+        description: "Premium rate",
+        rate: 200,
+      },
+      {
+        name: "Deluxe",
+        description: "Deluxe rate",
+        rate: 300,
+      },
+    ],
+  });
 }
 
 main()
