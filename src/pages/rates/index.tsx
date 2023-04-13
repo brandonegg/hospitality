@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
@@ -104,6 +105,23 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
     }
   );
 
+  /**
+   * Fetch next page of users.
+   * @returns
+   */
+  const handleFetchNextPage = async () => {
+    await fetchNextPage();
+    setPage((prev) => prev + 1);
+  };
+
+  /**
+   * Fetch previous page of users.
+   * @returns
+   */
+  const handleFetchPreviousPage = () => {
+    setPage((prev) => prev - 1);
+  };
+
   const ratesLength = data?.pages[page]?.count;
   const rates = data?.pages[page]?.items;
 
@@ -130,6 +148,39 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
           />
         )}
 
+        {/* Page Selectors */}
+        <div className="mx-auto mb-2 flex flex-row place-items-center justify-center space-x-4">
+          <div className="flex">
+            {page !== 0 ? (
+              <button
+                className="inline-flex w-28 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 px-3 text-center text-sm text-white hover:bg-blue-700"
+                onClick={handleFetchPreviousPage}
+              >
+                <ChevronLeftIcon className="h-4 w-4" />
+                Previous
+              </button>
+            ) : (
+              <div className="w-28"></div>
+            )}
+          </div>
+          <span className="flex justify-center font-semibold">
+            Page {page + 1}
+          </span>
+          <div className="flex justify-end">
+            {rates?.length === limit ? (
+              <button
+                className="inline-flex w-28 cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 px-3 text-sm text-white hover:bg-blue-700"
+                onClick={handleFetchNextPage}
+              >
+                Next <ChevronRightIcon className="h-4 w-4" />
+              </button>
+            ) : (
+              <div className="w-28"></div>
+            )}
+          </div>
+        </div>
+
+        {/* main table */}
         <RateTable items={rates} setPopup={setPopup} />
       </div>
     </main>
