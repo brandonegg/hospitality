@@ -65,7 +65,7 @@ const RateTable = ({
   setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
 }) => {
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
+    <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
@@ -138,28 +138,28 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
             />
           </div>
         </div>
-
-        {/* popup */}
-        {popup.show && (
-          <RatePopup
-            refetch={refetch as unknown as () => Promise<void>}
-            popup={popup}
-            setPopup={setPopup}
-          />
-        )}
-
-        {/* Page Selectors */}
-        <PageSelector
-          page={page}
-          limit={limit}
-          handleFetchNextPage={handleFetchNextPage}
-          handleFetchPreviousPage={handleFetchPreviousPage}
-          items={rates}
-        />
-
-        {/* main table */}
-        <RateTable items={rates} setPopup={setPopup} />
       </div>
+
+      {/* popup */}
+      {popup.show && (
+        <RatePopup
+          refetch={refetch as unknown as () => Promise<void>}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      )}
+
+      {/* Page Selectors */}
+      <PageSelector
+        page={page}
+        limit={limit}
+        handleFetchNextPage={handleFetchNextPage}
+        handleFetchPreviousPage={handleFetchPreviousPage}
+        items={rates}
+      />
+
+      {/* main table */}
+      <RateTable items={rates} setPopup={setPopup} />
     </main>
   );
 };
