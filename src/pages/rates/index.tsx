@@ -71,7 +71,7 @@ const RateTable = ({
           <tr>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Description</th>
-            <th className="w-[175px] px-6 py-3">Rate</th>
+            <th className="w-[125px] px-6 py-3">Rate</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
