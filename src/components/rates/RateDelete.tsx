@@ -51,7 +51,7 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted bed!</Alert>
+      <Alert type="success">Successfully deleted rate!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -81,8 +81,8 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
         </div>
 
         <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Rate:</p>
-          <p className="col-span-10 sm:col-span-8">{rate?.rate}</p>
+          <p className="col-span-10 font-semibold sm:col-span-2">Price:</p>
+          <p className="col-span-10 sm:col-span-8">{rate?.price}</p>
         </div>
       </div>
 
