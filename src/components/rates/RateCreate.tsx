@@ -109,12 +109,12 @@ const RateCreate = ({ refetch, setPopup }: RateCreateProps) => {
             id="rate"
             step="0.01"
             className="rounded border border-gray-300 p-2"
-            {...register("rate", {
+            {...register("price", {
               required: "Rate is required",
             })}
           />
-          {errors.rate && (
-            <ErrorMessage id="rate-error">{errors.rate.message}</ErrorMessage>
+          {errors.price && (
+            <ErrorMessage id="rate-error">{errors.price.message}</ErrorMessage>
           )}
         </div>
       </div>

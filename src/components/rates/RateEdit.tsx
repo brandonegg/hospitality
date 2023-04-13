@@ -37,7 +37,7 @@ const RateEdit = ({ refetch, rate, setPopup }: RateEditProps) => {
     handleSubmit,
     formState: { errors },
   } = useForm<RateUpdateInput>({
-    defaultValues: { ...rate, rate: rate?.rate.toString() },
+    defaultValues: { ...rate, price: rate?.price.toString() },
   });
 
   const { mutate } = api.rate.update.useMutation({
@@ -112,12 +112,12 @@ const RateEdit = ({ refetch, rate, setPopup }: RateEditProps) => {
             id="rate"
             step="0.01"
             className="rounded border border-gray-300 p-2"
-            {...register("rate", {
+            {...register("price", {
               required: "Rate is required",
             })}
           />
-          {errors.rate && (
-            <ErrorMessage id="rate-error">{errors.rate.message}</ErrorMessage>
+          {errors.price && (
+            <ErrorMessage id="rate-error">{errors.price.message}</ErrorMessage>
           )}
         </div>
       </div>

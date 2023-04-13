@@ -212,17 +212,17 @@ async function main() {
       {
         name: "Standard",
         description: "Standard rate",
-        rate: 100,
+        price: 100,
       },
       {
         name: "Premium",
         description: "Premium rate",
-        rate: 200,
+        price: 200,
       },
       {
         name: "Deluxe",
         description: "Deluxe rate",
-        rate: 300,
+        price: 300,
       },
     ],
   });
