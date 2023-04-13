@@ -73,4 +73,15 @@ export const rateRouter = createTRPCRouter({
 
       return updatedRate;
     }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      const deletedRate = await ctx.prisma.$executeRawUnsafe(
+        `DELETE FROM Rate WHERE id="${id}"`
+      );
+
+      return deletedRate;
+    }),
 });
