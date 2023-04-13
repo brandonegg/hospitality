@@ -66,7 +66,7 @@ export const rateRouter = createTRPCRouter({
       const { id, name, description, price } = input;
 
       const updatedRate = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Rate SET name="${name}", description="${description}", rate=${parseFloat(
+        `UPDATE Rate SET name="${name}", description="${description}", price=${parseFloat(
           price
         )} WHERE id="${id}"`
       );

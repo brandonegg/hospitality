@@ -55,7 +55,7 @@ const RateCreate = ({ refetch, setPopup }: RateCreateProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created a user!</Alert>
+      <Alert type="success">Successfully created a rate!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
