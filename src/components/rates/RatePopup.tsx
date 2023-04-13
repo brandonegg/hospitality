@@ -65,7 +65,7 @@ interface RatePopupProps {
 const RatePopup = ({ refetch, popup, setPopup }: RatePopupProps) => {
   return (
     <TablePopup<RateRowData, RatePopupTypes>
-      label="rate"
+      label="Rate"
       popup={popup}
       setPopup={setPopup}
       refetch={refetch}

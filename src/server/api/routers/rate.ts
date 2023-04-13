@@ -53,4 +53,24 @@ export const rateRouter = createTRPCRouter({
 
       return newRate;
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string(),
+        rate: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, name, description, rate } = input;
+
+      const updatedRate = await ctx.prisma.$executeRawUnsafe(
+        `UPDATE Rate SET name="${name}", description="${description}", rate=${parseFloat(
+          rate
+        )} WHERE id="${id}"`
+      );
+
+      return updatedRate;
+    }),
 });
