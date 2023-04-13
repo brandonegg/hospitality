@@ -103,18 +103,18 @@ const RateCreate = ({ refetch, setPopup }: RateCreateProps) => {
         </div>
 
         <div className="flex flex-grow flex-col">
-          <label htmlFor="rate">Rate</label>
+          <label htmlFor="price">Price</label>
           <input
             type="number"
-            id="rate"
+            id="price"
             step="0.01"
             className="rounded border border-gray-300 p-2"
             {...register("price", {
-              required: "Rate is required",
+              required: "Price is required",
             })}
           />
           {errors.price && (
-            <ErrorMessage id="rate-error">{errors.price.message}</ErrorMessage>
+            <ErrorMessage id="price-error">{errors.price.message}</ErrorMessage>
           )}
         </div>
       </div>
