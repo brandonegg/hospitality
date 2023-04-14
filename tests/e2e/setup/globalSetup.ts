@@ -152,19 +152,59 @@ async function globalSetup() {
   await prisma.rate.createMany({
     data: [
       {
-        name: "Standard",
-        description: "Standard rate",
+        name: "Pharmacy",
+        description: "Pharmacy rate",
+        price: 88,
+      },
+      {
+        name: "Med/Surg Supplies and Devices",
+        description: "Med/Surg Supplies and Devices rate",
+        price: 44.5,
+      },
+      {
+        name: "Laboratory",
+        description: "Laboratory rate",
+        price: 109.5,
+      },
+      {
+        name: "CT Scan",
+        description: "CT Scan rate",
+        price: 1700,
+      },
+      {
+        name: "MRI",
+        description: "MRI rate",
+        price: 2000,
+      },
+      {
+        name: "X-Ray",
+        description: "X-Ray rate",
         price: 100,
       },
       {
-        name: "Premium",
-        description: "Premium rate",
-        price: 200,
+        name: "Emergency Room",
+        description: "Emergency Room rate",
+        price: 1000,
       },
       {
-        name: "Deluxe",
-        description: "Deluxe rate",
-        price: 300,
+        name: "Ambulance",
+        description: "Ambulance rate",
+        price: 500,
+      },
+      {
+        name: "Surgery",
+        description: "Surgery rate",
+        price: 5000,
+      },
+      {
+        name: "Nursing",
+        description: "Nursing rate",
+        price: 100,
+      },
+      {
+        name: "Anesthesia",
+        description: "Anesthesia rate",
+        price: 1000,
       },
     ],
   });

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import type { PrismaClient, User } from "@prisma/client";
+import type { PrismaClient, Rate } from "@prisma/client";
 import { Role } from "@prisma/client";
 import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
@@ -19,23 +19,16 @@ const mockSession: Session = {
   },
 };
 
-const mockUsers: User[] = [
+const mockRate: Rate[] = [
   {
     id: "test-id",
-    name: "test user",
-    addressId: "test-address-id",
-    username: "test-username",
-    email: "test-user@example.com",
-    dateOfBirth: new Date("1990-01-01"),
-    password: "password",
-    phoneNumber: null,
-    emailVerified: null,
-    role: "PATIENT",
-    image: null,
+    name: "test rate",
+    description: "test description",
+    price: 100,
   },
 ];
 
-describe("users router", () => {
+describe("rate router", () => {
   describe("getAll", () => {
     test('returns "unauthorized" if user is not logged in', async () => {
       // mock the prisma client db
@@ -46,17 +39,17 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      await expect(caller.user.getAll({ limit: 10 })).rejects.toBeInstanceOf(
+      await expect(caller.rate.getAll({ limit: 10 })).rejects.toBeInstanceOf(
         TRPCError
       );
-      await expect(caller.user.getAll({ limit: 10 })).rejects.toThrow(
+      await expect(caller.rate.getAll({ limit: 10 })).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
         })
       );
     });
 
-    test("returns all users", async () => {
+    test("returns all rates", async () => {
       // mock the prisma client db
       const prismaMock = mockDeep<PrismaClient>();
 
@@ -67,17 +60,17 @@ describe("users router", () => {
 
       const mockResponse = {
         count: 1,
-        items: mockUsers,
+        items: mockRate,
       };
 
-      prismaMock.user.count.mockResolvedValue(mockResponse.count);
-      prismaMock.user.findMany.mockResolvedValue(mockResponse.items);
+      prismaMock.rate.count.mockResolvedValue(mockResponse.count);
+      prismaMock.rate.findMany.mockResolvedValue(mockResponse.items);
       prismaMock.$transaction.mockResolvedValue([
         mockResponse.count,
         mockResponse.items,
       ]);
 
-      const result = await caller.user.getAll({ limit: 10 });
+      const result = await caller.rate.getAll({ limit: 10 });
 
       expect(result).toEqual(mockResponse);
     });
@@ -93,26 +86,22 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      type Input = inferProcedureInput<AppRouter["user"]["create"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["create"]>;
       const input: Input = {
-        firstName: "test",
-        lastName: "user",
-        dateOfBirth: "1990-01-01",
-        username: "test-username",
-        email: "test-user@example.com",
-        password: "password",
-        role: Role.PATIENT,
+        name: "test rate",
+        description: "test description",
+        price: "100",
       };
 
-      await expect(caller.user.create(input)).rejects.toBeInstanceOf(TRPCError);
-      await expect(caller.user.create(input)).rejects.toThrow(
+      await expect(caller.rate.create(input)).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.create(input)).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
         })
       );
     });
 
-    test("creates a new user", async () => {
+    test("creates a new rate", async () => {
       // mock the prisma client db
       const prismaMock = mockDeep<PrismaClient>();
 
@@ -121,29 +110,24 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      const mockOutput: RouterOutputs["user"]["create"] = {
+      const mockOutput: RouterOutputs["rate"]["create"] = {
         id: "test-id",
-        name: "test user",
-        email: "test-user@example.com",
-        username: "test-username",
-        role: Role.PATIENT,
+        name: "test rate",
+        description: "test description",
+        price: 100,
       };
 
-      type Input = inferProcedureInput<AppRouter["user"]["create"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["create"]>;
       const input: Input = {
-        firstName: "test",
-        lastName: "user",
-        dateOfBirth: "1990-01-01",
-        username: "test-username",
-        email: "test-user@example.com",
-        password: "password",
-        role: Role.PATIENT,
+        name: "test rate",
+        description: "test description",
+        price: "100",
       };
 
-      prismaMock.user.findFirst.mockResolvedValue(null);
-      prismaMock.user.create.mockResolvedValue(mockOutput as User);
+      prismaMock.rate.findFirst.mockResolvedValue(null);
+      prismaMock.rate.create.mockResolvedValue(mockOutput);
 
-      const result = await caller.user.create(input);
+      const result = await caller.rate.create(input);
 
       expect(result).toBe(mockOutput);
     });
@@ -159,22 +143,23 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      type Input = inferProcedureInput<AppRouter["user"]["update"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["update"]>;
       const input: Input = {
         id: "test-id",
-        name: "test user",
-        role: Role.PATIENT,
+        name: "test rate",
+        description: "test description",
+        price: "100",
       };
 
-      await expect(caller.user.update(input)).rejects.toBeInstanceOf(TRPCError);
-      await expect(caller.user.update(input)).rejects.toThrow(
+      await expect(caller.rate.update(input)).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.update(input)).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
         })
       );
     });
 
-    test("updates a user", async () => {
+    test("updates a rate", async () => {
       // mock the prisma client db
       const prismaMock = mockDeep<PrismaClient>();
 
@@ -183,18 +168,19 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      type Input = inferProcedureInput<AppRouter["user"]["update"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["update"]>;
       const input: Input = {
         id: "test-id",
-        name: "test user",
-        role: Role.PATIENT,
+        name: "test rate",
+        description: "test description",
+        price: "100",
       };
 
-      prismaMock.user.update.mockResolvedValue(input as User);
+      prismaMock.$executeRawUnsafe.mockResolvedValue(1);
 
-      const result = await caller.user.update(input);
+      const result = await caller.rate.update(input);
 
-      expect(result).toBe(input);
+      expect(result).toBe(mockRate.length);
     });
   });
 
@@ -208,13 +194,13 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      type Input = inferProcedureInput<AppRouter["user"]["delete"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["delete"]>;
       const input: Input = {
         id: "test-id",
       };
 
-      await expect(caller.user.delete(input)).rejects.toBeInstanceOf(TRPCError);
-      await expect(caller.user.delete(input)).rejects.toThrow(
+      await expect(caller.rate.delete(input)).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.delete(input)).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
         })
@@ -230,16 +216,16 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      type Input = inferProcedureInput<AppRouter["user"]["delete"]>;
+      type Input = inferProcedureInput<AppRouter["rate"]["delete"]>;
       const input: Input = {
         id: "test-id",
       };
 
-      prismaMock.user.delete.mockResolvedValue(input as User);
+      prismaMock.$executeRawUnsafe.mockResolvedValue(1);
 
-      const result = await caller.user.delete(input);
+      const result = await caller.rate.delete(input);
 
-      expect(result).toBe(input);
+      expect(result).toBe(mockRate.length);
     });
   });
 });

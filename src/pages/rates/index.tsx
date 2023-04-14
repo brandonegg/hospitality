@@ -126,7 +126,7 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
   const rates = data?.pages[page]?.items;
 
   return (
-    <main className="mx-auto max-w-[1400px]">
+    <main className="mx-auto mb-4 max-w-[1400px]">
       <MainHeader user={user} />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
