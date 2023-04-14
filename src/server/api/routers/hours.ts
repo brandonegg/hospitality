@@ -34,9 +34,7 @@ export const hoursRouter = createTRPCRouter({
       const hourSetting = result[0] as Hours;
       const insertId = hourSetting.id;
       await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Hours SET startHour=${input.startHour}, endHour=${
-          input.endHour
-        } WHERE id="${insertId as string}"`
+        `UPDATE Hours SET startHour=${input.startHour}, endHour=${input.endHour} WHERE id="${insertId}"`
       );
 
       return result;
