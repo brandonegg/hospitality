@@ -47,9 +47,9 @@ To run command inside a docker container: `docker exec -it {CONTAINER_NAME} sh -
 
 Ensure the DATABASE_URL variable is set in your environment. This is what Prisma will use to connect to your MySQL server.
 
-Once connected, run the following commands to run migrations on your database:
+Once connected, run the following commands to initialize the MySQL DB:
 ```bash
-npx prisma migrate dev
+npx prisma db push
 ```
 *Note:* Running this command will also generate the prisma type definition file. If the project displays various type errors related to the database models it may be necessary to run this or `npx prisma db push`
 
