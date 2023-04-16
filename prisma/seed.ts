@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { PaymentSourceType, PrismaClient, Role } from "@prisma/client";
 import * as argon2 from "argon2";
 
 const prisma = new PrismaClient(); // Prisma client instance
@@ -187,6 +187,20 @@ async function main() {
       {
         addressId: hospitalAddress.id,
         room: "107",
+      },
+    ]
+  });
+
+  // Create basic payment sources all patients can use for testing
+  await prisma.paymentSource.createMany({
+    data: [
+      {
+        type: PaymentSourceType.BANK,
+        name: "Bank Account",
+      },
+      {
+        type: PaymentSourceType.CARD,
+        name: "Discover Card",
       },
     ]
   });
