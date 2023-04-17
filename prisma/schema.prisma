@@ -110,5 +110,5 @@ model Rate {
   id          String @id @default(cuid())
   name        String
   description String
-  price       Float
+  price       String
 }
