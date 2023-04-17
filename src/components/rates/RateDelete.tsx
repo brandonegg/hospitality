@@ -65,7 +65,7 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <p>Do you want to this delete this rate?</p>
+      <p>Do you want to delete this rate?</p>
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">
