@@ -24,7 +24,7 @@ const mockRate: Rate[] = [
     id: "test-id",
     name: "test rate",
     description: "test description",
-    price: 100,
+    price: "100",
   },
 ];
 
@@ -101,6 +101,31 @@ describe("rate router", () => {
       );
     });
 
+    test("returns bad request error when price is invalid", async () => {
+      // mock the prisma client db
+      const prismaMock = mockDeep<PrismaClient>();
+
+      const caller = appRouter.createCaller({
+        session: mockSession,
+        prisma: prismaMock,
+      });
+
+      type Input = inferProcedureInput<AppRouter["rate"]["create"]>;
+      const input: Input = {
+        name: "test rate",
+        description: "test description",
+        price: "100.3123123",
+      };
+
+      await expect(caller.rate.create(input)).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.create(input)).rejects.toThrow(
+        new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Price must be a number with up to 2 decimal places",
+        })
+      );
+    });
+
     test("creates a new rate", async () => {
       // mock the prisma client db
       const prismaMock = mockDeep<PrismaClient>();
@@ -114,7 +139,7 @@ describe("rate router", () => {
         id: "test-id",
         name: "test rate",
         description: "test description",
-        price: 100,
+        price: "100",
       };
 
       type Input = inferProcedureInput<AppRouter["rate"]["create"]>;
@@ -155,6 +180,31 @@ describe("rate router", () => {
       await expect(caller.rate.update(input)).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
+        })
+      );
+    });
+
+    test("returns bad request error when price is invalid", async () => {
+      // mock the prisma client db
+      const prismaMock = mockDeep<PrismaClient>();
+
+      const caller = appRouter.createCaller({
+        session: mockSession,
+        prisma: prismaMock,
+      });
+
+      type Input = inferProcedureInput<AppRouter["rate"]["create"]>;
+      const input: Input = {
+        name: "test rate",
+        description: "test description",
+        price: "100.3123123",
+      };
+
+      await expect(caller.rate.create(input)).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.create(input)).rejects.toThrow(
+        new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Price must be a number with up to 2 decimal places",
         })
       );
     });
