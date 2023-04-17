@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
@@ -43,11 +44,18 @@ export const rateRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { name, description, price } = input;
 
+      if (!price.match(/^\d+(.\d{1,2})?$/)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Price must be a number with up to 2 decimal places",
+        });
+      }
+
       const newRate = await ctx.prisma.rate.create({
         data: {
           name,
           description,
-          price: parseFloat(price),
+          price,
         },
       });
 
@@ -65,10 +73,15 @@ export const rateRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, name, description, price } = input;
 
+      if (!price.match(/^\d+(.\d{1,2})?$/)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Price must be a number with up to 2 decimal places",
+        });
+      }
+
       const updatedRate = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Rate SET name="${name}", description="${description}", price=${parseFloat(
-          price
-        )} WHERE id="${id}"`
+        `UPDATE Rate SET name="${name}", description="${description}", price=${price} WHERE id="${id}"`
       );
 
       return updatedRate;

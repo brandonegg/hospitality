@@ -114,6 +114,10 @@ const RateEdit = ({ refetch, rate, setPopup }: RateEditProps) => {
             className="rounded border border-gray-300 p-2"
             {...register("price", {
               required: "Price is required",
+              pattern: {
+                value: /^\d+(.\d{1,2})?$/,
+                message: "Price must be a number with up to 2 decimal places",
+              },
             })}
           />
           {errors.price && (
