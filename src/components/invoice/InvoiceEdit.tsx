@@ -67,7 +67,12 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
-      paymentDue: invoice?.paymentDue.toDateString(),
+      paymentDue: new Date(
+        (invoice as Invoice).paymentDue.getTime() -
+          (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
+      )
+        .toISOString()
+        .slice(0, 10),
     },
   });
 
