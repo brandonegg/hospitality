@@ -15,9 +15,10 @@
     "project": "./tsconfig.json"
   },
   "ignorePatterns": ["*.config.js"],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   "rules": {
+    "prettier/prettier": "error",
     "semi": "error",
     "eol-last": "error",
     "no-trailing-spaces": "error",
