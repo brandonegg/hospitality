@@ -1,8 +1,6 @@
 import { type NextPage } from "next";
-import { useSession } from 'next-auth/react';
 import React from 'react';
 
-import MainHeader from '../components/Header';
 import type { HorizontalCarouselSlideProps } from "../components/HorizontalCarousel";
 import { FadedTitleBodyCarouselSlide } from "../components/HorizontalCarousel";
 import HorizontalCarousel from "../components/HorizontalCarousel";
@@ -13,8 +11,6 @@ import indexContent from '../data/index.json';
  * @returns JSX
  */
 const Home: NextPage = () => {
-  const { data: sessionData } = useSession();
-
   const carouselSlides = indexContent.main_carousel.map(slideData => {
     const slideProps: HorizontalCarouselSlideProps = {
       backgroundImage: slideData.backgroundImage,
@@ -27,7 +23,6 @@ const Home: NextPage = () => {
   return (
     <>
       <main className="max-w-[1400px] mx-auto">
-        <MainHeader user={sessionData?.user} />
         <div id='main-content' className="mx-6">
           <HorizontalCarousel slides={carouselSlides} autoCycle={10}/>
         </div>

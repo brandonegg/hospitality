@@ -4,7 +4,6 @@ import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
-import MainHeader from "../../components/Header";
 import { DashboardNavBar} from "../../components/dashboard/navigation";
 import VitalsWidget from "../../components/dashboard/vitals";
 import { SquareWidget } from "../../components/dashboard/widget";
@@ -46,7 +45,6 @@ const Dashboard = ({user}: DashboardPageProps) => {
 
     return <>
     <main className="max-w-[1400px] mx-auto">
-        <MainHeader user={user} />
         <div className="m-6 gap-4">
             <section className="px-2 m-4 sm:m-8 border-b-2">
                 <DashboardNavBar user={user} />

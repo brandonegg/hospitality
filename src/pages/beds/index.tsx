@@ -6,7 +6,6 @@ import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction} from "react";
 import { useState } from "react";
 
-import MainHeader from "../../components/Header";
 import type { BedPopupTypes } from "../../components/beds/BedPopup";
 import BedPopup from "../../components/beds/BedPopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
@@ -187,7 +186,6 @@ const BedsPage = ({user}: {
 
     return(
         <main className="mx-auto max-w-[1400px]">
-            <MainHeader user={user} />
             <div className="m-6 gap-4 space-y-2">
               <div className="flex items-center justify-between">
                 <TablePageHeader label="Beds" count={bedsLength} />

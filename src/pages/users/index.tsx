@@ -4,11 +4,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 
 import Alert from "../../components/Alert";
-import MainHeader from "../../components/Header";
 import { AddButton, DeleteRowButton, EditRowButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
@@ -41,8 +40,6 @@ const getInitial = (name: string) => {
  * @returns JSX
  */
 const UsersPage: NextPage = () => {
-  const { data: sessionData } = useSession();
-
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
   const [popup, setPopup] = useState<TablePopup<UserRowData, UserPopupTypes>>({ show: false });
@@ -80,7 +77,6 @@ const UsersPage: NextPage = () => {
 
   return (
     <main className="mx-auto max-w-[1400px]">
-      <MainHeader user={sessionData?.user} />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <div>
