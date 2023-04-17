@@ -1,25 +1,25 @@
-import type { ButtonDetails} from "./buttons";
+import type { ButtonDetails } from "./buttons";
 import { DeleteRowButton, EditRowButton } from "./buttons";
 
 /**
  * Creates the row entry for the actions column
  */
-const ActionsEntry = ({ editDetails, deleteDetails } :
-    {
-        label: string,
-        editDetails: ButtonDetails,
-        deleteDetails: ButtonDetails,
-    }) => {
-        return (
-            <td className="">
-                <div className="flex justify-end p-2 w-full gap-2">
-                    <EditRowButton {...editDetails} />
-                    <DeleteRowButton {...deleteDetails} />
-                </div>
-            </td>
-        );
-    };
-
-export {
-    ActionsEntry,
+const ActionsEntry = ({
+  editDetails,
+  deleteDetails,
+}: {
+  label: string;
+  editDetails: ButtonDetails;
+  deleteDetails: ButtonDetails;
+}) => {
+  return (
+    <td className="">
+      <div className="flex w-full justify-end gap-2 p-2">
+        <EditRowButton {...editDetails} />
+        <DeleteRowButton {...deleteDetails} />
+      </div>
+    </td>
+  );
 };
+
+export { ActionsEntry };

@@ -16,7 +16,7 @@ export function classNames(...classes: string[]) {
  */
 export function addressToString(address?: Address | null) {
   if (!address) {
-    return '';
+    return "";
   }
   return `${address.street} ${address.city}, ${address.state} ${address.zipCode}`;
 }

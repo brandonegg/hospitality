@@ -230,7 +230,8 @@ const Appointment: NextPage = () => {
           doctor,
           weekCount,
           sessionData.user.id,
-        ]); // also pass in the correct date here
+        ]);
+      // also pass in the correct date here
       else console.error("Can't access user id to make appointment");
     });
     try {

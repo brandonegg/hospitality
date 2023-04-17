@@ -20,9 +20,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <>
       <Head>
-          <title>Hospitality</title>
-          <meta name="description" content="The ultimate hospital management system" />
-          <link rel="icon" href="/favicon.ico" />
+        <title>Hospitality</title>
+        <meta
+          name="description"
+          content="The ultimate hospital management system"
+        />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
         <Component {...pageProps} />

@@ -28,7 +28,9 @@ type BedDeleteOutput = RouterOutputs["bed"]["delete"];
  */
 const BedDelete = ({ refetch, bed, setPopup }: BedDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<BedDeleteOutput | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<BedDeleteOutput | undefined>(
+    undefined
+  );
 
   const { register, handleSubmit } = useForm<BedDeleteInput>();
 

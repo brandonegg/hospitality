@@ -29,7 +29,9 @@ interface BedEditProps {
  */
 const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<BedUpdateOutput | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<BedUpdateOutput | undefined>(
+    undefined
+  );
 
   const {
     register,
@@ -77,9 +79,11 @@ const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
         <div className="flex flex-grow flex-col">
           <FormInput<BedUpdateInput>
             label="Room Label"
-            registerDetails={{...register("room", {
+            registerDetails={{
+              ...register("room", {
                 required: "Room label is required",
-              })}}
+              }),
+            }}
             id="room"
             errorMessage={errors.room ? errors.room.message : undefined}
           />
