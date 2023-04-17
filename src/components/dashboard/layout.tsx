@@ -4,7 +4,7 @@ import { DashboardNavBar } from "./navigation";
  * Main dashboard layout. Adds the dashboard nav bar to the page.
  */
 const Layout = ({ children }: {
-    children: JSX.Element,
+    children: JSX.Element | JSX.Element[],
 }) => {
     return (
       <>
