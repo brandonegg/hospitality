@@ -1,5 +1,6 @@
 import { Role } from "@prisma/client";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import type { Session } from "next-auth";
 import { useState } from "react";
 
@@ -102,6 +103,7 @@ const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButt
 const DashboardNavBar = ({user}: {
     user: Session['user'],
 }) => {
+    const router = useRouter();
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
 
     /**
@@ -113,16 +115,20 @@ const DashboardNavBar = ({user}: {
 
     const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
         if (!linkDetails.requireRole || linkDetails.requireRole.includes(user.role) || linkDetails.requireRole.length == 0) {
+            const isOpen = router.asPath === linkDetails.href;
+
             return (
-                <DashBoardNavButton key={index} {...linkDetails}/>
+                <DashBoardNavButton key={index} selected={isOpen} {...linkDetails}/>
             );
         }
     });
 
     const dashboardDropdownNavButtons = dashboardNavLinks.map((linkDetails, index) => {
         if (!linkDetails.requireRole || linkDetails.requireRole.includes(user.role) || linkDetails.requireRole.length == 0) {
+            const isOpen = router.asPath === linkDetails.href;
+
             return (
-                <DashBoardQuickAccessNavButton key={index} {...linkDetails}/>
+                <DashBoardQuickAccessNavButton key={index} selected={isOpen} {...linkDetails}/>
             );
         }
     });
