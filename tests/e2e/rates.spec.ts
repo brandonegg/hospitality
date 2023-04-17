@@ -65,7 +65,7 @@ test.describe("rates > CRUD operations", () => {
       await page.getByLabel("Description").click();
       await page.getByLabel("Description").fill("TestRateDescriptionUpdated");
       await page.getByLabel("Price").click();
-      await page.getByLabel("Price").fill("200");
+      await page.getByLabel("Price").fill("200.1");
       await page.getByRole("button", { name: "Confirm" }).click();
 
       await expect(
