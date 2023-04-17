@@ -39,7 +39,11 @@ const BillSummaryButton = ({details} : {
             <div className="grow flex flex-row divide-x divide-neutral-700">
                 <div className="px-4">
                     <h1 className='inline-block font-semibold text-lg'>Remaining Balance</h1>
-                    <h2><span className="text-green-700">$</span>{details.remainingBalance}</h2>
+                    <h2><span className="text-green-700">$</span>
+                        <span className="text-neutral-600">
+                            {details.remainingBalance}
+                        </span>
+                    </h2>
                 </div>
                 <div className="px-4">
                     <h1 className='inline-block font-semibold text-lg'>Amount Due By</h1>
