@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import type { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 interface DashBoardNavButtonProperties {
@@ -100,11 +100,17 @@ const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButt
 /**
  * Dashboard navbar component.
  */
-const DashboardNavBar = ({user}: {
-    user: Session['user'],
-}) => {
+const DashboardNavBar = ({}) => {
     const router = useRouter();
+    const session = useSession();
     const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
+
+    if (!session.data?.user) {
+        return <>
+        </>;
+    }
+
+    const user = session.data.user;
 
     /**
      * Event handler for the quick access toggle button.

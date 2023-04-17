@@ -4,12 +4,11 @@ import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
-import { DashboardNavBar} from "../../components/dashboard/navigation";
+import Layout from "../../components/dashboard/layout";
 import VitalsWidget from "../../components/dashboard/vitals";
 import { SquareWidget } from "../../components/dashboard/widget";
 import { api } from "../../utils/api";
 import { timeSort } from "../appointment";
-
 
 interface DashboardPageProps {
     user: Session['user'],
@@ -43,39 +42,35 @@ const Dashboard = ({user}: DashboardPageProps) => {
         appoints.length = 5; // only show first 5 appointments
     }
 
-    return <>
-    <main className="max-w-[1400px] mx-auto">
-        <div className="m-6 gap-4">
-            <section className="px-2 m-4 sm:m-8 border-b-2">
-                <DashboardNavBar user={user} />
-            </section>
-
-            <div className="sm:m-8">
-                <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:grid-cols-3 gap-8">
-                    <SquareWidget title="Upcoming Appointments" width={2}>
-                        <div className="p-2 bg-yellow-100 h-full">
-                            {
-                            appoints?.map((appoint, index) =>
-                                <p key={index} className="italic">{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
-                            )}
-                        </div>
-                    </SquareWidget>
-                    <SquareWidget width={1} title="Insurance">
-                        <div className="w-full">
-                            <div className="h-full bg-slate-100 p-2">
-                                <p className="pt-1 italic">Everything is up-to-date!</p>
-                                <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
+    return (
+        <Layout>
+            <div className="m-6 gap-4">
+                <div className="sm:m-8">
+                    <div className="mx-auto max-w-6xl grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:grid-cols-3 gap-8">
+                        <SquareWidget title="Upcoming Appointments" width={2}>
+                            <div className="p-2 bg-yellow-100 h-full">
+                                {
+                                appoints?.map((appoint, index) =>
+                                    <p key={index} className="italic">{new Date(appoint.date.getTime() - appoint.date.getTimezoneOffset() * -60000).toDateString()} from {appoint.startTime}-{appoint.endTime}</p>
+                                )}
                             </div>
-                        </div>
-                    </SquareWidget>
-                    <SquareWidget width={2} title="Vitals">
-                        <VitalsWidget/>
-                    </SquareWidget>
+                        </SquareWidget>
+                        <SquareWidget width={1} title="Insurance">
+                            <div className="w-full">
+                                <div className="h-full bg-slate-100 p-2">
+                                    <p className="pt-1 italic">Everything is up-to-date!</p>
+                                    <DocumentCheckIcon className="mx-auto text-green-700 my-auto text-center mt-2 w-8"/>
+                                </div>
+                            </div>
+                        </SquareWidget>
+                        <SquareWidget width={2} title="Vitals">
+                            <VitalsWidget/>
+                        </SquareWidget>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-    </>;
+        </Layout>
+    );
 };
 
 /**
