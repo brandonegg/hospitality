@@ -5,163 +5,205 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 interface DashBoardNavButtonProperties {
-    href: string;
-    label: string;
-    selected?: boolean;
-    requireRole?: Role[],
+  href: string;
+  label: string;
+  selected?: boolean;
+  requireRole?: Role[];
 }
 
 /**
  * Note: when requireRole is undefined, all roles can access.
  */
 const dashboardNavLinks: DashBoardNavButtonProperties[] = [
-    {
-        label: "Overview",
-        href: "/dashboard",
-    },
-    {
-        label: "Make Appointments",
-        href: "/appointment",
-        requireRole: [Role.PATIENT],
-    },
-    {
-        label: "View Appointments",
-        href: "/myAppointments",
-        requireRole: [Role.PATIENT],
-    },
-    {
-        label: "Set Hours",
-        href: "/adminHourSetting",
-        requireRole: [Role.ADMIN],
-    },
-    {
-        label: "Set Availability",
-        href: "/availability",
-        requireRole: [Role.DOCTOR],
-    },
-    {
-        label: "View Availability",
-        href: "/myAvailabilities",
-        requireRole: [Role.DOCTOR],
-    },
-    {
-        label: "Pay Bills",
-        href: "/dashboard/bills",
-        requireRole: [Role.PATIENT],
-    },
+  {
+    label: "Overview",
+    href: "/dashboard",
+  },
+  {
+    label: "Make Appointments",
+    href: "/appointment",
+    requireRole: [Role.PATIENT],
+  },
+  {
+    label: "View Appointments",
+    href: "/myAppointments",
+    requireRole: [Role.PATIENT],
+  },
+  {
+    label: "Set Hours",
+    href: "/adminHourSetting",
+    requireRole: [Role.ADMIN],
+  },
+  {
+    label: "Set Availability",
+    href: "/availability",
+    requireRole: [Role.DOCTOR],
+  },
+  {
+    label: "View Availability",
+    href: "/myAvailabilities",
+    requireRole: [Role.DOCTOR],
+  },
+  {
+    label: "Pay Bills",
+    href: "/dashboard/bills",
+    requireRole: [Role.PATIENT],
+  },
 ];
 
 /**
  * Dashboard nav button component. Shown below the main nav bar
  * @param param0
  */
-const DashBoardNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
-    if (selected) {
-        return <>
-            <div className="box-content rounded-t-lg bg-gray-200 border-x-[1px] border-t-[1px] border-gray-400 h-full px-3">
-                <div className="grid place-content-center h-full w-full text-center">
-                    <span className="text-lg">{label}</span>
-                </div>
-            </div>
-        </>;
-    }
+const DashBoardNavButton = ({
+  href,
+  label,
+  selected,
+}: DashBoardNavButtonProperties) => {
+  if (selected) {
+    return (
+      <>
+        <div className="box-content h-full rounded-t-lg border-x-[1px] border-t-[1px] border-gray-400 bg-gray-200 px-3">
+          <div className="grid h-full w-full place-content-center text-center">
+            <span className="text-lg">{label}</span>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-    return <>
-        <Link href={href} className="box-content rounded-t-lg hover:bg-gray-200 border-x-[1px] border-t-[1px] border-transparent hover:border-gray-400 h-full px-3">
-            <div className="grid place-content-center h-full w-full text-center">
-                <span className="text-lg">{label}</span>
-            </div>
-        </Link>
-    </>;
+  return (
+    <>
+      <Link
+        href={href}
+        className="box-content h-full rounded-t-lg border-x-[1px] border-t-[1px] border-transparent px-3 hover:border-gray-400 hover:bg-gray-200"
+      >
+        <div className="grid h-full w-full place-content-center text-center">
+          <span className="text-lg">{label}</span>
+        </div>
+      </Link>
+    </>
+  );
 };
 
 /**
  * Nav bar button component for the quick access drop down.
  * @param param0
  */
-const DashBoardQuickAccessNavButton = ({href, label, selected}: DashBoardNavButtonProperties) => {
-    if (selected) {
-        return (
-            <li>
-                <span className="text-lg bg-gray-500 py-1 block w-full text-gray-200">{label}</span>
-            </li>
-        );
-    }
-
+const DashBoardQuickAccessNavButton = ({
+  href,
+  label,
+  selected,
+}: DashBoardNavButtonProperties) => {
+  if (selected) {
     return (
-        <li>
-            <Link href={href}>
-                <span className="text-lg hover:bg-gray-500 py-1 block w-full text-gray-200">{label}</span>
-            </Link>
-        </li>
+      <li>
+        <span className="block w-full bg-gray-500 py-1 text-lg text-gray-200">
+          {label}
+        </span>
+      </li>
     );
+  }
+
+  return (
+    <li>
+      <Link href={href}>
+        <span className="block w-full py-1 text-lg text-gray-200 hover:bg-gray-500">
+          {label}
+        </span>
+      </Link>
+    </li>
+  );
 };
 
 /**
  * Dashboard navbar component.
  */
 const DashboardNavBar = ({}) => {
-    const router = useRouter();
-    const session = useSession();
-    const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
+  const router = useRouter();
+  const session = useSession();
+  const [quickAccessOpened, setQuickAccessOpened] = useState<boolean>(false);
 
-    if (!session.data?.user) {
-        return <>
-        </>;
+  if (!session.data?.user) {
+    return <></>;
+  }
+
+  const user = session.data.user;
+
+  /**
+   * Event handler for the quick access toggle button.
+   */
+  const handleQuickAccessTogle = () => {
+    setQuickAccessOpened(!quickAccessOpened);
+  };
+
+  const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
+    if (
+      !linkDetails.requireRole ||
+      linkDetails.requireRole.includes(user.role) ||
+      linkDetails.requireRole.length == 0
+    ) {
+      const isOpen = router.asPath === linkDetails.href;
+
+      return (
+        <DashBoardNavButton key={index} selected={isOpen} {...linkDetails} />
+      );
     }
+  });
 
-    const user = session.data.user;
+  const dashboardDropdownNavButtons = dashboardNavLinks.map(
+    (linkDetails, index) => {
+      if (
+        !linkDetails.requireRole ||
+        linkDetails.requireRole.includes(user.role) ||
+        linkDetails.requireRole.length == 0
+      ) {
+        const isOpen = router.asPath === linkDetails.href;
 
-    /**
-     * Event handler for the quick access toggle button.
-     */
-    const handleQuickAccessTogle = () => {
-        setQuickAccessOpened(!quickAccessOpened);
-    };
+        return (
+          <DashBoardQuickAccessNavButton
+            key={index}
+            selected={isOpen}
+            {...linkDetails}
+          />
+        );
+      }
+    }
+  );
 
-    const dashboardTopNavButtons = dashboardNavLinks.map((linkDetails, index) => {
-        if (!linkDetails.requireRole || linkDetails.requireRole.includes(user.role) || linkDetails.requireRole.length == 0) {
-            const isOpen = router.asPath === linkDetails.href;
-
-            return (
-                <DashBoardNavButton key={index} selected={isOpen} {...linkDetails}/>
-            );
-        }
-    });
-
-    const dashboardDropdownNavButtons = dashboardNavLinks.map((linkDetails, index) => {
-        if (!linkDetails.requireRole || linkDetails.requireRole.includes(user.role) || linkDetails.requireRole.length == 0) {
-            const isOpen = router.asPath === linkDetails.href;
-
-            return (
-                <DashBoardQuickAccessNavButton key={index} selected={isOpen} {...linkDetails}/>
-            );
-        }
-    });
-
-    return (
-        <div className="flex justify-between">
-            <span className="hidden lg:inline">
-                <h2 className="hidden md:inline font-bold text-3xl">Welcome, {user.name}</h2>
-            </span>
-            <span className="lg:hidden">
-                <h2 className="hidden md:inline font-bold text-3xl">Welcome!</h2>
-            </span>
-            <div className="hidden sm:flex mx-auto md:m-0">
-                {dashboardTopNavButtons}
-            </div>
-            <div className="w-full sm:hidden mb-2">
-                <button onClick={handleQuickAccessTogle} className="text-md font-semibold border-2 border-slate-900 bg-slate-200 w-full py-2 rounded-lg">
-                    Quick Access ▼
-                </button>
-                <div className={"mx-2 p-2 bg-gray-800 rounded-b-lg" + (quickAccessOpened ? "" : " hidden")}>
-                        <ul className="divide-y divide-gray-300">
-                            {dashboardDropdownNavButtons}
-                        </ul>
-                </div>
-            </div>
+  return (
+    <div className="flex justify-between">
+      <span className="hidden lg:inline">
+        <h2 className="hidden text-3xl font-bold md:inline">
+          Welcome, {user.name}
+        </h2>
+      </span>
+      <span className="lg:hidden">
+        <h2 className="hidden text-3xl font-bold md:inline">Welcome!</h2>
+      </span>
+      <div className="mx-auto hidden sm:flex md:m-0">
+        {dashboardTopNavButtons}
+      </div>
+      <div className="mb-2 w-full sm:hidden">
+        <button
+          onClick={handleQuickAccessTogle}
+          className="text-md w-full rounded-lg border-2 border-slate-900 bg-slate-200 py-2 font-semibold"
+        >
+          Quick Access ▼
+        </button>
+        <div
+          className={
+            "mx-2 rounded-b-lg bg-gray-800 p-2" +
+            (quickAccessOpened ? "" : " hidden")
+          }
+        >
+          <ul className="divide-y divide-gray-300">
+            {dashboardDropdownNavButtons}
+          </ul>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export { DashBoardNavButton, DashBoardQuickAccessNavButton, DashboardNavBar };
