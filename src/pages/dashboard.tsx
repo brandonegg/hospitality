@@ -103,7 +103,6 @@ const Dashboard = ({ user }: DashboardPageProps) => {
   );
 
   useEffect(() => {
-    console.log(user.role);
     if (user.role === "DOCTOR") {
       // doctors can't make appointments, and patients can't make availabilitys
       dashboardNavLinks[1] = {
@@ -123,7 +122,6 @@ const Dashboard = ({ user }: DashboardPageProps) => {
       };
       dashboardNavLinks.splice(2, 1);
     }
-    console.log(dashboardNavLinks);
     setNavLinks(dashboardNavLinks);
   }, [user]);
 
