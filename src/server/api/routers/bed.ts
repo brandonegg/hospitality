@@ -52,13 +52,7 @@ export const bedRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const {
-        room,
-        street,
-        city,
-        state,
-        zipCode,
-      } = input;
+      const { room, street, city, state, zipCode } = input;
 
       // format and create the address data
       const newAddress = {
@@ -131,7 +125,6 @@ export const bedRouter = createTRPCRouter({
   assign: protectedProcedure
     .input(z.object({ bedId: z.string(), patientId: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
-
       return await ctx.prisma.bed.update({
         where: { id: input.bedId },
         data: { userId: input.patientId ? input.patientId : null },

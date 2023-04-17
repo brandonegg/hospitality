@@ -77,14 +77,19 @@ interface BedPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: BedPopupProps) => {
   return (
-    <TablePopup<BedRowData, BedPopupTypes> label="Bed" popup={popup} setPopup={setPopup} refetch={refetch}>
-        <BedPopupBody
-            refetch={refetch}
-            bed={popup.data}
-            type={popup.type}
-            popup={popup}
-            setPopup={setPopup}
-          />
+    <TablePopup<BedRowData, BedPopupTypes>
+      label="Bed"
+      popup={popup}
+      setPopup={setPopup}
+      refetch={refetch}
+    >
+      <BedPopupBody
+        refetch={refetch}
+        bed={popup.data}
+        type={popup.type}
+        popup={popup}
+        setPopup={setPopup}
+      />
     </TablePopup>
   );
 };

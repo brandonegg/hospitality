@@ -121,7 +121,7 @@ describe("users router", () => {
         prisma: prismaMock,
       });
 
-      const mockOutput: RouterOutputs["user"]["signup"] = {
+      const mockOutput: RouterOutputs["user"]["create"] = {
         id: "test-id",
         name: "test user",
         email: "test-user@example.com",

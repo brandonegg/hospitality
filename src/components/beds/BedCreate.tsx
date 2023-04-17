@@ -15,7 +15,6 @@ import type { TablePopup } from "../tables/input";
 
 import type { BedPopupTypes } from "./BedPopup";
 
-
 export type BedCreateInput = RouterInputs["bed"]["create"];
 export type BedCreateOutput = RouterOutputs["bed"]["create"];
 
@@ -28,7 +27,12 @@ interface BedCreateProps {
 /**
  * Input state selector for the popup create form.
  */
-const StateSelector = <T extends FieldValues,>({label, id, errorMessage, registerDetails}: FormInputProps<T>) => {
+const StateSelector = <T extends FieldValues>({
+  label,
+  id,
+  errorMessage,
+  registerDetails,
+}: FormInputProps<T>) => {
   return (
     <div className="flex flex-col">
       <label htmlFor="state">{label}</label>
@@ -37,19 +41,12 @@ const StateSelector = <T extends FieldValues,>({label, id, errorMessage, registe
         {...registerDetails}
       >
         {STATES.map((state) => (
-          <option
-            key={state.abbreviation}
-            value={state.abbreviation}
-          >
+          <option key={state.abbreviation} value={state.abbreviation}>
             {state.name}
           </option>
         ))}
       </select>
-      {errorMessage && (
-        <ErrorMessage id={id}>
-          {errorMessage}
-        </ErrorMessage>
-      )}
+      {errorMessage && <ErrorMessage id={id}>{errorMessage}</ErrorMessage>}
     </div>
   );
 };
@@ -60,7 +57,9 @@ const StateSelector = <T extends FieldValues,>({label, id, errorMessage, registe
  */
 const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<BedCreateOutput | undefined>(undefined);
+  const [serverResult, setServerResult] = useState<BedCreateOutput | undefined>(
+    undefined
+  );
 
   const {
     register,
@@ -106,9 +105,11 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
           label="Room Label"
-          registerDetails={{...register("room", {
+          registerDetails={{
+            ...register("room", {
               required: "Room label is required",
-            })}}
+            }),
+          }}
           id="room"
           errorMessage={errors.room ? errors.room.message : undefined}
         />
@@ -118,17 +119,21 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
           label="Street"
-          registerDetails={{...register("street", {
-              required: "Street is required"
-            })}}
+          registerDetails={{
+            ...register("street", {
+              required: "Street is required",
+            }),
+          }}
           id="street"
           errorMessage={errors.street ? errors.street.message : undefined}
         />
         <StateSelector<BedCreateInput>
           label="State"
-          registerDetails={{...register("state", {
-              required: "State is required"
-            })}}
+          registerDetails={{
+            ...register("state", {
+              required: "State is required",
+            }),
+          }}
           id="state"
           errorMessage={errors.state ? errors.state.message : undefined}
         />
@@ -137,17 +142,21 @@ const BedCreate = ({ refetch, setPopup }: BedCreateProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <FormInput<BedCreateInput>
           label="City"
-          registerDetails={{...register("city", {
-              required: "City is required"
-            })}}
+          registerDetails={{
+            ...register("city", {
+              required: "City is required",
+            }),
+          }}
           id="city"
           errorMessage={errors.city ? errors.city.message : undefined}
         />
         <FormInput<BedCreateInput>
           label="ZIP Code"
-          registerDetails={{...register("zipCode", {
-              required: "ZIP Code is required"
-            })}}
+          registerDetails={{
+            ...register("zipCode", {
+              required: "ZIP Code is required",
+            }),
+          }}
           id="zipCode"
           errorMessage={errors.zipCode ? errors.zipCode.message : undefined}
         />

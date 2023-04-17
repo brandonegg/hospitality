@@ -3,46 +3,38 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { BedRowData } from "../../pages/beds";
+import type { RateRowData } from "../../pages/rates";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
-import { FormInput } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
-import type { BedPopupTypes } from "./BedPopup";
+import type { RatePopupTypes } from "./RatePopup";
 
-type BedUpdateInput = RouterInputs["bed"]["update"];
-type BedUpdateOutput = RouterOutputs["bed"]["update"];
-
-interface BedEditProps {
+interface RateDeleteProps {
   refetch: () => Promise<void>;
-  bed?: BedRowData;
-  popup: TablePopup<BedRowData, BedPopupTypes>;
-  setPopup: Dispatch<SetStateAction<TablePopup<BedRowData, BedPopupTypes>>>;
+  rate?: RateRowData;
+  popup: TablePopup<RateRowData, RatePopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
 }
 
+type RateDeleteInput = RouterInputs["rate"]["delete"];
+type RateDeleteOutput = RouterOutputs["rate"]["delete"];
+
 /**
- * UserEdit component
- * @param param0
- * @returns JSX
+ * Rate delete component.
+ * @returns
  */
-const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
+const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
-  const [serverResult, setServerResult] = useState<BedUpdateOutput | undefined>(
-    undefined
-  );
+  const [serverResult, setServerResult] = useState<
+    RateDeleteOutput | undefined
+  >(undefined);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<BedUpdateInput>({
-    defaultValues: bed,
-  });
+  const { register, handleSubmit } = useForm<RateDeleteInput>();
 
-  const { mutate } = api.bed.update.useMutation({
-    onSuccess: async (data: BedUpdateOutput) => {
+  const { mutate } = api.rate.delete.useMutation({
+    onSuccess: async (data: RateDeleteOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -52,16 +44,14 @@ const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
 
   /**
    * Form submit handler.
-   * @param data Form data.
-   * @returns
    */
-  const onSubmit: SubmitHandler<BedUpdateInput> = (data) => {
+  const onSubmit: SubmitHandler<RateDeleteInput> = (data) => {
     mutate(data);
   };
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated bed!</Alert>
+      <Alert type="success">Successfully deleted rate!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -75,20 +65,28 @@ const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <div className="flex flex-col items-stretch gap-2 sm:flex-row">
-        <div className="flex flex-grow flex-col">
-          <FormInput<BedUpdateInput>
-            label="Room Label"
-            registerDetails={{
-              ...register("room", {
-                required: "Room label is required",
-              }),
-            }}
-            id="room"
-            errorMessage={errors.room ? errors.room.message : undefined}
-          />
+      <p>Do you want to delete this rate?</p>
+
+      <div className="space-y-1">
+        <div className="grid grid-cols-10">
+          <p className="col-span-10 font-semibold sm:col-span-2">Name:</p>
+          <p className="col-span-10 sm:col-span-8">{rate?.name}</p>
+        </div>
+
+        <div className="grid grid-cols-10">
+          <p className="col-span-10 font-semibold sm:col-span-2">
+            Description:
+          </p>
+          <p className="col-span-10 sm:col-span-8">{rate?.description}</p>
+        </div>
+
+        <div className="grid grid-cols-10">
+          <p className="col-span-10 font-semibold sm:col-span-2">Price:</p>
+          <p className="col-span-10 sm:col-span-8">{rate?.price}</p>
         </div>
       </div>
+
+      <input type="hidden" value={rate?.id} {...register("id")} />
 
       <div className="flex gap-2">
         <button
@@ -109,4 +107,4 @@ const BedEdit = ({ refetch, bed, setPopup }: BedEditProps) => {
   );
 };
 
-export default BedEdit;
+export default RateDelete;

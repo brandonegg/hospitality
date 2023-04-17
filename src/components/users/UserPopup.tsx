@@ -67,14 +67,19 @@ interface UserPopupProps {
  */
 const UserPopup = ({ refetch, popup, setPopup }: UserPopupProps) => {
   return (
-    <TablePopup<UserRowData, UserPopupTypes> label="User" popup={popup} setPopup={setPopup} refetch={refetch}>
-        <UserPopupBody
-            refetch={refetch}
-            user={popup.data}
-            type={popup.type}
-            popup={popup}
-            setPopup={setPopup}
-          />
+    <TablePopup<UserRowData, UserPopupTypes>
+      label="User"
+      popup={popup}
+      setPopup={setPopup}
+      refetch={refetch}
+    >
+      <UserPopupBody
+        refetch={refetch}
+        user={popup.data}
+        type={popup.type}
+        popup={popup}
+        setPopup={setPopup}
+      />
     </TablePopup>
   );
 };

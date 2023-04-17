@@ -15,12 +15,10 @@
     "project": "./tsconfig.json"
   },
   "ignorePatterns": ["*.config.js"],
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "semi": "error",
-    "eol-last": "error",
-    "no-trailing-spaces": "error",
+    "prettier/prettier": "error",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/order": [
@@ -31,7 +29,6 @@
       "error",
       { "ignoreDeclarationSort": true, "ignoreCase": true }
     ],
-    "functional/no-return-void": "off",
     "require-jsdoc": [
       "error",
       {

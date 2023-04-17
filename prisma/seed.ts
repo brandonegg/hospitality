@@ -21,6 +21,20 @@ async function main() {
     },
   });
 
+  const address = await prisma.address.upsert({
+    where: {
+      id: "test_address",
+    },
+    create: {
+      id: "test_address",
+      street: "123 Test Dr.",
+      city: "Iowa City",
+      state: "Iowa",
+      zipCode: 52240,
+    },
+    update: {},
+  });
+
   // create some dummy users
   await prisma.user.createMany({
     data: [
@@ -30,7 +44,7 @@ async function main() {
         email: "bob@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.PATIENT,
       },
       {
@@ -39,7 +53,8 @@ async function main() {
         email: "bob@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
+
         role: Role.DOCTOR,
       },
       {
@@ -48,7 +63,8 @@ async function main() {
         email: "yewande@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
+
         role: Role.PATIENT,
       },
       {
@@ -57,7 +73,7 @@ async function main() {
         email: "angelique@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.NURSE,
       },
       {
@@ -66,7 +82,7 @@ async function main() {
         email: "john@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.PATIENT,
       },
       {
@@ -75,7 +91,7 @@ async function main() {
         email: "joe@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.DOCTOR,
       },
       {
@@ -84,7 +100,7 @@ async function main() {
         email: "adminuser1@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.ADMIN,
       },
       {
@@ -93,7 +109,7 @@ async function main() {
         email: "jane@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.NURSE,
       },
       {
@@ -102,7 +118,7 @@ async function main() {
         email: "josh@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
-        addressId: "clevr3plo000c3ocy88y5dprl",
+        addressId: address.id,
         role: Role.PATIENT,
       },
     ],
@@ -188,7 +204,69 @@ async function main() {
         addressId: hospitalAddress.id,
         room: "107",
       },
-    ]
+    ],
+  });
+
+  await prisma.rate.deleteMany();
+
+  await prisma.rate.createMany({
+    data: [
+      {
+        name: "Pharmacy",
+        description: "Pharmacy rate",
+        price: "88",
+      },
+      {
+        name: "Med/Surg Supplies and Devices",
+        description: "Med/Surg Supplies and Devices rate",
+        price: "44.5",
+      },
+      {
+        name: "Laboratory",
+        description: "Laboratory rate",
+        price: "109.5",
+      },
+      {
+        name: "CT Scan",
+        description: "CT Scan rate",
+        price: "1700",
+      },
+      {
+        name: "MRI",
+        description: "MRI rate",
+        price: "2000",
+      },
+      {
+        name: "X-Ray",
+        description: "X-Ray rate",
+        price: "100",
+      },
+      {
+        name: "Emergency Room",
+        description: "Emergency Room rate",
+        price: "1000",
+      },
+      {
+        name: "Ambulance",
+        description: "Ambulance rate",
+        price: "500",
+      },
+      {
+        name: "Surgery",
+        description: "Surgery rate",
+        price: "5000",
+      },
+      {
+        name: "Nursing",
+        description: "Nursing rate",
+        price: "100",
+      },
+      {
+        name: "Anesthesia",
+        description: "Anesthesia rate",
+        price: "1000",
+      },
+    ],
   });
 
   // Create basic payment sources all patients can use for testing

@@ -125,3 +125,10 @@ model Hours {
   startHour Int    @default(7)
   endHour   Int    @default(19)
 }
+
+model Rate {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  price       String
+}

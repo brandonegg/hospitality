@@ -30,30 +30,30 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
 
 export const userRouter = createTRPCRouter({
   search: protectedProcedure
-  .input(
-    z.object({
-      name: z.string(),
-      count: z.number(),
-    })
-  )
-  .query(async ({ ctx, input }) => {
-    return await ctx.prisma.user.findMany({
-      take: input.count,
-      where: {
-        name: {
-          contains: input.name,
+    .input(
+      z.object({
+        name: z.string(),
+        count: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.user.findMany({
+        take: input.count,
+        where: {
+          name: {
+            contains: input.name,
+          },
+          role: {
+            equals: Role.PATIENT,
+          },
         },
-        role: {
-          equals: Role.PATIENT,
-        }
-      },
-      select: {
-        id: true,
-        name: true,
-        dateOfBirth: true,
-      }
-    });
-  }),
+        select: {
+          id: true,
+          name: true,
+          dateOfBirth: true,
+        },
+      });
+    }),
   getAll: protectedProcedure
     .input(
       z.object({
