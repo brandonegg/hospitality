@@ -1,3 +1,4 @@
+import type { Invoice } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -51,6 +52,18 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
     mutate(data);
   };
 
+  /**
+   * Get the user name based off an id
+   * @param id
+   * @returns
+   */
+  function getName(id: string | undefined): string | undefined {
+    if (id) {
+      const { data: name } = api.invoice.getName.useQuery({ id: id });
+      return name?.name;
+    } else return undefined;
+  }
+
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully deleted Invoice!</Alert>
@@ -72,13 +85,20 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
       <div className="space-y-1">
         <div className="grid grid-cols-10">
           <p className="col-span-10 font-semibold sm:col-span-2">User:</p>
-          <p className="col-span-10 sm:col-span-8">{Invoice?.userId}</p>
+          <p className="col-span-10 sm:col-span-8">
+            {getName(Invoice?.userId)}
+          </p>
         </div>
 
         <div className="grid grid-cols-10">
           <p className="col-span-10 font-semibold sm:col-span-2">Due Date:</p>
           <p className="col-span-10 sm:col-span-8">
-            {Invoice?.paymentDue.toDateString()}
+            {new Date(
+              (Invoice as Invoice).paymentDue.getTime() -
+                (Invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
+            )
+              .toISOString()
+              .slice(0, 10)}
           </p>
         </div>
       </div>

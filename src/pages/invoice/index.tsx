@@ -1,3 +1,8 @@
+import {
+  DocumentMinusIcon,
+  DocumentPlusIcon,
+  EnvelopeIcon,
+} from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
@@ -11,11 +16,107 @@ import type { InvoicePopupTypes } from "../../components/invoice/InvoicePopup";
 import InvoicePopup from "../../components/invoice/InvoicePopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
+import {
+  DeleteRowButton,
+  EditRowButton,
+} from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
-import { ActionsEntry } from "../../components/tables/rows";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+
+/**
+ * Button for sending the invoice of a table to patient.
+ */
+const SendBillRowButton = ({
+  onClick,
+  testId,
+  disabled = false,
+}: ButtonDetails) => {
+  if (disabled) {
+    return (
+      <button
+        data-testid={testId}
+        className="inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-gray-300 py-2 px-3 font-semibold text-white"
+        onClick={onClick}
+      >
+        <EnvelopeIcon className="h-4 w-4" />
+        Send
+      </button>
+    );
+  }
+
+  return (
+    <button
+      data-testid={testId}
+      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-gray-600 py-2 px-3 font-semibold text-white hover:bg-gray-700"
+      onClick={onClick}
+    >
+      <EnvelopeIcon className="h-4 w-4" />
+      Send
+    </button>
+  );
+};
+
+/**
+ * Button for sending the invoice of a table to patient.
+ */
+const AddBillRowButton = ({
+  onClick,
+  testId,
+  disabled = false,
+}: ButtonDetails) => {
+  if (disabled) {
+    return (
+      <button
+        data-testid={testId}
+        className="inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-amber-300 py-2 px-3 font-semibold text-white"
+        onClick={onClick}
+      >
+        <DocumentPlusIcon className="h-4 w-4" />
+        Add Bill
+      </button>
+    );
+  }
+
+  return (
+    <button
+      data-testid={testId}
+      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 py-2 px-3 font-semibold text-white hover:bg-amber-700"
+      onClick={onClick}
+    >
+      <DocumentPlusIcon className="h-4 w-4" />
+      Add Bill
+    </button>
+  );
+};
+
+/**
+ * Creates the row entry for the actions column
+ */
+const ActionsEntry = ({
+  sendBillDetails,
+  addBillDetails,
+  editDetails,
+  deleteDetails,
+}: {
+  label: string;
+  sendBillDetails: ButtonDetails;
+  addBillDetails: ButtonDetails;
+  editDetails: ButtonDetails;
+  deleteDetails: ButtonDetails;
+}) => {
+  return (
+    <td className="">
+      <div className="flex w-full justify-end gap-2 p-2">
+        <SendBillRowButton {...sendBillDetails} />
+        <AddBillRowButton {...addBillDetails} />
+        <EditRowButton {...editDetails} />
+        <DeleteRowButton {...deleteDetails} />
+      </div>
+    </td>
+  );
+};
 
 export type InvoiceRowData =
   RouterOutputs["invoice"]["getAll"]["items"][number];
@@ -33,6 +134,12 @@ const InvoiceTableRow = ({
     SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
   >;
 }) => {
+  const sendBillDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "sendBill", data: item }),
+  };
+  const addBillDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "addBill", data: item }),
+  };
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
   };
@@ -65,6 +172,8 @@ const InvoiceTableRow = ({
           .slice(0, 10)}
       </td>
       <ActionsEntry
+        sendBillDetails={sendBillDetails}
+        addBillDetails={addBillDetails}
         editDetails={editDetails}
         deleteDetails={deleteDetails}
         label="Invoice"
@@ -91,9 +200,9 @@ const InvoiceTable = ({
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
-            <th className="w-[200px] px-6 py-3 lg:w-1/5">User</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/5">Total</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/5">Balance</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/6">User</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/6">Total</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/6">Balance</th>
             <th className="w-[125px] px-6 py-3">Due Date</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
