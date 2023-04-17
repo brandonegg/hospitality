@@ -160,7 +160,7 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
         </div>
 
         <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">paymentDue</label>
+          <label htmlFor="paymentDue">Due Date</label>
           <input
             type="Date"
             id="paymentDue"
