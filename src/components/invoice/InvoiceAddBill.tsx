@@ -1,4 +1,4 @@
-import type { Invoice, User } from "@prisma/client";
+import type { Rate } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import React, { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -13,33 +13,33 @@ import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
 
-const patients: User[] = [];
+const rates: Rate[] = [];
 /**
  * instead of displaying all hours, grab the available times for the current doctor
  */
-const getPatients = async function () {
+const getRates = async function () {
   try {
     const body = {};
-    await fetch(`/api/getPatients`, {
+    await fetch(`/api/getBillrates`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
-      .then((pats: User[]) => {
-        patients.length = 0;
-        pats.forEach((pat) => {
-          patients.push(pat);
+      .then((rats: Rate[]) => {
+        rates.length = 0;
+        rats.forEach((rat) => {
+          rates.push(rat);
         });
       });
   } catch (error) {
     console.error(error);
   }
 };
-const patGetter = getPatients();
+const rateGetter = getRates();
 
-type InvoiceUpdateInput = RouterInputs["invoice"]["update"];
-type InvoiceUpdateOutput = RouterOutputs["invoice"]["update"];
+type InvoiceUpdateInput = RouterInputs["invoice"]["add"];
+type InvoiceUpdateOutput = RouterOutputs["invoice"]["add"];
 
 interface InvoiceAddBillProps {
   refetch: () => Promise<void>;
@@ -51,7 +51,7 @@ interface InvoiceAddBillProps {
 }
 
 /**
- * Invoice edit component.
+ * Invoice add to bill component.
  * @returns
  */
 const InvoiceAddBill = ({
@@ -71,16 +71,11 @@ const InvoiceAddBill = ({
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
-      paymentDue: new Date(
-        (invoice as Invoice).paymentDue.getTime() -
-          (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
-      )
-        .toISOString()
-        .slice(0, 10),
+      id: invoice?.id,
     },
   });
 
-  const { mutate } = api.invoice.update.useMutation({
+  const { mutate } = api.invoice.add.useMutation({
     onSuccess: async (data: InvoiceUpdateOutput) => {
       setServerResult(data);
 
@@ -103,9 +98,9 @@ const InvoiceAddBill = ({
     setValue(event.target.value);
   };
 
-  const [pats, updatePats] = React.useState<User[]>([]);
+  const [rats, updateRates] = React.useState<Rate[]>([]);
 
-  const [patient, setValue] = React.useState(invoice?.userId);
+  const [rate, setValue] = React.useState("");
 
   useEffect(() => {
     let ignore = false;
@@ -113,11 +108,11 @@ const InvoiceAddBill = ({
       /**
        * Update to all patients
        */
-      async function getPatients() {
-        await patGetter;
-        updatePats(patients);
+      async function getRates() {
+        await rateGetter;
+        updateRates(rates);
       }
-      void getPatients();
+      void getRates();
     }
     return () => {
       ignore = true;
@@ -126,7 +121,7 @@ const InvoiceAddBill = ({
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated an invoice!</Alert>
+      <Alert type="success">Successfully added to invoice bill!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -142,47 +137,24 @@ const InvoiceAddBill = ({
 
       <div className="flex-1">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="userId">User</label>
+          <label htmlFor="rateId">Procedure</label>
           <select
-            id="userId"
-            value={patient}
+            id="rateId"
+            value={rate}
             className="rounded border border-gray-300 p-2"
-            {...register("userId", {
-              required: "User is required",
+            {...register("rateId", {
+              required: "A procedure is required",
             })}
             onChange={changeDropDown}
           >
-            {pats.map((user, index) => (
-              <option key={index} value={user.id}>
-                {user.name}
+            {rats.map((rate, index) => (
+              <option key={index} value={rate.id}>
+                {rate.name}
               </option>
             ))}
           </select>
-          {errors.userId && (
-            <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">Due Date</label>
-          <input
-            type="Date"
-            id="paymentDue"
-            value={new Date(
-              (invoice as Invoice).paymentDue.getTime() -
-                (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
-            )
-              .toISOString()
-              .slice(0, 10)}
-            className="rounded border border-gray-300 p-2"
-            {...register("paymentDue", {
-              required: "payment due date is required",
-            })}
-          />
-          {errors.paymentDue && (
-            <ErrorMessage id="paymentDue-error">
-              {errors.paymentDue.message}
-            </ErrorMessage>
+          {errors.rateId && (
+            <ErrorMessage id="rate-error">{errors.rateId.message}</ErrorMessage>
           )}
         </div>
       </div>
@@ -191,7 +163,7 @@ const InvoiceAddBill = ({
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Confirm
+          Add
         </button>
         <button
           type="button"

@@ -3,6 +3,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { InvoiceRowData } from "../../pages/invoice/index";
 import { TablePopup } from "../tables/input";
 
+import InvoiceAddBill from "./InvoiceAddBill";
 import InvoiceCreate from "./InvoiceCreate";
 import InvoiceDelete from "./InvoiceDelete";
 import InvoiceEdit from "./InvoiceEdit";
@@ -51,7 +52,7 @@ const InvoicePopupBody = ({
       );
     case "addBill":
       return (
-        <InvoiceSendBill
+        <InvoiceAddBill
           refetch={refetch}
           invoice={Invoice}
           popup={popup}
