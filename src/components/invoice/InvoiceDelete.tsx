@@ -1,6 +1,6 @@
 import type { Invoice } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -33,6 +33,25 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
   const [serverResult, setServerResult] = useState<
     InvoiceDeleteOutput | undefined
   >(undefined);
+  const [name, setName] = useState<string | undefined>(undefined);
+
+  const leName = getName(Invoice?.userId);
+
+  useEffect(() => {
+    let ignore = false;
+    if (!ignore) {
+      /**
+       * Update to all patients
+       */
+      function getTheName() {
+        setName(leName);
+      }
+      void getTheName();
+    }
+    return () => {
+      ignore = true;
+    };
+  }, [leName]);
 
   const { register, handleSubmit } = useForm<InvoiceDeleteInput>();
 
@@ -61,7 +80,11 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
     if (id) {
       const { data: name } = api.invoice.getName.useQuery({ id: id });
       return name?.name;
-    } else return undefined;
+    } else {
+      // to make react happy
+      const { data: name } = api.invoice.getName.useQuery({ id: "" });
+      return name?.name;
+    }
   }
 
   return serverResult ? (
@@ -86,7 +109,7 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
         <div className="grid grid-cols-10">
           <p className="col-span-10 font-semibold sm:col-span-2">User:</p>
           <p className="col-span-10 sm:col-span-8">
-            {getName(Invoice?.userId)}
+            {name ? name : "User not found"}
           </p>
         </div>
 
