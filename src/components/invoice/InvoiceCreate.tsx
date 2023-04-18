@@ -114,7 +114,10 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
       <Alert type="success">Successfully created a Invoice!</Alert>
       <button
         type="button"
-        onClick={() => setPopup({ show: false })}
+        onClick={async () => {
+          setPopup({ show: false });
+          await getPatients();
+        }}
         className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
       >
         Close

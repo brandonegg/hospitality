@@ -95,8 +95,11 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
   /**
    * update state when dropdown changes
    */
-  const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeDropDown = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setValue(event.target.value);
+    await getPatients();
   };
 
   const [pats, updatePats] = React.useState<User[]>([]);

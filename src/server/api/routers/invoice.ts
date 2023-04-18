@@ -276,6 +276,16 @@ export const invoiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
+      //delete line items where the id matches _invoicetoLineItem.B
+      const lineItems: { B: string }[] = await ctx.prisma.$queryRawUnsafe(
+        `SELECT B FROM _invoicetolineitem WHERE A="${id}"`
+      );
+      for await (const lineItem of lineItems) {
+        await ctx.prisma.$executeRawUnsafe(
+          `DELETE FROM lineitem WHERE id="${lineItem.B}"`
+        );
+      }
+
       const deletedInvoice = await ctx.prisma.$executeRawUnsafe(
         `DELETE FROM Invoice WHERE id="${id}"`
       );
