@@ -1,4 +1,4 @@
-import type { LineItem, Rate } from "@prisma/client";
+import type { Invoice, LineItem, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -281,5 +281,16 @@ export const invoiceRouter = createTRPCRouter({
       );
 
       return deletedInvoice;
+    }),
+  send: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+
+      //get all invoices with this id
+      const invoices: Invoice[] = await ctx.prisma.$queryRawUnsafe(
+        `SELECT * FROM Invoice WHERE id="${id}"`
+      );
+      return invoices;
     }),
 });

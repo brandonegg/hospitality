@@ -156,6 +156,11 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
             className="resize-none rounded border border-gray-300 p-2"
             {...register("paymentDue", {
               required: "Due date is required",
+              // pattern: { //find out how to do this
+              //   // make sure date is after today
+              //   value: new Date(value).getTime() > new Date().getTime(),
+              //   message: "Due date must be after today's date",
+              // },
             })}
           />
           {errors.paymentDue && (

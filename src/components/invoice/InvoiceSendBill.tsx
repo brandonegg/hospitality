@@ -8,7 +8,6 @@ import type { InvoiceRowData } from "../../pages/invoice/index";
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 import Alert from "../Alert";
-import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
@@ -38,8 +37,8 @@ const getPatients = async function () {
 };
 const patGetter = getPatients();
 
-type InvoiceUpdateInput = RouterInputs["invoice"]["update"];
-type InvoiceUpdateOutput = RouterOutputs["invoice"]["update"];
+type InvoiceUpdateInput = RouterInputs["invoice"]["send"];
+type InvoiceUpdateOutput = RouterOutputs["invoice"]["send"];
 
 interface InvoiceSendBillProps {
   refetch: () => Promise<void>;
@@ -71,16 +70,10 @@ const InvoiceSendBill = ({
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
-      paymentDue: new Date(
-        (invoice as Invoice).paymentDue.getTime() -
-          (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
-      )
-        .toISOString()
-        .slice(0, 10),
     },
   });
 
-  const { mutate } = api.invoice.update.useMutation({
+  const { mutate } = api.invoice.send.useMutation({
     onSuccess: async (data: InvoiceUpdateOutput) => {
       setServerResult(data);
 
@@ -126,7 +119,9 @@ const InvoiceSendBill = ({
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated an invoice!</Alert>
+      <Alert type="success">
+        Successfully sent (once that feature is added)!
+      </Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -140,58 +135,13 @@ const InvoiceSendBill = ({
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <div className="flex-1">
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="userId">User</label>
-          <select
-            id="userId"
-            value={patient}
-            className="rounded border border-gray-300 p-2"
-            {...register("userId", {
-              required: "User is required",
-            })}
-            onChange={changeDropDown}
-          >
-            {pats.map((user, index) => (
-              <option key={index} value={user.id}>
-                {user.name}
-              </option>
-            ))}
-          </select>
-          {errors.userId && (
-            <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">Due Date</label>
-          <input
-            type="Date"
-            id="paymentDue"
-            value={new Date(
-              (invoice as Invoice).paymentDue.getTime() -
-                (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
-            )
-              .toISOString()
-              .slice(0, 10)}
-            className="rounded border border-gray-300 p-2"
-            {...register("paymentDue", {
-              required: "payment due date is required",
-            })}
-          />
-          {errors.paymentDue && (
-            <ErrorMessage id="paymentDue-error">
-              {errors.paymentDue.message}
-            </ErrorMessage>
-          )}
-        </div>
-      </div>
+      <div className="flex-1"></div>
       <div className="flex gap-2">
         <button
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Confirm
+          Send
         </button>
         <button
           type="button"
