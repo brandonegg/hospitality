@@ -2,13 +2,14 @@ import {
   DocumentMinusIcon,
   DocumentPlusIcon,
   EnvelopeIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
-import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 import MainHeader from "../../components/Header";
 import PageSelector from "../../components/PageSelector";
@@ -16,14 +17,44 @@ import type { InvoicePopupTypes } from "../../components/invoice/InvoicePopup";
 import InvoicePopup from "../../components/invoice/InvoicePopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
-import {
-  DeleteRowButton,
-  EditRowButton,
-} from "../../components/tables/buttons";
+import { DeleteRowButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+
+/**
+ * Button for editing the row of a table.
+ */
+const EditRowButton = ({
+  onClick,
+  testId,
+  disabled = false,
+}: ButtonDetails) => {
+  if (disabled) {
+    return (
+      <button
+        data-testid={testId}
+        className="editButtons inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-blue-300 py-2 px-3 font-semibold text-white"
+        onClick={onClick}
+      >
+        <PencilSquareIcon className="h-4 w-4" />
+        Edit
+      </button>
+    );
+  }
+
+  return (
+    <button
+      data-testid={testId}
+      className="editButtons inline-flex cursor-pointer items-center gap-2 rounded-lg bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
+      onClick={onClick}
+    >
+      <PencilSquareIcon className="h-4 w-4" />
+      Edit
+    </button>
+  );
+};
 
 /**
  * Button for sending the invoice of a table to patient.
@@ -180,7 +211,9 @@ const InvoiceTableRow = ({
     onClick: () => setPopup({ show: true, type: "removeBill", data: item }),
   };
   const editDetails: ButtonDetails = {
-    onClick: () => setPopup({ show: true, type: "edit", data: item }),
+    onClick: () => {
+      setPopup({ show: true, type: "edit", data: item });
+    },
   };
 
   const deleteDetails: ButtonDetails = {

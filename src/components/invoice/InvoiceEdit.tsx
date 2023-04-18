@@ -36,7 +36,7 @@ const getPatients = async function () {
     console.error(error);
   }
 };
-const patGetter = getPatients();
+let patGetter = getPatients();
 
 type InvoiceUpdateInput = RouterInputs["invoice"]["update"];
 type InvoiceUpdateOutput = RouterOutputs["invoice"]["update"];
@@ -76,6 +76,16 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
     },
   });
 
+  // without this the available users to choose won't update upon creating a new invoice, this forces a reload when the edit button is pressed
+  useEffect(() => {
+    const editButtons = document.getElementsByClassName("editButtons");
+    for (const editButton of editButtons) {
+      editButton.addEventListener("click", () => {
+        patGetter = getPatients();
+      });
+    }
+  }, []);
+
   const { mutate } = api.invoice.update.useMutation({
     onSuccess: async (data: InvoiceUpdateOutput) => {
       setServerResult(data);
@@ -95,11 +105,8 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
   /**
    * update state when dropdown changes
    */
-  const changeDropDown = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setValue(event.target.value);
-    await getPatients();
   };
 
   const [pats, updatePats] = React.useState<User[]>([]);
