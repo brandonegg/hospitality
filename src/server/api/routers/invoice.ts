@@ -1,4 +1,4 @@
-import type { LineItem } from "@prisma/client";
+import type { LineItem, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -13,6 +13,36 @@ export const invoiceRouter = createTRPCRouter({
         `SELECT name FROM User WHERE id="${id}"`
       );
       return result[0] as { name: string };
+    }),
+  getProcedures: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      // get the ids of all line items associated with this invoice id
+      const invoiceIdLineItems: { A: string; B: string }[] =
+        await ctx.prisma.$queryRawUnsafe(
+          `SELECT * from _invoicetolineitem where A="${id}"`
+        );
+      // get all line items associated with this invoice id
+      const lineItems: LineItem[] = [];
+      for await (const thisInvoicesLineItem of invoiceIdLineItems) {
+        // get this line item that was associated with this invoice id
+        const aLineItem: LineItem[] = await ctx.prisma.$queryRawUnsafe(
+          `SELECT * from lineitem where id="${
+            (thisInvoicesLineItem as { A: string; B: string }).B
+          }"`
+        );
+        lineItems.push(aLineItem[0] as LineItem);
+      }
+      const result: Rate[] = [];
+      for await (const lineItem of lineItems) {
+        const rate: Rate[] = await ctx.prisma.$queryRawUnsafe(
+          `SELECT * FROM Rate WHERE id="${lineItem.rateId}"`
+        );
+        result.push(rate[0] as Rate);
+      }
+
+      return result;
     }),
   add: protectedProcedure
     .input(
@@ -109,6 +139,72 @@ export const invoiceRouter = createTRPCRouter({
         );
         return result;
       }
+    }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        rateId: z.string(),
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { rateId, id } = input;
+      // get the ids of all line items associated with this invoice id
+      const invoiceIdLineItems: { A: string; B: string }[] =
+        await ctx.prisma.$queryRawUnsafe(
+          `SELECT * from _invoicetolineitem where A="${id}"`
+        );
+
+      // get the price of the rate via rateId
+      const ratePrice: { price: number }[] = await ctx.prisma.$queryRawUnsafe(
+        `SELECT price FROM Rate WHERE id="${rateId}"`
+      );
+      const price = (ratePrice[0] as { price: number }).price;
+
+      // subtract price from rate to invoice total and balance
+      await ctx.prisma.$queryRawUnsafe(
+        `UPDATE invoice SET total = total - ${price}, totalDue = totalDue - ${price} WHERE id="${id}"`
+      );
+
+      // go through all line items associated with this invoice id
+      let lineItem: LineItem | undefined;
+      if (invoiceIdLineItems.length > 0) {
+        for await (const thisInvoicesLineItem of invoiceIdLineItems) {
+          // get this line item that was associated with this invoice id
+          const potentialLineItem: LineItem[] =
+            await ctx.prisma.$queryRawUnsafe(
+              `SELECT * from lineitem where id="${
+                (thisInvoicesLineItem as { A: string; B: string }).B
+              }"`
+            );
+          if (potentialLineItem[0]) {
+            if (potentialLineItem[0].rateId === rateId) {
+              lineItem = potentialLineItem[0];
+            }
+          }
+        }
+      }
+
+      // make lineItem make quantity go down 1
+      const quantityUpdate: LineItem[] = await ctx.prisma.$queryRawUnsafe(
+        `UPDATE lineitem SET quantity = quantity - 1 WHERE id="${
+          (lineItem as LineItem).id
+        }"`
+      );
+
+      // check for quantities of 0 and delete line item and delete from _invoicetolineitem
+      if ((lineItem as LineItem).quantity === 1) {
+        await ctx.prisma.$executeRawUnsafe(
+          `DELETE FROM lineitem WHERE id="${(lineItem as LineItem).id}"`
+        );
+        await ctx.prisma.$executeRawUnsafe(
+          `DELETE FROM _invoicetolineitem WHERE B="${
+            (lineItem as LineItem).id
+          }"`
+        );
+      }
+
+      return quantityUpdate;
     }),
   getAll: protectedProcedure
     .input(

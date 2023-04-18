@@ -7,17 +7,19 @@ import InvoiceAddBill from "./InvoiceAddBill";
 import InvoiceCreate from "./InvoiceCreate";
 import InvoiceDelete from "./InvoiceDelete";
 import InvoiceEdit from "./InvoiceEdit";
+import InvoiceRemoveBill from "./InvoiceRemoveBill";
 import InvoiceSendBill from "./InvoiceSendBill";
 
 export type InvoicePopupTypes =
   | "create"
   | "sendBill"
   | "addBill"
+  | "removeBill"
   | "edit"
   | "delete";
 
 interface InvoicePopupBodyProps {
-  type?: "create" | "sendBill" | "addBill" | "edit" | "delete";
+  type?: "create" | "sendBill" | "addBill" | "removeBill" | "edit" | "delete";
   Invoice?: InvoiceRowData;
   refetch: () => Promise<void>;
   popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
@@ -53,6 +55,15 @@ const InvoicePopupBody = ({
     case "addBill":
       return (
         <InvoiceAddBill
+          refetch={refetch}
+          invoice={Invoice}
+          popup={popup}
+          setPopup={setPopup}
+        />
+      );
+    case "removeBill":
+      return (
+        <InvoiceRemoveBill
           refetch={refetch}
           invoice={Invoice}
           popup={popup}

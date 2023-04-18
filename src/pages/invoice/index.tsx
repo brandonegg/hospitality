@@ -70,7 +70,7 @@ const AddBillRowButton = ({
     return (
       <button
         data-testid={testId}
-        className="inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-amber-300 py-2 px-3 font-semibold text-white"
+        className="inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-lime-300 py-2 px-3 font-semibold text-white"
         onClick={onClick}
       >
         <DocumentPlusIcon className="h-4 w-4" />
@@ -82,11 +82,44 @@ const AddBillRowButton = ({
   return (
     <button
       data-testid={testId}
-      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 py-2 px-3 font-semibold text-white hover:bg-amber-700"
+      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-lime-600 py-2 px-3 font-semibold text-white hover:bg-lime-700"
       onClick={onClick}
     >
       <DocumentPlusIcon className="h-4 w-4" />
       Add Bill
+    </button>
+  );
+};
+
+/**
+ * Button for sending the invoice of a table to patient.
+ */
+const RemoveBillRowButton = ({
+  onClick,
+  testId,
+  disabled = false,
+}: ButtonDetails) => {
+  if (disabled) {
+    return (
+      <button
+        data-testid={testId}
+        className="inline-flex cursor-pointer cursor-not-allowed items-center gap-2 rounded-lg bg-amber-300 py-2 px-3 font-semibold text-white"
+        onClick={onClick}
+      >
+        <DocumentMinusIcon className="h-4 w-4" />
+        Remove Bill
+      </button>
+    );
+  }
+
+  return (
+    <button
+      data-testid={testId}
+      className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-amber-600 py-2 px-3 font-semibold text-white hover:bg-amber-700"
+      onClick={onClick}
+    >
+      <DocumentMinusIcon className="h-4 w-4" />
+      Remove Bill
     </button>
   );
 };
@@ -97,12 +130,14 @@ const AddBillRowButton = ({
 const ActionsEntry = ({
   sendBillDetails,
   addBillDetails,
+  removeBillDetails,
   editDetails,
   deleteDetails,
 }: {
   label: string;
   sendBillDetails: ButtonDetails;
   addBillDetails: ButtonDetails;
+  removeBillDetails: ButtonDetails;
   editDetails: ButtonDetails;
   deleteDetails: ButtonDetails;
 }) => {
@@ -111,6 +146,7 @@ const ActionsEntry = ({
       <div className="flex w-full justify-end gap-2 p-2">
         <SendBillRowButton {...sendBillDetails} />
         <AddBillRowButton {...addBillDetails} />
+        <RemoveBillRowButton {...removeBillDetails} />
         <EditRowButton {...editDetails} />
         <DeleteRowButton {...deleteDetails} />
       </div>
@@ -139,6 +175,9 @@ const InvoiceTableRow = ({
   };
   const addBillDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "addBill", data: item }),
+  };
+  const removeBillDetails: ButtonDetails = {
+    onClick: () => setPopup({ show: true, type: "removeBill", data: item }),
   };
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
@@ -174,6 +213,7 @@ const InvoiceTableRow = ({
       <ActionsEntry
         sendBillDetails={sendBillDetails}
         addBillDetails={addBillDetails}
+        removeBillDetails={removeBillDetails}
         editDetails={editDetails}
         deleteDetails={deleteDetails}
         label="Invoice"
