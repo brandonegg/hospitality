@@ -312,6 +312,7 @@ const InvoicePage = ({ user }: { user: Session["user"] }) => {
     }
   );
 
+  // TODO: Check if this breaks when prev + 1 > total # of pages.
   /**
    * Fetch next page of users.
    * @returns
