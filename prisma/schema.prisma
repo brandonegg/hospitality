@@ -107,46 +107,51 @@ model Hours {
   endHour   Int    @default(19)
 }
 
-model Rate { 
-  id String @id @default(cuid()) 
-  name String 
-  description String 
-  price String 
-  lineItems LineItem[] 
-} 
-model LineItem { 
-  id String @id @default(cuid()) 
-  quantity Int 
-  rateId String 
-  invoices Invoice[] 
-  Rate Rate @relation(fields: [rateId], references: [id], onDelete: Cascade)
-} 
-model Invoice { 
-  id String @id @default(cuid()) 
-  paymentDue DateTime 
-  total String  @default ("0")
-  totalDue String @default ("0")
-  items LineItem[] 
-  payments Payment[] 
-  userId String @unique
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
-} 
-enum PaymentSourceType { 
-  CARD 
-  BANK 
-} 
-model PaymentSource { 
-  id String @id @default(cuid()) 
-  name String 
-  type PaymentSourceType 
-  Payment Payment[] 
-} 
-model Payment { 
-  id String @id @default(cuid()) 
-  date DateTime @db.Date 
-  amount String 
-  sourceId String? 
-  source PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull) 
+model Rate {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  price       String
+  lineItems   LineItem[]
+}
+
+model LineItem {
+  id       String    @id @default(cuid())
+  quantity Int
+  rateId   String
+  invoices Invoice[]
+  Rate     Rate      @relation(fields: [rateId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id         String     @id @default(cuid())
+  paymentDue DateTime
+  total      String     @default("0")
+  totalDue   String     @default("0")
+  items      LineItem[]
+  payments   Payment[]
+  userId     String     @unique
+  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum PaymentSourceType {
+  CARD
+  BANK
+}
+
+model PaymentSource {
+  id      String            @id @default(cuid())
+  name    String
+  type    PaymentSourceType
+  Payment Payment[]
+}
+
+model Payment {
+  id        String         @id @default(cuid())
+  date      DateTime       @db.Date
+  amount    String
+  sourceId  String?
+  source    PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
   invoiceId String?
-  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }
