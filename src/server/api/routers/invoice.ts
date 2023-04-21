@@ -275,6 +275,16 @@ export const invoiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, userId, paymentDue } = input;
 
+      const todaysDate = new Date();
+      const paymentDueDate = new Date(paymentDue);
+
+      if (paymentDueDate < todaysDate) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Invoice date must be in the future.`,
+        });
+      }
+
       const updatedInvoice = await ctx.prisma.$executeRawUnsafe(
         `UPDATE Invoice SET userId="${userId}", paymentDue="${paymentDue}" WHERE id="${id}"`
       );
