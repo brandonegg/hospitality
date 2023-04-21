@@ -78,6 +78,10 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
 
   const [patient, setValue] = useState(invoice?.userId);
 
+  if (!invoice) {
+    return <></>;
+  }
+
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully updated an invoice!</Alert>
@@ -124,9 +128,9 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
           <input
             type="Date"
             id="paymentDue"
-            value={new Date(
-              (invoice as Invoice).paymentDue.getTime() -
-                (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
+            defaultValue={new Date(
+              invoice.paymentDue.getTime() -
+                invoice.paymentDue.getTimezoneOffset() * -60000
             )
               .toISOString()
               .slice(0, 10)}

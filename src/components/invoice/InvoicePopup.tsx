@@ -19,7 +19,7 @@ export type InvoicePopupTypes =
   | "delete";
 
 interface InvoicePopupBodyProps {
-  type?: "create" | "sendBill" | "addBill" | "removeBill" | "edit" | "delete";
+  type?: InvoicePopupTypes;
   Invoice?: InvoiceRowData;
   refetch: () => Promise<void>;
   popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
