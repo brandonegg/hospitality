@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { Availability, User } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { type NextPage } from "next";

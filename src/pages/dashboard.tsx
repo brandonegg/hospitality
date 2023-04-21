@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { DocumentCheckIcon } from "@heroicons/react/24/solid";
 import type { Appointment } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";

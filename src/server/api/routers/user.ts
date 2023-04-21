@@ -275,12 +275,10 @@ export const userRouter = createTRPCRouter({
       }
 
       // generate reset token
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       const token = jwt.sign({ email: input.email }, env.JWT_SECRET, {
         expiresIn: "5m",
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const html = template(user.name, token);
 
       // email options
@@ -293,7 +291,6 @@ export const userRouter = createTRPCRouter({
       };
 
       // Send email
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
       const email = await transporter.sendMail(options);
 
       if (!email) {
@@ -318,7 +315,6 @@ export const userRouter = createTRPCRouter({
 
       // Check if the token is valid
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         jwt.verify(input.token, env.JWT_SECRET);
         return "Token is valid";
       } catch (error) {
@@ -348,7 +344,6 @@ export const userRouter = createTRPCRouter({
       // decode the token
       let decoded;
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         decoded = jwt.verify(input.token, env.JWT_SECRET);
       } catch (error) {
         throw new TRPCError({

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import Head from "next/head";
 import { useRouter } from "next/router";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";

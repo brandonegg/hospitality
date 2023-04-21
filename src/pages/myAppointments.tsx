@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Appointment } from "@prisma/client";
 import Head from "next/head";
 import Router from "next/router";
