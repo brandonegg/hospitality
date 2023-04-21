@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { DocumentCheckIcon } from "@heroicons/react/24/solid";
 import type { Appointment } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
@@ -103,7 +101,6 @@ const Dashboard = ({ user }: DashboardPageProps) => {
   );
 
   useEffect(() => {
-    console.log(user.role);
     if (user.role === "DOCTOR") {
       // doctors can't make appointments, and patients can't make availabilitys
       dashboardNavLinks[1] = {
@@ -123,7 +120,6 @@ const Dashboard = ({ user }: DashboardPageProps) => {
       };
       dashboardNavLinks.splice(2, 1);
     }
-    console.log(dashboardNavLinks);
     setNavLinks(dashboardNavLinks);
   }, [user]);
 

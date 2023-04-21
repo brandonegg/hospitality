@@ -16,7 +16,7 @@
   },
   "ignorePatterns": ["*.config.js"],
   "plugins": ["@typescript-eslint", "prettier"],
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
   "rules": {
     "prettier/prettier": "error",
     "@typescript-eslint/consistent-type-imports": "warn",

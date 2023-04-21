@@ -25,6 +25,12 @@ const TablePopupTitle = <V,>({ type, label }: TablePopupTitleProps<V>) => {
       return <>Edit {label}</>;
     case "delete":
       return <>Delete {label}</>;
+    case "sendBill":
+      return <>Send {label}</>;
+    case "addBill":
+      return <>Add Procedure to {label}</>;
+    case "removeBill":
+      return <>Remove Procedure from {label}</>;
     default:
       return <></>;
   }

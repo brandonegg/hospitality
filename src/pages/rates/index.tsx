@@ -18,7 +18,7 @@ import type { UserPopupTypes } from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 
-export type RateRowData = RouterOutputs["rate"]["getAll"]["items"][number];
+export type RateRowData = RouterOutputs["rate"]["getAllPaged"]["items"][number];
 
 /**
  * Rate table row.
@@ -96,14 +96,15 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
     show: false,
   });
 
-  const { data, refetch, fetchNextPage } = api.rate.getAll.useInfiniteQuery(
-    {
-      limit,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    }
-  );
+  const { data, refetch, fetchNextPage } =
+    api.rate.getAllPaged.useInfiniteQuery(
+      {
+        limit,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
 
   /**
    * Fetch next page of users.

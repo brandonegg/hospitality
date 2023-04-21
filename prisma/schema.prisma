@@ -34,6 +34,7 @@ model User {
   image         String?
   address       Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
   Bed           Bed[]
+  Invoice       Invoice[]
 }
 
 model Bed {
@@ -107,8 +108,52 @@ model Hours {
 }
 
 model Rate {
-  id          String @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
   description String
   price       String
+  lineItems   LineItem[]
+}
+
+model LineItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  rateId    String?
+  invoiceId String
+  total     String
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  Rate      Rate?   @relation(fields: [rateId], references: [id], onDelete: SetNull)
+}
+
+model Invoice {
+  id         String     @id @default(cuid())
+  paymentDue DateTime
+  total      String     @default("0")
+  totalDue   String     @default("0")
+  items      LineItem[]
+  payments   Payment[]
+  userId     String?
+  User       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+enum PaymentSourceType {
+  CARD
+  BANK
+}
+
+model PaymentSource {
+  id      String            @id @default(cuid())
+  name    String
+  type    PaymentSourceType
+  Payment Payment[]
+}
+
+model Payment {
+  id        String         @id @default(cuid())
+  date      DateTime       @db.Date
+  amount    String
+  sourceId  String?
+  source    PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  invoiceId String?
+  invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
 }

@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-import type { Availability, User } from "@prisma/client";
+import type { Availability } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Router from "next/router";
 import type { Session } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { api } from "../utils/api";
 
 export const timeSort = function (a: Availability, b: Availability) {
   // sort by date, then time
@@ -83,33 +84,6 @@ const getAvailability = async function (docId: string, weekCount = 0) {
     console.error(error);
   }
 };
-let availGetter = getAvailability("AllDoctors");
-
-//
-const doctors: User[] = [];
-/**
- * instead of displaying all hours, grab the available times for the current doctor
- */
-const getDoctors = async function () {
-  try {
-    const body = {};
-    await fetch(`/api/getDoctors`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((docs: User[]) => {
-        doctors.length = 0;
-        docs.forEach((doc) => {
-          doctors.push(doc);
-        });
-      });
-  } catch (error) {
-    console.error(error);
-  }
-};
-const docGetter = getDoctors();
 
 /**
  * make a button for Appointment
@@ -168,7 +142,7 @@ const ColOfAppoint = (props: {
   const newDay = new Date(today.getTime());
   newDay.setDate(newDay.getDate() - offset); // properly handles day and increments month when necessary
 
-  const [dayTimes, updateTimes] = React.useState<string[]>([]);
+  const [dayTimes, updateTimes] = useState<string[]>([]);
 
   useEffect(() => {
     /**
@@ -247,7 +221,7 @@ const Appointment: NextPage = () => {
     }
   };
 
-  const [doctor, setValue] = React.useState("AllDoctors");
+  const [doctor, setValue] = useState("AllDoctors");
 
   const [weekCount, setWeekCount] = useState(0);
 
@@ -301,24 +275,7 @@ const Appointment: NextPage = () => {
     resetCheckedBoxes(weekCount);
   };
 
-  const [docts, updateDocts] = React.useState<User[]>([]);
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      /**
-       * Wait for available times to be fetched then display
-       */
-      async function getDoctors() {
-        await docGetter;
-        updateDocts(doctors);
-      }
-      void getDoctors();
-    }
-    return () => {
-      ignore = true;
-    };
-  });
+  const { data: doctors } = api.user.getAllDoctors.useQuery();
 
   return (
     <>
@@ -347,11 +304,13 @@ const Appointment: NextPage = () => {
         <div className="absolute top-0 right-0 h-16 w-40 pt-5 pr-20 ">
           <select id="dropdown" value={doctor} onChange={changeDropDown}>
             <option value="AllDoctors">Any Doctor</option>
-            {docts.map((user, index) => (
-              <option key={index} value={user.id}>
-                {user.name}
-              </option>
-            ))}
+            {doctors
+              ? doctors.map((user, index) => (
+                  <option key={index} value={user.id}>
+                    {user.name}
+                  </option>
+                ))
+              : undefined}
           </select>
         </div>
         <div className="flex justify-between pl-10 pr-10">
