@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import { Role } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -377,5 +378,12 @@ export const userRouter = createTRPCRouter({
     );
 
     return data as { id: string; name: string }[];
+  }),
+  getAllDoctors: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.$queryRawUnsafe(
+      "SELECT * FROM `User` WHERE role = 'DOCTOR'"
+    );
+
+    return data as User[];
   }),
 });
