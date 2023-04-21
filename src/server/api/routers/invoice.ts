@@ -57,10 +57,10 @@ export const invoiceRouter = createTRPCRouter({
 
       const totalPrice = (parseFloat(rate.price) * quantity).toFixed(2);
 
-      const create = await ctx.prisma.$executeRawUnsafe(`
-        INSERT INTO LineItem (id, rateId, invoiceId, quantity, total)
-        VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");
-      `);
+      const create = await ctx.prisma.$executeRawUnsafe(
+        `INSERT INTO LineItem (id, rateId, invoiceId, quantity, total)
+        VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");`
+      );
 
       await updateInvoiceTotal(invoiceId);
 
