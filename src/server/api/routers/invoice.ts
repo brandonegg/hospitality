@@ -1,4 +1,4 @@
-import type { Invoice, LineItem, Rate } from "@prisma/client";
+import type { Invoice, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -22,13 +22,14 @@ export const invoiceRouter = createTRPCRouter({
           invoiceId: input.id,
         },
         select: {
+          id: true,
           Rate: true,
         },
       });
 
       return result;
     }),
-  add: protectedProcedure
+  addItem: protectedProcedure
     .input(
       z.object({
         rateId: z.string(),
@@ -59,73 +60,32 @@ export const invoiceRouter = createTRPCRouter({
         VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");
       `);
 
+      // TODO: Update order total afterwards
+      // Call a function called updateInvoidTotal(id), takes invoice ID and updates the total.
+
       return create;
     }),
-  remove: protectedProcedure
+  removeItem: protectedProcedure
     .input(
       z.object({
-        rateId: z.string(),
-        id: z.string(),
+        lineItemId: z.string(),
+        invoiceId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { rateId, id } = input;
-      // get the ids of all line items associated with this invoice id
-      const invoiceIdLineItems: { A: string; B: string }[] =
-        await ctx.prisma.$queryRawUnsafe(
-          `SELECT * from _invoicetolineitem where A="${id}"`
-        );
+      const { lineItemId, invoiceId } = input;
 
-      // get the price of the rate via rateId
-      const ratePrice: { price: number }[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT price FROM Rate WHERE id="${rateId}"`
-      );
-      const price = (ratePrice[0] as { price: number }).price;
+      const result = await ctx.prisma.lineItem.deleteMany({
+        where: {
+          id: lineItemId,
+          invoiceId: invoiceId,
+        },
+      });
 
-      // subtract price from rate to invoice total and balance
-      await ctx.prisma.$queryRawUnsafe(
-        `UPDATE invoice SET total = total - ${price}, totalDue = totalDue - ${price} WHERE id="${id}"`
-      );
+      // TODO: Update order total afterwards
+      // Call a function called updateInvoidTotal(id), takes invoice ID and updates the total.
 
-      // go through all line items associated with this invoice id
-      let lineItem: LineItem | undefined;
-      if (invoiceIdLineItems.length > 0) {
-        for await (const thisInvoicesLineItem of invoiceIdLineItems) {
-          // get this line item that was associated with this invoice id
-          const potentialLineItem: LineItem[] =
-            await ctx.prisma.$queryRawUnsafe(
-              `SELECT * from lineitem where id="${
-                (thisInvoicesLineItem as { A: string; B: string }).B
-              }"`
-            );
-          if (potentialLineItem[0]) {
-            if (potentialLineItem[0].rateId === rateId) {
-              lineItem = potentialLineItem[0];
-            }
-          }
-        }
-      }
-
-      // make lineItem make quantity go down 1
-      const quantityUpdate: LineItem[] = await ctx.prisma.$queryRawUnsafe(
-        `UPDATE lineitem SET quantity = quantity - 1 WHERE id="${
-          (lineItem as LineItem).id
-        }"`
-      );
-
-      // check for quantities of 0 and delete line item and delete from _invoicetolineitem
-      if ((lineItem as LineItem).quantity === 1) {
-        await ctx.prisma.$executeRawUnsafe(
-          `DELETE FROM lineitem WHERE id="${(lineItem as LineItem).id}"`
-        );
-        await ctx.prisma.$executeRawUnsafe(
-          `DELETE FROM _invoicetolineitem WHERE B="${
-            (lineItem as LineItem).id
-          }"`
-        );
-      }
-
-      return quantityUpdate;
+      return result;
     }),
   getAll: protectedProcedure
     .input(

@@ -12,8 +12,8 @@ import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
 
-type InvoiceUpdateInput = RouterInputs["invoice"]["add"];
-type InvoiceUpdateOutput = RouterOutputs["invoice"]["add"];
+type InvoiceUpdateInput = RouterInputs["invoice"]["addItem"];
+type InvoiceUpdateOutput = RouterOutputs["invoice"]["addItem"];
 
 interface InvoiceAddBillProps {
   refetch: () => Promise<void>;
@@ -49,7 +49,7 @@ const InvoiceAddBill = ({
     },
   });
 
-  const { mutate } = api.invoice.add.useMutation({
+  const { mutate } = api.invoice.addItem.useMutation({
     onSuccess: async (data: InvoiceUpdateOutput) => {
       setServerResult(data);
 

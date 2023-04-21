@@ -1,4 +1,3 @@
-import type { Rate } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -13,8 +12,8 @@ import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
 
-type InvoiceRemoveBillInput = RouterInputs["invoice"]["remove"];
-type InvoiceRemoveBillOutput = RouterOutputs["invoice"]["remove"];
+type InvoiceRemoveBillInput = RouterInputs["invoice"]["removeItem"];
+type InvoiceRemoveBillOutput = RouterOutputs["invoice"]["removeItem"];
 
 interface InvoiceAddBillProps {
   refetch: () => Promise<void>;
@@ -46,11 +45,11 @@ const InvoiceRemoveBill = ({
   } = useForm<InvoiceRemoveBillInput>({
     defaultValues: {
       ...invoice,
-      id: invoice?.id,
+      invoiceId: invoice?.id,
     },
   });
 
-  const { mutate } = api.invoice.remove.useMutation({
+  const { mutate } = api.invoice.removeItem.useMutation({
     onSuccess: async (data: InvoiceRemoveBillOutput) => {
       setServerResult(data);
 
@@ -99,22 +98,24 @@ const InvoiceRemoveBill = ({
         <div className="flex flex-grow flex-col">
           <label htmlFor="rateId">Procedure</label>
           <select
-            id="rateId"
+            id="lineItemId"
             value={procedure}
             className="rounded border border-gray-300 p-2"
-            {...register("rateId", {
+            {...register("lineItemId", {
               required: "A procedure is required",
             })}
             onChange={changeDropDown}
           >
-            {procedures?.map((individualProcedure, index) => (
-              <option key={index} value={individualProcedure.Rate.id}>
-                {individualProcedure.Rate.name}
+            {procedures?.map((lineItem, index) => (
+              <option key={index} value={lineItem.id}>
+                {lineItem.Rate.name}
               </option>
             ))}
           </select>
-          {errors.rateId && (
-            <ErrorMessage id="rate-error">{errors.rateId.message}</ErrorMessage>
+          {errors.lineItemId && (
+            <ErrorMessage id="rate-error">
+              {errors.lineItemId.message}
+            </ErrorMessage>
           )}
         </div>
       </div>
