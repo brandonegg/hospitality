@@ -116,13 +116,13 @@ model Rate {
 }
 
 model LineItem {
-  id        String    @id @default(cuid())
+  id        String  @id @default(cuid())
   quantity  Int
   rateId    String
   invoiceId String
   total     String
-  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  Rate      Rate      @relation(fields: [rateId], references: [id], onDelete: Cascade)
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  Rate      Rate    @relation(fields: [rateId], references: [id], onDelete: Cascade)
 }
 
 model Invoice {
