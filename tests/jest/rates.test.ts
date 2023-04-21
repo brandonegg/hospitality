@@ -39,10 +39,10 @@ describe("rate router", () => {
         prisma: prismaMock,
       });
 
-      await expect(caller.rate.getAll({ limit: 10 })).rejects.toBeInstanceOf(
-        TRPCError
-      );
-      await expect(caller.rate.getAll({ limit: 10 })).rejects.toThrow(
+      await expect(
+        caller.rate.getAllPaged({ limit: 10 })
+      ).rejects.toBeInstanceOf(TRPCError);
+      await expect(caller.rate.getAllPaged({ limit: 10 })).rejects.toThrow(
         new TRPCError({
           code: "UNAUTHORIZED",
         })
@@ -70,7 +70,7 @@ describe("rate router", () => {
         mockResponse.items,
       ]);
 
-      const result = await caller.rate.getAll({ limit: 10 });
+      const result = await caller.rate.getAllPaged({ limit: 10 });
 
       expect(result).toEqual(mockResponse);
     });

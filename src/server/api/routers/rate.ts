@@ -1,10 +1,11 @@
+import type { Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const rateRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAllPaged: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(10),
@@ -97,4 +98,9 @@ export const rateRouter = createTRPCRouter({
 
       return deletedRate;
     }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Rate;`);
+
+    return data as Rate[];
+  }),
 });

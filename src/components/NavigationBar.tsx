@@ -43,6 +43,12 @@ const PagesConfig: NavLinkProps[] = [
     allowRoles: [Role.ADMIN],
   },
   {
+    label: "Invoices",
+    href: "/invoice",
+    requiresAccount: true,
+    allowRoles: [Role.ADMIN],
+  },
+  {
     label: "Support",
     href: "/support",
     requiresAccount: false,
