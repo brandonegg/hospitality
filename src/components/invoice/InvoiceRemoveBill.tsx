@@ -124,7 +124,7 @@ const InvoiceRemoveBill = ({
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Remove One
+          Remove
         </button>
         <button
           type="button"
