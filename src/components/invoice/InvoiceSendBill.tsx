@@ -37,10 +37,7 @@ const InvoiceSendBill = ({
     InvoiceUpdateOutput | undefined
   >(undefined);
 
-  const {
-    handleSubmit,
-    formState: { errors },
-  } = useForm<InvoiceUpdateInput>({
+  const { handleSubmit } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
     },

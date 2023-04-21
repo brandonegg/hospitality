@@ -22,6 +22,7 @@ export const invoiceRouter = createTRPCRouter({
           invoiceId: input.id,
         },
         select: {
+          quantity: true,
           id: true,
           Rate: true,
         },

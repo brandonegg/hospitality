@@ -46,6 +46,7 @@ const InvoiceAddBill = ({
     defaultValues: {
       ...invoice,
       invoiceId: invoice?.id,
+      quantity: 1,
     },
   });
 
@@ -62,6 +63,10 @@ const InvoiceAddBill = ({
    * Form submit handler.
    */
   const onSubmit: SubmitHandler<InvoiceUpdateInput> = (data) => {
+    if (data.quantity) {
+      // Fix for default behavior of input forms always passing value as string.
+      data.quantity = parseInt(data.quantity as unknown as string);
+    }
     mutate(data);
   };
 
@@ -92,8 +97,8 @@ const InvoiceAddBill = ({
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <div className="flex-1">
-        <div className="flex flex-grow flex-col">
+      <div className="flex flex-row justify-between space-x-4">
+        <div className="flex grow flex-col">
           <label htmlFor="rateId">Procedure</label>
           <select
             id="rateId"
@@ -116,7 +121,26 @@ const InvoiceAddBill = ({
             <ErrorMessage id="rate-error">{errors.rateId.message}</ErrorMessage>
           )}
         </div>
+
+        {/** Quantity input */}
+        <div className="flex grow flex-col">
+          <label htmlFor="quantity">Quantity</label>
+          <input
+            id="quantity"
+            type="number"
+            className="rounded border border-gray-300 p-2"
+            {...register("quantity", {
+              required: "Quantity is required",
+            })}
+          />
+          {errors.quantity && (
+            <ErrorMessage id="username-error">
+              {errors.quantity.message}
+            </ErrorMessage>
+          )}
+        </div>
       </div>
+
       <div className="flex gap-2">
         <button
           type="submit"

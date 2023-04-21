@@ -96,7 +96,7 @@ const InvoiceRemoveBill = ({
 
       <div className="flex-1">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="rateId">Procedure</label>
+          <label htmlFor="rateId">Procedure - Name x quantity</label>
           <select
             id="lineItemId"
             value={procedure}
@@ -108,7 +108,7 @@ const InvoiceRemoveBill = ({
           >
             {procedures?.map((lineItem, index) => (
               <option key={index} value={lineItem.id}>
-                {lineItem.Rate.name}
+                {lineItem.Rate.name} x {lineItem.quantity}
               </option>
             ))}
           </select>
