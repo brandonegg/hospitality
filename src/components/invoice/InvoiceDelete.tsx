@@ -1,4 +1,3 @@
-import type { Invoice } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";

@@ -116,11 +116,13 @@ model Rate {
 }
 
 model LineItem {
-  id       String    @id @default(cuid())
-  quantity Int
-  rateId   String
-  invoices Invoice[]
-  Rate     Rate      @relation(fields: [rateId], references: [id], onDelete: Cascade)
+  id        String    @id @default(cuid())
+  quantity  Int
+  rateId    String
+  invoiceId String
+  total     String
+  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  Rate      Rate      @relation(fields: [rateId], references: [id], onDelete: Cascade)
 }
 
 model Invoice {
@@ -130,8 +132,8 @@ model Invoice {
   totalDue   String     @default("0")
   items      LineItem[]
   payments   Payment[]
-  userId     String     @unique
-  User       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String?
+  User       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 enum PaymentSourceType {
