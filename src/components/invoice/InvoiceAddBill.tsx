@@ -1,6 +1,5 @@
-import type { Rate } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -12,31 +11,6 @@ import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
-
-const rates: Rate[] = [];
-/**
- * instead of displaying all hours, grab the available times for the current doctor
- */
-const getRates = async function () {
-  try {
-    const body = {};
-    await fetch(`/api/getBillrates`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((rats: Rate[]) => {
-        rates.length = 0;
-        rats.forEach((rat) => {
-          rates.push(rat);
-        });
-      });
-  } catch (error) {
-    console.error(error);
-  }
-};
-const rateGetter = getRates();
 
 type InvoiceUpdateInput = RouterInputs["invoice"]["add"];
 type InvoiceUpdateOutput = RouterOutputs["invoice"]["add"];
@@ -98,26 +72,9 @@ const InvoiceAddBill = ({
     setValue(event.target.value);
   };
 
-  const [rats, updateRates] = useState<Rate[]>([]);
+  const ratesQuery = api.rate.getAll.useQuery();
 
   const [rate, setValue] = useState("");
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      /**
-       * Update to all patients
-       */
-      async function getRates() {
-        await rateGetter;
-        updateRates(rates);
-      }
-      void getRates();
-    }
-    return () => {
-      ignore = true;
-    };
-  });
 
   return serverResult ? (
     <div className="space-y-2">
@@ -147,11 +104,13 @@ const InvoiceAddBill = ({
             })}
             onChange={changeDropDown}
           >
-            {rats.map((rate, index) => (
-              <option key={index} value={rate.id}>
-                {rate.name}
-              </option>
-            ))}
+            {ratesQuery.data
+              ? ratesQuery.data.map((rate, index) => (
+                  <option key={index} value={rate.id}>
+                    {rate.name}
+                  </option>
+                ))
+              : undefined}
           </select>
           {errors.rateId && (
             <ErrorMessage id="rate-error">{errors.rateId.message}</ErrorMessage>
