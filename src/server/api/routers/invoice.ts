@@ -2,6 +2,7 @@ import type { Invoice, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { updateInvoiceTotal } from "../../../utils/invoice/update";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const invoiceRouter = createTRPCRouter({
@@ -61,8 +62,7 @@ export const invoiceRouter = createTRPCRouter({
         VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");
       `);
 
-      // TODO: Update order total afterwards
-      // Call a function called updateInvoidTotal(id), takes invoice ID and updates the total.
+      await updateInvoiceTotal(invoiceId);
 
       return create;
     }),
@@ -83,8 +83,7 @@ export const invoiceRouter = createTRPCRouter({
         },
       });
 
-      // TODO: Update order total afterwards
-      // Call a function called updateInvoidTotal(id), takes invoice ID and updates the total.
+      await updateInvoiceTotal(invoiceId);
 
       return result;
     }),
