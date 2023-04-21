@@ -3,7 +3,7 @@ import Router from "next/router";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next/types";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 
 import { api } from "../utils/api";
 
@@ -70,7 +70,7 @@ const AdminHourSetting = () => {
     mutate({ startHour: startHour, endHour: endHour });
   };
 
-  const [startHour, setStartHour] = React.useState(14);
+  const [startHour, setStartHour] = useState(14);
 
   /**
    * update state when dropdown changes
@@ -81,7 +81,7 @@ const AdminHourSetting = () => {
     setStartHour(parseInt(event.target.value));
   };
 
-  const [endHour, setEndHour] = React.useState(38);
+  const [endHour, setEndHour] = useState(38);
 
   /**
    * update state when dropdown changes

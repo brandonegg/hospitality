@@ -6,7 +6,7 @@ import Head from "next/head";
 import Router from "next/router";
 import type { Session } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const timeSort = function (a: Availability, b: Availability) {
   // sort by date, then time
@@ -168,7 +168,7 @@ const ColOfAppoint = (props: {
   const newDay = new Date(today.getTime());
   newDay.setDate(newDay.getDate() - offset); // properly handles day and increments month when necessary
 
-  const [dayTimes, updateTimes] = React.useState<string[]>([]);
+  const [dayTimes, updateTimes] = useState<string[]>([]);
 
   useEffect(() => {
     /**
@@ -247,7 +247,7 @@ const Appointment: NextPage = () => {
     }
   };
 
-  const [doctor, setValue] = React.useState("AllDoctors");
+  const [doctor, setValue] = useState("AllDoctors");
 
   const [weekCount, setWeekCount] = useState(0);
 
@@ -301,7 +301,7 @@ const Appointment: NextPage = () => {
     resetCheckedBoxes(weekCount);
   };
 
-  const [docts, updateDocts] = React.useState<User[]>([]);
+  const [docts, updateDocts] = useState<User[]>([]);
 
   useEffect(() => {
     let ignore = false;

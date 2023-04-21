@@ -34,7 +34,7 @@ model User {
   image         String?
   address       Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
   Bed           Bed[]
-  Invoice       Invoice?
+  Invoice       Invoice[]
 }
 
 model Bed {

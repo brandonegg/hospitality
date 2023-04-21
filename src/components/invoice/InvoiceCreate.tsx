@@ -1,6 +1,5 @@
-import type { User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -12,31 +11,6 @@ import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
-
-const patients: User[] = [];
-/**
- * instead of displaying all hours, grab the available times for the current doctor
- */
-const getPatients = async function () {
-  try {
-    const body = {};
-    await fetch(`/api/getPatients`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((pats: User[]) => {
-        patients.length = 0;
-        pats.forEach((pat) => {
-          patients.push(pat);
-        });
-      });
-  } catch (error) {
-    console.error(error);
-  }
-};
-const patGetter = getPatients();
 
 type InvoiceCreateInput = RouterInputs["invoice"]["create"];
 type InvoiceCreateOutput = RouterOutputs["invoice"]["create"];
@@ -74,6 +48,8 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     onError: (error) => setServerError(error.message),
   });
 
+  const patientsQuery = api.user.getAllPatients.useQuery();
+
   /**
    * Form submit handler.
    */
@@ -88,35 +64,15 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     setValue(event.target.value);
   };
 
-  const [pats, updatePats] = React.useState<User[]>([]);
-
-  const [patient, setValue] = React.useState("");
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      /**
-       * Wait for available times to be fetched then display
-       */
-      async function getPatients() {
-        await patGetter;
-        updatePats(patients);
-      }
-      void getPatients();
-    }
-    return () => {
-      ignore = true;
-    };
-  });
+  const [patient, setValue] = useState("");
 
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully created a Invoice!</Alert>
       <button
         type="button"
-        onClick={async () => {
+        onClick={() => {
           setPopup({ show: false });
-          await getPatients();
         }}
         className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
       >
@@ -140,11 +96,13 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
             })}
             onChange={changeDropDown}
           >
-            {pats.map((user, index) => (
-              <option key={index} value={user.id}>
-                {user.name}
-              </option>
-            ))}
+            {patientsQuery.data
+              ? patientsQuery.data.map((user, index) => (
+                  <option key={index} value={user.id}>
+                    {user.name}
+                  </option>
+                ))
+              : undefined}
           </select>
           {errors.userId && (
             <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
@@ -159,11 +117,6 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
             className="resize-none rounded border border-gray-300 p-2"
             {...register("paymentDue", {
               required: "Due date is required",
-              // pattern: { //find out how to do this
-              //   // make sure date is after today
-              //   value: new Date(value).getTime() > new Date().getTime(),
-              //   message: "Due date must be after today's date",
-              // },
             })}
           />
           {errors.paymentDue && (

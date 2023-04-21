@@ -1,6 +1,5 @@
-import type { Invoice, User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -11,31 +10,6 @@ import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
 import type { InvoicePopupTypes } from "./InvoicePopup";
-
-const patients: User[] = [];
-/**
- * instead of displaying all hours, grab the available times for the current doctor
- */
-const getPatients = async function () {
-  try {
-    const body = {};
-    await fetch(`/api/getPatients`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((pats: User[]) => {
-        patients.length = 0;
-        pats.forEach((pat) => {
-          patients.push(pat);
-        });
-      });
-  } catch (error) {
-    console.error(error);
-  }
-};
-const patGetter = getPatients();
 
 type InvoiceUpdateInput = RouterInputs["invoice"]["send"];
 type InvoiceUpdateOutput = RouterOutputs["invoice"]["send"];
@@ -64,7 +38,6 @@ const InvoiceSendBill = ({
   >(undefined);
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm<InvoiceUpdateInput>({
@@ -88,34 +61,6 @@ const InvoiceSendBill = ({
   const onSubmit: SubmitHandler<InvoiceUpdateInput> = (data) => {
     mutate(data);
   };
-
-  /**
-   * update state when dropdown changes
-   */
-  const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setValue(event.target.value);
-  };
-
-  const [pats, updatePats] = React.useState<User[]>([]);
-
-  const [patient, setValue] = React.useState(invoice?.userId);
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      /**
-       * Update to all patients
-       */
-      async function getPatients() {
-        await patGetter;
-        updatePats(patients);
-      }
-      void getPatients();
-    }
-    return () => {
-      ignore = true;
-    };
-  });
 
   return serverResult ? (
     <div className="space-y-2">

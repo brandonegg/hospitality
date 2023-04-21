@@ -376,4 +376,11 @@ export const userRouter = createTRPCRouter({
 
       return "Password updated";
     }),
+  getAllPatients: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.prisma.$queryRawUnsafe(
+      "SELECT id, name FROM `User` WHERE role = 'PATIENT'"
+    );
+
+    return data as { id: string; name: string }[];
+  }),
 });

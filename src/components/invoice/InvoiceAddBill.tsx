@@ -1,6 +1,6 @@
 import type { Rate } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -98,9 +98,9 @@ const InvoiceAddBill = ({
     setValue(event.target.value);
   };
 
-  const [rats, updateRates] = React.useState<Rate[]>([]);
+  const [rats, updateRates] = useState<Rate[]>([]);
 
-  const [rate, setValue] = React.useState("");
+  const [rate, setValue] = useState("");
 
   useEffect(() => {
     let ignore = false;
