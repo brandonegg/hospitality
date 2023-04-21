@@ -17,30 +17,14 @@ export const invoiceRouter = createTRPCRouter({
   getProcedures: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const { id } = input;
-      // get the ids of all line items associated with this invoice id
-      const invoiceIdLineItems: { A: string; B: string }[] =
-        await ctx.prisma.$queryRawUnsafe(
-          `SELECT * from _invoicetolineitem where A="${id}"`
-        );
-      // get all line items associated with this invoice id
-      const lineItems: LineItem[] = [];
-      for await (const thisInvoicesLineItem of invoiceIdLineItems) {
-        // get this line item that was associated with this invoice id
-        const aLineItem: LineItem[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * from lineitem where id="${
-            (thisInvoicesLineItem as { A: string; B: string }).B
-          }"`
-        );
-        lineItems.push(aLineItem[0] as LineItem);
-      }
-      const result: Rate[] = [];
-      for await (const lineItem of lineItems) {
-        const rate: Rate[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM Rate WHERE id="${lineItem.rateId}"`
-        );
-        result.push(rate[0] as Rate);
-      }
+      const result = await ctx.prisma.lineItem.findMany({
+        where: {
+          invoiceId: input.id,
+        },
+        select: {
+          Rate: true,
+        },
+      });
 
       return result;
     }),

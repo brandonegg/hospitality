@@ -1,6 +1,6 @@
 import type { Rate } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
@@ -29,7 +29,7 @@ interface InvoiceAddBillProps {
  * Invoice add to bill component.
  * @returns
  */
-const InvoiceAddBill = ({
+const InvoiceRemoveBill = ({
   refetch,
   invoice,
   setPopup,
@@ -73,34 +73,11 @@ const InvoiceAddBill = ({
     setValue(event.target.value);
   };
 
-  const [procs, updateProcs] = useState<Rate[]>([]);
+  const [procedure, setValue] = useState("");
 
-  const [proc, setValue] = useState("");
-
-  let namesStorage: Rate[] = [];
-  if (invoice) {
-    const { data: names } = api.invoice.getProcedures.useQuery({
-      id: invoice.id,
-    });
-    namesStorage = names as Rate[];
-  }
-
-  useEffect(() => {
-    let ignore = false;
-    if (!ignore) {
-      /**
-       * Update to get procedures
-       */
-      function getProcedures() {
-        updateProcs(namesStorage);
-      }
-
-      void getProcedures();
-    }
-    return () => {
-      ignore = true;
-    };
-  }, [namesStorage]);
+  const { data: procedures } = api.invoice.getProcedures.useQuery({
+    id: invoice?.id ?? "",
+  });
 
   return serverResult ? (
     <div className="space-y-2">
@@ -123,16 +100,16 @@ const InvoiceAddBill = ({
           <label htmlFor="rateId">Procedure</label>
           <select
             id="rateId"
-            value={proc}
+            value={procedure}
             className="rounded border border-gray-300 p-2"
             {...register("rateId", {
               required: "A procedure is required",
             })}
             onChange={changeDropDown}
           >
-            {procs?.map((indvProc, index) => (
-              <option key={index} value={indvProc.id}>
-                {indvProc.name}
+            {procedures?.map((individualProcedure, index) => (
+              <option key={index} value={individualProcedure.Rate.id}>
+                {individualProcedure.Rate.name}
               </option>
             ))}
           </select>
@@ -160,4 +137,4 @@ const InvoiceAddBill = ({
   );
 };
 
-export default InvoiceAddBill;
+export default InvoiceRemoveBill;
