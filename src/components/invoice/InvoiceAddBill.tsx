@@ -45,7 +45,7 @@ const InvoiceAddBill = ({
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
-      id: invoice?.id,
+      invoiceId: invoice?.id,
     },
   });
 
