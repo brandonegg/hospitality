@@ -1,4 +1,3 @@
-import type { Invoice } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -43,8 +42,9 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
     defaultValues: {
       ...invoice,
       paymentDue: new Date(
-        (invoice as Invoice).paymentDue.getTime() -
-          (invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
+        invoice?.paymentDue.getTime() ??
+          new Date().getTime() -
+            (invoice?.paymentDue.getTimezoneOffset() ?? 0) * -60000
       )
         .toISOString()
         .slice(0, 10),

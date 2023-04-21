@@ -83,7 +83,7 @@ const InvoicePopupBody = ({
       return (
         <InvoiceDelete
           refetch={refetch}
-          Invoice={Invoice}
+          invoice={Invoice}
           popup={popup}
           setPopup={setPopup}
         />

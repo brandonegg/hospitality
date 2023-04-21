@@ -14,7 +14,7 @@ import type { InvoicePopupTypes } from "./InvoicePopup";
 
 interface InvoiceDeleteProps {
   refetch: () => Promise<void>;
-  Invoice?: InvoiceRowData;
+  invoice?: InvoiceRowData;
   popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
   setPopup: Dispatch<
     SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
@@ -28,14 +28,14 @@ type InvoiceDeleteOutput = RouterOutputs["invoice"]["delete"];
  * Invoice delete component.
  * @returns
  */
-const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
+const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
     InvoiceDeleteOutput | undefined
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
-  const leName = getName(Invoice?.userId);
+  const leName = getName(invoice?.userId);
 
   useEffect(() => {
     let ignore = false;
@@ -87,6 +87,10 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
     }
   }
 
+  if (!invoice) {
+    return <></>;
+  }
+
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully deleted Invoice!</Alert>
@@ -117,8 +121,8 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
           <p className="col-span-10 font-semibold sm:col-span-2">Due Date:</p>
           <p className="col-span-10 sm:col-span-8">
             {new Date(
-              (Invoice as Invoice).paymentDue.getTime() -
-                (Invoice as Invoice).paymentDue.getTimezoneOffset() * -60000
+              invoice.paymentDue.getTime() -
+                invoice.paymentDue.getTimezoneOffset() * -60000
             )
               .toISOString()
               .slice(0, 10)}
@@ -126,7 +130,7 @@ const InvoiceDelete = ({ refetch, Invoice, setPopup }: InvoiceDeleteProps) => {
         </div>
       </div>
 
-      <input type="hidden" value={Invoice?.id} {...register("id")} />
+      <input type="hidden" value={invoice?.id} {...register("id")} />
 
       <div className="flex gap-2">
         <button
