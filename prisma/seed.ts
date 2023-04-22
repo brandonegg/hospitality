@@ -280,7 +280,7 @@ async function main() {
         type: PaymentSourceType.CARD,
         name: "Discover Card",
       },
-    ]
+    ],
   });
 }
 

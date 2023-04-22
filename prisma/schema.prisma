@@ -37,26 +37,6 @@ model User {
   Invoice       Invoice[]
 }
 
-enum PaymentSourceType {
-  CARD
-  BANK
-}
-
-model PaymentSource {
-  id      String            @id @default(cuid())
-  name    String
-  type    PaymentSourceType
-  Payment Payment[]
-}
-
-model Payment {
-  id       String         @id @default(cuid())
-  date     DateTime       @db.Date
-  amount   String
-  sourceId String?
-  source   PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
-}
-
 model Bed {
   id        String   @id @default(cuid())
   room      String

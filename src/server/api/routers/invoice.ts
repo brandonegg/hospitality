@@ -57,10 +57,14 @@ export const invoiceRouter = createTRPCRouter({
 
       const totalPrice = (parseFloat(rate.price) * quantity).toFixed(2);
 
-      const create = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO LineItem (id, rateId, invoiceId, quantity, total)
-        VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");`
-      );
+      const create = await ctx.prisma.lineItem.create({
+        data: {
+          rateId,
+          invoiceId,
+          quantity,
+          total: totalPrice,
+        },
+      });
 
       await updateInvoiceTotal(invoiceId);
 
@@ -193,5 +197,23 @@ export const invoiceRouter = createTRPCRouter({
         `SELECT * FROM Invoice WHERE id="${id}"`
       );
       return invoices;
+    }),
+  getAllUserInvoices: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.invoice.findMany({
+        where: {
+          userId: input.userId,
+        },
+        select: {
+          id: true,
+          userId: true,
+          paymentDue: true,
+          total: true,
+          totalDue: true,
+          items: true,
+          payments: true,
+        },
+      });
     }),
 });
