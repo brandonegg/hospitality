@@ -10,7 +10,7 @@ import Layout from "../../components/dashboard/layout";
 import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
 
-export type InvoiceResponseData =
+type InvoiceResponseData =
   RouterOutputs["invoice"]["getAllUserInvoices"][number];
 
 /**

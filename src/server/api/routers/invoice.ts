@@ -25,7 +25,7 @@ export const invoiceRouter = createTRPCRouter({
         select: {
           quantity: true,
           id: true,
-          Rate: true,
+          rate: true,
         },
       });
 
@@ -205,14 +205,28 @@ export const invoiceRouter = createTRPCRouter({
         where: {
           userId: input.userId,
         },
-        select: {
-          id: true,
-          userId: true,
-          paymentDue: true,
-          total: true,
-          totalDue: true,
-          items: true,
-          payments: true,
+        include: {
+          items: {
+            include: {
+              rate: true,
+            },
+          },
+        },
+      });
+    }),
+  byId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.invoice.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          items: {
+            include: {
+              rate: true,
+            },
+          },
         },
       });
     }),

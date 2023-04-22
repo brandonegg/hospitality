@@ -122,7 +122,7 @@ model LineItem {
   invoiceId String
   total     String
   invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  Rate      Rate?   @relation(fields: [rateId], references: [id], onDelete: SetNull)
+  rate      Rate?   @relation(fields: [rateId], references: [id], onDelete: SetNull)
 }
 
 model Invoice {
