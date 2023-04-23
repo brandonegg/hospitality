@@ -139,11 +139,13 @@ const PaymentForm = ({
 
         {/** Payment source input */}
         <section className="flex flex-col">
-          <label htmlFor="sourceId" className="font-semibold text-neutral-500">
+          <label htmlFor="amount" className="font-semibold text-neutral-500">
             Amount
           </label>
           <input
-            id="sourceId"
+            id="amount"
+            type="number"
+            step="0.01"
             className="rounded border border-gray-300 p-2"
             {...register("amount", {
               required: "Payment amount is required",

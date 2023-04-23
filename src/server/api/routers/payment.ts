@@ -19,6 +19,7 @@ export const paymentRouter = createTRPCRouter({
       const { userId, amount, invoiceId, sourceId } = input;
 
       const parsedAmount = parsePriceString(amount);
+      console.log(parsedAmount);
 
       if (!parsedAmount) {
         throw new TRPCError({

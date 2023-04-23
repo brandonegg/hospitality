@@ -32,7 +32,7 @@ export function parsePriceString(
 ): string | undefined {
   const match = amount.match(PRICE_REGEX);
 
-  if (!match || match.length == 0 || match.length > 1) {
+  if (!match || match.length == 0) {
     return;
   }
 
