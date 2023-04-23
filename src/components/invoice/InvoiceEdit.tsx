@@ -41,6 +41,7 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
   } = useForm<InvoiceUpdateInput>({
     defaultValues: {
       ...invoice,
+      userId: invoice?.userId ?? undefined,
       paymentDue: new Date(
         invoice?.paymentDue.getTime() ??
           new Date().getTime() -
@@ -76,7 +77,9 @@ const InvoiceEdit = ({ refetch, invoice, setPopup }: InvoiceEditProps) => {
 
   const patientsQuery = api.user.getAllPatients.useQuery();
 
-  const [patient, setValue] = useState(invoice?.userId);
+  const [patient, setValue] = useState<string | undefined>(
+    invoice?.userId ?? undefined
+  );
 
   if (!invoice) {
     return <></>;

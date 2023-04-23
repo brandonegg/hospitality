@@ -85,6 +85,8 @@ const getAvailability = async function (docId: string, weekCount = 0) {
   }
 };
 
+let availGetter = getAvailability("AllDoctors");
+
 /**
  * make a button for Appointment
  * @param props
