@@ -33,8 +33,9 @@ model User {
   emailVerified DateTime?
   image         String?
   address       Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
-  Bed           Bed[]
-  Invoice       Invoice[]
+  beds          Bed[]
+  invoices      Invoice[]
+  payments      Payment[]
 }
 
 model Bed {
@@ -156,4 +157,6 @@ model Payment {
   source    PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
   invoiceId String?
   invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  userId    String?
+  user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
