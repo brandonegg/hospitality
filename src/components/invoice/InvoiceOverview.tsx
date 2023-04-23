@@ -47,7 +47,7 @@ const InvoiceLineItem = ({
  */
 const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
   return (
-    <div className="rounded-xl border border-neutral-200 bg-yellow-200 p-2 drop-shadow-xl">
+    <div className="rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl ">
       <h1 className="mb-2 text-center text-lg font-bold">Invoice Summary</h1>
       <div className="mb-2 flex flex-col divide-y divide-dotted divide-neutral-400">
         {invoice.items.map((item, index) => {
@@ -61,6 +61,20 @@ const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
     </div>
   );
 };
+
+// const PaymentForm = ( {} ) => {
+//   const {
+//     register,
+//     handleSubmit,
+//     formState: { errors },
+//   } = useForm<InvoiceCreateInput>();
+
+//   return (
+//     <form>
+
+//     </form>
+//   )
+// }
 
 /**
  * Main invoice overview component displayed on /invoice/[id]

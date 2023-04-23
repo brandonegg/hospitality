@@ -108,7 +108,7 @@ const InvoiceRemoveBill = ({
           >
             {procedures?.map((lineItem, index) => (
               <option key={index} value={lineItem.id}>
-                {lineItem.Rate?.name} x {lineItem.quantity}
+                {lineItem.rate?.name} x {lineItem.quantity}
               </option>
             ))}
           </select>
