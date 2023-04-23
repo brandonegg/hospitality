@@ -58,7 +58,7 @@ const BillsSection = ({
   bills: InvoiceResponseData[];
 }) => {
   return (
-    <section className="grow-0 px-8">
+    <section id="upcomming-bills" className="grow-0 px-8">
       <h1 className="text-center text-xl font-bold text-sky-900">{label}</h1>
       <div className="mt-4 flex flex-row">
         {bills.map((bill, index) => {

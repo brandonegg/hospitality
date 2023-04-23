@@ -101,7 +101,7 @@ const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
       </div>
       <div className="flex flex-row justify-between border-t border-neutral-900 p-2">
         <span className="font-bold">Amount Due</span>
-        <span>${invoice.totalDue}</span>
+        <span id="amount-due">${invoice.totalDue}</span>
       </div>
     </div>
   );
@@ -140,6 +140,7 @@ const PaymentForm = ({
    * Form submit handler.
    */
   const onSubmit: SubmitHandler<PaymentCreateInput> = (data) => {
+    data.amount = parseFloat(data.amount).toFixed(2);
     mutate(data);
   };
 
@@ -184,6 +185,7 @@ const PaymentForm = ({
             id="amount"
             type="number"
             step="0.01"
+            min="0.01"
             className="rounded border border-gray-300 p-2"
             {...register("amount", {
               required: "Payment amount is required",
