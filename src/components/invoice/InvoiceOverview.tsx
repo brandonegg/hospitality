@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import type { Session } from "next-auth";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -90,10 +91,11 @@ const PaymentForm = ({
       userId: user.id,
     },
   });
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const { mutate } = api.payment.create.useMutation({
-    onSuccess: (data: PaymentCreateOutput) => {
-      // TODO: Redirect to payment success page
+    onSuccess: async (data: PaymentCreateOutput) => {
+      await router.push(`/payment/success/${data.id}`);
     },
     onError: (error) => setServerError(error.message),
   });

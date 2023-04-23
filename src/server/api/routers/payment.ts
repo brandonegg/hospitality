@@ -91,4 +91,17 @@ export const paymentRouter = createTRPCRouter({
   getSources: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.paymentSource.findMany();
   }),
+  get: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.payment.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });
