@@ -4,6 +4,7 @@ import { getAppointRouter } from "./routers/getAppoint";
 import { hoursRouter } from "./routers/hours";
 import { invoiceRouter } from "./routers/invoice";
 import { removeAppointRouter } from "./routers/myAppoint";
+import { paymentRouter } from "./routers/payment";
 import { rateRouter } from "./routers/rate";
 import { storeAvailRouter } from "./routers/storeAvail";
 import { userRouter } from "./routers/user";
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   getAppoint: getAppointRouter,
   myAppoint: removeAppointRouter,
   hours: hoursRouter,
+  payment: paymentRouter,
 });
 
 // export type definition of API
