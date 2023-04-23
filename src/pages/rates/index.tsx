@@ -1,6 +1,5 @@
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
-import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
@@ -89,7 +88,7 @@ const RateTable = ({
  * Rates page.
  * @returns
  */
-const RatesPage = ({ user }: { user: Session["user"] }) => {
+const RatesPage = () => {
   const [page, setPage] = useState<number>(0);
   const [limit] = useState<number>(10);
   const [popup, setPopup] = useState<TablePopup<RateRowData, UserPopupTypes>>({

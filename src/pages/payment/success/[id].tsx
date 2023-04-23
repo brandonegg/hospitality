@@ -2,7 +2,6 @@ import type { GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 
 import { prisma } from "../../../server/db";
-import { api } from "../../../utils/api";
 
 const redirectToError = {
   redirect: {
