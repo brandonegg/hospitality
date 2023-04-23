@@ -1,8 +1,15 @@
 import type { Session } from "next-auth";
+import { useState } from "react";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-import type { RouterOutputs } from "../../utils/api";
+import type { RouterInputs, RouterOutputs } from "../../utils/api";
+import { api } from "../../utils/api";
+import ErrorMessage from "../ErrorMessage";
 
 type InvoiceDetails = RouterOutputs["invoice"]["getAllUserInvoices"][number];
+type PaymentCreateInput = RouterInputs["payment"]["create"];
+type PaymentCreateOutput = RouterOutputs["payment"]["create"];
 
 /**
  * Pay invoice section of the invoice overview.
@@ -15,8 +22,9 @@ const PayInvoice = ({
   invoice: InvoiceDetails;
 }) => {
   return (
-    <div className="flex flex-col rounded-xl border border-neutral-400 bg-neutral-200 p-2 drop-shadow-xl">
+    <div className="flex grow flex-col space-y-4 rounded-xl border border-neutral-400 bg-neutral-200 p-2 drop-shadow-xl">
       <h1 className="text-center text-xl font-bold">Make Payment</h1>
+      <PaymentForm user={user} invoice={invoice} />
     </div>
   );
 };
@@ -47,7 +55,7 @@ const InvoiceLineItem = ({
  */
 const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
   return (
-    <div className="rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl ">
+    <div className="h-fit rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
       <h1 className="mb-2 text-center text-lg font-bold">Invoice Summary</h1>
       <div className="mb-2 flex flex-col divide-y divide-dotted divide-neutral-400">
         {invoice.items.map((item, index) => {
@@ -62,19 +70,107 @@ const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
   );
 };
 
-// const PaymentForm = ( {} ) => {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<InvoiceCreateInput>();
+/**
+ * Payment Form component
+ */
+const PaymentForm = ({
+  invoice,
+  user,
+}: {
+  invoice: InvoiceDetails;
+  user: Session["user"];
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<PaymentCreateInput>({
+    defaultValues: {
+      invoiceId: invoice.id,
+      userId: user.id,
+    },
+  });
+  const [serverError, setServerError] = useState<string | undefined>(undefined);
+  const { mutate } = api.payment.create.useMutation({
+    onSuccess: (data: PaymentCreateOutput) => {
+      // TODO: Redirect to payment success page
+    },
+    onError: (error) => setServerError(error.message),
+  });
 
-//   return (
-//     <form>
+  /**
+   * Form submit handler.
+   */
+  const onSubmit: SubmitHandler<PaymentCreateInput> = (data) => {
+    mutate(data);
+  };
 
-//     </form>
-//   )
-// }
+  const { data: paymentSources } = api.payment.getSources.useQuery();
+
+  return (
+    <form className="flex flex-row" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-grow flex-col space-y-4">
+        {/** Payment source input */}
+        <section className="flex flex-col">
+          <label htmlFor="sourceId" className="font-semibold text-neutral-500">
+            Payment Source
+          </label>
+          <select
+            id="sourceId"
+            className="rounded border border-gray-300 p-2"
+            {...register("sourceId", {
+              required: "Source ID is required",
+            })}
+          >
+            {paymentSources
+              ? paymentSources.map((paymentSource, index) => (
+                  <option key={index} value={paymentSource.id}>
+                    {paymentSource.name}
+                  </option>
+                ))
+              : undefined}
+          </select>
+          {errors.userId && (
+            <ErrorMessage id="source-error">
+              {errors.sourceId?.message}
+            </ErrorMessage>
+          )}
+        </section>
+
+        {/** Payment source input */}
+        <section className="flex flex-col">
+          <label htmlFor="sourceId" className="font-semibold text-neutral-500">
+            Amount
+          </label>
+          <input
+            id="sourceId"
+            className="rounded border border-gray-300 p-2"
+            {...register("amount", {
+              required: "Payment amount is required",
+            })}
+          />
+          {errors.userId && (
+            <ErrorMessage id="source-error">
+              {errors.sourceId?.message}
+            </ErrorMessage>
+          )}
+        </section>
+
+        {/** Errors show here */}
+        {serverError ? (
+          <p className="italic text-red-500">{serverError}</p>
+        ) : undefined}
+
+        <button
+          type="submit"
+          className="w-full rounded-lg border border-neutral-800 bg-blue-100 p-2 hover:bg-blue-400"
+        >
+          Pay
+        </button>
+      </div>
+    </form>
+  );
+};
 
 /**
  * Main invoice overview component displayed on /invoice/[id]
