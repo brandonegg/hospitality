@@ -211,6 +211,11 @@ export const invoiceRouter = createTRPCRouter({
               rate: true,
             },
           },
+          payments: {
+            include: {
+              source: true,
+            },
+          },
         },
       });
     }),
@@ -225,6 +230,11 @@ export const invoiceRouter = createTRPCRouter({
           items: {
             include: {
               rate: true,
+            },
+          },
+          payments: {
+            include: {
+              source: true,
             },
           },
         },

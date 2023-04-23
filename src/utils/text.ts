@@ -24,6 +24,18 @@ export function addressToString(address?: Address | null) {
 }
 
 /**
+ * Converts date to mm/dd/yyyy string.
+ * @param date
+ */
+export function dateToString(date: Date) {
+  const year = date.getFullYear();
+  const month = (1 + date.getMonth()).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+
+  return `${month}/${day}/${year}`;
+}
+
+/**
  * Parses a price string of format *+.*+ and returns the formatted string to two decimal places with currency symbol removed.
  */
 export function parsePriceString(

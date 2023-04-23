@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
+import { dateToString } from "../../utils/text";
 import ErrorMessage from "../ErrorMessage";
 
 type InvoiceDetails = RouterOutputs["invoice"]["getAllUserInvoices"][number];
@@ -23,7 +24,7 @@ const PayInvoice = ({
   invoice: InvoiceDetails;
 }) => {
   return (
-    <div className="flex grow flex-col space-y-4 rounded-xl border border-neutral-400 bg-neutral-200 p-2 drop-shadow-xl">
+    <div className="flex h-fit grow flex-col space-y-4 rounded-xl border border-neutral-400 bg-neutral-200 p-2 drop-shadow-xl">
       <h1 className="text-center text-xl font-bold">Make Payment</h1>
       <PaymentForm user={user} invoice={invoice} />
     </div>
@@ -52,12 +53,35 @@ const InvoiceLineItem = ({
 };
 
 /**
+ * Individual line item display for the invoice summary.
+ */
+const InvoicePaymentLineItem = ({
+  payment,
+}: {
+  payment: InvoiceDetails["payments"][number];
+}) => {
+  return (
+    <div className="flex w-80 flex-row justify-between px-2">
+      <section className="space-x-2">
+        <span>{payment.source?.name ?? "NULL"}</span>
+        <span className="inline-block text-sm italic text-neutral-500">
+          ({dateToString(payment.date)})
+        </span>
+      </section>
+      <span>${payment.amount}</span>
+    </div>
+  );
+};
+
+/**
  * Invoice summary view, meant to resemble a receipt
  */
 const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
   return (
     <div className="h-fit rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
       <h1 className="mb-2 text-center text-lg font-bold">Invoice Summary</h1>
+
+      {/** Line item total summary */}
       <div className="mb-2 flex flex-col divide-y divide-dotted divide-neutral-400">
         {invoice.items.map((item, index) => {
           return <InvoiceLineItem key={index} item={item} />;
@@ -66,6 +90,18 @@ const InvoiceSummary = ({ invoice }: { invoice: InvoiceDetails }) => {
       <div className="flex flex-row justify-between border-t border-neutral-900 p-2">
         <span className="font-bold">Total</span>
         <span>${invoice.total}</span>
+      </div>
+
+      {/** Payment summary */}
+      <h1 className="mb-2 text-center text-lg font-bold">Payments</h1>
+      <div className="mb-2 flex flex-col divide-y divide-dotted divide-neutral-400">
+        {invoice.payments?.map((payment, index) => {
+          return <InvoicePaymentLineItem key={index} payment={payment} />;
+        })}
+      </div>
+      <div className="flex flex-row justify-between border-t border-neutral-900 p-2">
+        <span className="font-bold">Amount Due</span>
+        <span>${invoice.totalDue}</span>
       </div>
     </div>
   );

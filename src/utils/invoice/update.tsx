@@ -11,6 +11,7 @@ const updateInvoiceTotal = async (id: string) => {
     },
     select: {
       items: true,
+      payments: true,
     },
   });
 
@@ -22,8 +23,13 @@ const updateInvoiceTotal = async (id: string) => {
       return sum + current;
     }, 0);
 
-  // TODO: Sum amounts paid here.
-  const paymentTotal = 0;
+  const paymentTotal = invoice.payments
+    .map((payment) => {
+      return parseFloat(payment.amount);
+    })
+    .reduce((sum, current) => {
+      return sum + current;
+    }, 0);
 
   await prisma.invoice.update({
     where: {
