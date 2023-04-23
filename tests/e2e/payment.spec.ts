@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import { prisma } from "../../src/server/db";
 
@@ -40,7 +40,7 @@ test.describe("patient payments", () => {
       },
     });
 
-    const testLineItem = await prisma.lineItem.upsert({
+    await prisma.lineItem.upsert({
       where: {
         id: "test-payment-lineitem",
       },
@@ -59,7 +59,27 @@ test.describe("patient payments", () => {
     });
   });
 
-  patientTest("make payment on invoice", (page) => {
-    return;
+  patientTest.only("make payment on invoice", async ({ page }) => {
+    await page.goto("/dashboard");
+    await page.getByRole("link", { name: "Pay Bills" }).click();
+    await page.locator("#upcomming-bills div a:first-of-type").click();
+
+    await page
+      .getByRole("combobox", { name: "Payment Source" })
+      .selectOption({ label: "Bank Account" });
+
+    // Get total due from page to pay it.
+    const amountText = await page.locator("#amount-due").innerText();
+
+    await page.getByLabel("Amount").fill(amountText.replace("$", ""));
+
+    await page.getByRole("button", { name: "Pay" }).click();
+    await page.getByText("Payment Success!").waitFor();
+
+    expect(page.url()).toContain("success");
+
+    await expect(
+      page.getByRole("heading", { name: "Payment Success!" })
+    ).toBeVisible();
   });
 });

@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { PaymentSourceType, Role } from "@prisma/client";
 import * as argon2 from "argon2";
 
 import { prisma } from "../../../src/server/db";
@@ -42,7 +42,6 @@ async function globalSetup() {
   await prisma.user.upsert({
     where: {
       id: "e2e-patient",
-      email: "e2e-patient@e2e.com",
     },
     create: {
       id: "e2e-patient",
@@ -208,6 +207,20 @@ async function globalSetup() {
         name: "Anesthesia",
         description: "Anesthesia rate",
         price: "1000",
+      },
+    ],
+  });
+
+  // Create basic payment sources all patients can use for testing
+  await prisma.paymentSource.createMany({
+    data: [
+      {
+        type: PaymentSourceType.BANK,
+        name: "Bank Account",
+      },
+      {
+        type: PaymentSourceType.CARD,
+        name: "Discover Card",
       },
     ],
   });
