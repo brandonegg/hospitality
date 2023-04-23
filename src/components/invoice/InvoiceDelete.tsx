@@ -34,7 +34,7 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
-  const leName = getName(invoice?.userId);
+  const leName = getName(invoice?.userId ?? "");
 
   useEffect(() => {
     let ignore = false;
