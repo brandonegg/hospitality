@@ -3,10 +3,10 @@ import { useState } from "react";
 import type { FieldValues, SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import type { RouterInputs, RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { STATES } from "../../lib/constants";
 import type { BedRowData } from "../../pages/beds";
-import type { RouterInputs, RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { STATES } from "../../utils/constants";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { FormInputProps } from "../forms/input";

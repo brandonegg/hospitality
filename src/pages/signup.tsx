@@ -13,10 +13,10 @@ import { useForm } from "react-hook-form";
 
 import Alert from "../components/Alert";
 import ErrorMessage from "../components/ErrorMessage";
-import type { RouterInputs, RouterOutputs } from "../utils/api";
-import { api } from "../utils/api";
-import { STATES } from "../utils/constants";
-import { classNames } from "../utils/text";
+import type { RouterInputs, RouterOutputs } from "../lib/api";
+import { api } from "../lib/api";
+import { STATES } from "../lib/constants";
+import { classNames } from "../lib/text";
 
 // types
 type SignUpInput = RouterInputs["user"]["signup"];

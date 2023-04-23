@@ -21,8 +21,10 @@ test.describe("login page", () => {
     await expect(back).toHaveText(/Back/);
   });
 
-  test('has "Back" link that redirects to the previous page', async ({ page }) => {
-    await page.goto("/",{
+  test('has "Back" link that redirects to the previous page', async ({
+    page,
+  }) => {
+    await page.goto("/", {
       waitUntil: "load",
     });
     await page.goto("/login", {

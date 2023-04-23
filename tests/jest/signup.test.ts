@@ -4,8 +4,8 @@ import { Role } from "@prisma/client";
 import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 
+import type { RouterOutputs } from "../../src/lib/api";
 import { appRouter, type AppRouter } from "../../src/server/api/root";
-import type { RouterOutputs } from "../../src/utils/api";
 
 const mockUser: User | null = {
   id: "test-id",

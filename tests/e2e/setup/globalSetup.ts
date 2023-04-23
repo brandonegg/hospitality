@@ -41,9 +41,11 @@ async function globalSetup() {
   // create patient test user
   await prisma.user.upsert({
     where: {
+      id: "e2e-patient",
       email: "e2e-patient@e2e.com",
     },
     create: {
+      id: "e2e-patient",
       name: "e2e-patient",
       dateOfBirth: new Date(),
       username: "e2e-patient",
@@ -152,6 +154,7 @@ async function globalSetup() {
   await prisma.rate.createMany({
     data: [
       {
+        id: "test-pharmacy-rate",
         name: "Pharmacy",
         description: "Pharmacy rate",
         price: "88",

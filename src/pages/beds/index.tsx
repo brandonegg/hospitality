@@ -14,9 +14,9 @@ import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { addressToString } from "../../utils/text";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { addressToString } from "../../lib/text";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 export type BedOccupantData = BedRowData["occupant"];

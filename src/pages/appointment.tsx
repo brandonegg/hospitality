@@ -7,7 +7,7 @@ import type { Session } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-import { api } from "../utils/api";
+import { api } from "../lib/api";
 
 export const timeSort = function (a: Availability, b: Availability) {
   // sort by date, then time

@@ -4,9 +4,9 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
-import type { RouterInputs, RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { dateToString } from "../../utils/text";
+import type { RouterInputs, RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { dateToString } from "../../lib/text";
 import ErrorMessage from "../ErrorMessage";
 
 type InvoiceDetails = RouterOutputs["invoice"]["getAllUserInvoices"][number];

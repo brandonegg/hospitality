@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { updateInvoiceTotal } from "../../../utils/invoice/update";
-import { parsePriceString } from "../../../utils/text";
+import { updateInvoiceTotal } from "../../../lib/invoice/update";
+import { parsePriceString } from "../../../lib/text";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const paymentRouter = createTRPCRouter({

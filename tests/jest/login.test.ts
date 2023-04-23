@@ -24,7 +24,7 @@ describe("login", () => {
   test("no user in database", () => {
     const prismaMock = mockDeep<PrismaClient>();
 
-    const caller = appRouter.createCaller({
+    appRouter.createCaller({
       session: null,
       prisma: prismaMock,
     });
@@ -35,7 +35,7 @@ describe("login", () => {
   test("user in database", () => {
     const prismaMock = mockDeep<PrismaClient>();
 
-    const caller = appRouter.createCaller({
+    appRouter.createCaller({
       session: null,
       prisma: prismaMock,
     });

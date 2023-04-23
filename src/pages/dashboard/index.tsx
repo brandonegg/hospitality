@@ -7,7 +7,7 @@ import { getSession } from "next-auth/react";
 import Layout from "../../components/dashboard/layout";
 import VitalsWidget from "../../components/dashboard/vitals";
 import { SquareWidget } from "../../components/dashboard/widget";
-import { api } from "../../utils/api";
+import { api } from "../../lib/api";
 import { timeSort } from "../appointment";
 
 interface DashboardPageProps {

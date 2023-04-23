@@ -3,7 +3,7 @@ import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
 import { InvoiceOverview } from "../../components/invoice/InvoiceOverview";
-import { api } from "../../utils/api";
+import { api } from "../../lib/api";
 
 /**
  * Server side page setup

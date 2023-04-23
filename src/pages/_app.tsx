@@ -5,7 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import React from "react";
 
 import MainHeader from "../components/Header";
-import { api } from "../utils/api";
+import { api } from "../lib/api";
 import "../styles/globals.css";
 
 /**

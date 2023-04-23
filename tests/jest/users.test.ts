@@ -5,8 +5,8 @@ import { type inferProcedureInput, TRPCError } from "@trpc/server";
 import { mockDeep } from "jest-mock-extended";
 import type { Session } from "next-auth";
 
+import type { RouterOutputs } from "../../src/lib/api";
 import { appRouter, type AppRouter } from "../../src/server/api/root";
-import type { RouterOutputs } from "../../src/utils/api";
 
 const mockSession: Session = {
   expires: new Date().toISOString(),

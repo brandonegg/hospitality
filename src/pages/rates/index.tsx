@@ -14,8 +14,8 @@ import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 
 export type RateRowData = RouterOutputs["rate"]["getAllPaged"]["items"][number];
 

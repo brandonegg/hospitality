@@ -1,9 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { setupServer } from "msw/node";
-
-import { api } from "../../src/utils/api";
-import { trpc, trpcMsw } from "../msw/setup";
-
 // const server = setupServer(
 //   trpcMsw.user.signup.mutation(async (req, res, ctx) => {
 //     return res(
@@ -47,16 +42,18 @@ test.describe("sign up page", () => {
 
   test("has back button", async ({ page }) => {
     // Expect the page to contain the Sign Up form
-    const back = page.getByRole('button', { name: 'Back' });
+    const back = page.getByRole("button", { name: "Back" });
     await expect(back).toBeVisible();
     await expect(back).toHaveText(/Back/);
   });
 
-  test('has "Back" link that redirects to the previous page', async ({ page }) => {
+  test('has "Back" link that redirects to the previous page', async ({
+    page,
+  }) => {
     // Expect the page to contain the Sign Up form
     await page.goto("/");
-    await page.goto("/signup")
-    const back = page.getByRole('button', { name: 'Back' });
+    await page.goto("/signup");
+    const back = page.getByRole("button", { name: "Back" });
     await back.click();
     await expect(page).toHaveURL("/");
   });

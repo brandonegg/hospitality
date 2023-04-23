@@ -7,8 +7,8 @@ import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
 import Layout from "../../components/dashboard/layout";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 
 type InvoiceResponseData =
   RouterOutputs["invoice"]["getAllUserInvoices"][number];

@@ -18,8 +18,8 @@ import { AddButton } from "../../components/tables/buttons";
 import { DeleteRowButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 
 /**
  * Button for editing the row of a table.

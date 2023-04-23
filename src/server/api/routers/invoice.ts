@@ -2,7 +2,7 @@ import type { Invoice, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { updateInvoiceTotal } from "../../../utils/invoice/update";
+import { updateInvoiceTotal } from "../../../lib/invoice/update";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const invoiceRouter = createTRPCRouter({

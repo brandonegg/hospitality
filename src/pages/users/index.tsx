@@ -14,9 +14,9 @@ import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
 import UserPopup from "../../components/users/UserPopup";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { dateFormatter } from "../../utils/date";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { dateFormatter } from "../../lib/date";
 
 export type UserRowData = RouterOutputs["user"]["getAll"]["items"][number];
 

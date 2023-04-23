@@ -9,7 +9,7 @@ import {
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { loginSchema } from "../utils/validation/auth";
+import { loginSchema } from "../lib/validation/auth";
 
 import { prisma } from "./db";
 

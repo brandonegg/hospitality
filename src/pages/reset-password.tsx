@@ -12,9 +12,9 @@ import { useForm } from "react-hook-form";
 import Alert from "../components/Alert";
 import ErrorMessage from "../components/ErrorMessage";
 import LoadingSpinner from "../components/LoadingSpinner";
-import type { RouterInputs, RouterOutputs } from "../utils/api";
-import { api } from "../utils/api";
-import { classNames } from "../utils/text";
+import type { RouterInputs, RouterOutputs } from "../lib/api";
+import { api } from "../lib/api";
+import { classNames } from "../lib/text";
 
 // types
 type ResetPasswordInput = RouterInputs["user"]["resetPassword"];

@@ -14,8 +14,8 @@ import { useForm } from "react-hook-form";
 
 import Alert from "../components/Alert";
 import ErrorMessage from "../components/ErrorMessage";
-import { classNames } from "../utils/text";
-import type { LoginInput } from "../utils/validation/auth";
+import { classNames } from "../lib/text";
+import type { LoginInput } from "../lib/validation/auth";
 
 /**
  * Login page react component.
