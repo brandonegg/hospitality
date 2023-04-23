@@ -67,6 +67,13 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
+      if (parseFloat(parsedAmount) == 0) {
+        throw new TRPCError({
+          message: "Payment amount can't be 0",
+          code: "BAD_REQUEST",
+        });
+      }
+
       if (parseFloat(invoice.totalDue) < parseFloat(parsedAmount)) {
         throw new TRPCError({
           message: "Payment amount exceeds amount due",

@@ -59,7 +59,7 @@ test.describe("patient payments", () => {
     });
   });
 
-  patientTest.only("make payment on invoice", async ({ page }) => {
+  patientTest("make payment on invoice", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
     await page.locator("#upcomming-bills div a:first-of-type").click();
@@ -80,6 +80,46 @@ test.describe("patient payments", () => {
 
     await expect(
       page.getByRole("heading", { name: "Payment Success!" })
+    ).toBeVisible();
+  });
+
+  patientTest("make $0 payment", async ({ page }) => {
+    await page.goto("/dashboard");
+    await page.getByRole("link", { name: "Pay Bills" }).click();
+    await page.locator("#upcomming-bills div a:first-of-type").click();
+
+    await page
+      .getByRole("combobox", { name: "Payment Source" })
+      .selectOption({ label: "Bank Account" });
+
+    await page.getByLabel("Amount").fill("0");
+
+    await page.getByRole("button", { name: "Pay" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Payment Success!" })
+    ).not.toBeVisible();
+  });
+
+  patientTest("make payment greater than amount due", async ({ page }) => {
+    await page.goto("/dashboard");
+    await page.getByRole("link", { name: "Pay Bills" }).click();
+    await page.locator("#upcomming-bills div a:first-of-type").click();
+
+    await page
+      .getByRole("combobox", { name: "Payment Source" })
+      .selectOption({ label: "Bank Account" });
+
+    // Get total due from page to pay it.
+    const amountText = await page.locator("#amount-due").innerText();
+    const amountToPay = (parseFloat(amountText.replace("$", "")) + 10).toFixed(
+      2
+    );
+
+    await page.getByLabel("Amount").fill(amountToPay);
+    await page.getByRole("button", { name: "Pay" }).click();
+
+    await expect(
+      page.getByText("Payment amount exceeds amount due")
     ).toBeVisible();
   });
 });
