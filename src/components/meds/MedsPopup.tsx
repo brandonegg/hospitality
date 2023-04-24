@@ -1,32 +1,32 @@
 import type { Dispatch, SetStateAction } from "react";
 
-import type { RateRowData } from "../../pages/meds";
+import type { MedsRowData } from "../../pages/meds";
 import { TablePopup } from "../tables/input";
 
 import MedsCreate from "./MedsCreate";
 import MedsDelete from "./MedsDelete";
 import MedsEdit from "./MedsEdit";
 
-export type RatePopupTypes = "create" | "edit" | "delete";
+export type MedsPopupTypes = "create" | "edit" | "delete";
 
-interface RatePopupBodyProps {
+interface MedsPopupBodyProps {
   type?: "create" | "edit" | "delete";
-  rate?: RateRowData;
+  meds?: MedsRowData;
   refetch: () => Promise<void>;
-  popup: TablePopup<RateRowData, RatePopupTypes>;
-  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
+  popup: TablePopup<MedsRowData, MedsPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<MedsRowData, MedsPopupTypes>>>;
 }
 
 /**
- * Rate popup body component.
+ * Meds popup body component.
  */
-const RatePopupBody = ({
+const MedsPopupBody = ({
   refetch,
-  rate,
+  meds,
   type,
   popup,
   setPopup,
-}: RatePopupBodyProps) => {
+}: MedsPopupBodyProps) => {
   switch (type) {
     case "create":
       return <MedsCreate refetch={refetch} popup={popup} setPopup={setPopup} />;
@@ -34,7 +34,7 @@ const RatePopupBody = ({
       return (
         <MedsEdit
           refetch={refetch}
-          rate={rate}
+          meds={meds}
           popup={popup}
           setPopup={setPopup}
         />
@@ -43,7 +43,7 @@ const RatePopupBody = ({
       return (
         <MedsDelete
           refetch={refetch}
-          rate={rate}
+          meds={meds}
           popup={popup}
           setPopup={setPopup}
         />
@@ -53,25 +53,25 @@ const RatePopupBody = ({
   }
 };
 
-interface RatePopupProps {
+interface MedsPopupProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<RateRowData, RatePopupTypes>;
-  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
+  popup: TablePopup<MedsRowData, MedsPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<MedsRowData, MedsPopupTypes>>>;
 }
 
 /**
- * Rate popup body component.
+ * Meds popup body component.
  */
-const RatePopup = ({ refetch, popup, setPopup }: RatePopupProps) => {
+const MedsPopup = ({ refetch, popup, setPopup }: MedsPopupProps) => {
   return (
-    <TablePopup<RateRowData, RatePopupTypes>
-      label="Rate"
+    <TablePopup<MedsRowData, MedsPopupTypes>
+      label="Medication"
       popup={popup}
       setPopup={setPopup}
       refetch={refetch}
     >
-      <RatePopupBody
-        rate={popup.data}
+      <MedsPopupBody
+        meds={popup.data}
         type={popup.type}
         refetch={refetch}
         popup={popup}
@@ -81,4 +81,4 @@ const RatePopup = ({ refetch, popup, setPopup }: RatePopupProps) => {
   );
 };
 
-export default RatePopup;
+export default MedsPopup;

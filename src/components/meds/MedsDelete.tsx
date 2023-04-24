@@ -5,36 +5,36 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { RateRowData } from "../../pages/meds";
+import type { MedsRowData } from "../../pages/meds";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
-import type { RatePopupTypes } from "./MedsPopup";
+import type { MedsPopupTypes } from "./MedsPopup";
 
-interface RateDeleteProps {
+interface MedsDeleteProps {
   refetch: () => Promise<void>;
-  rate?: RateRowData;
-  popup: TablePopup<RateRowData, RatePopupTypes>;
-  setPopup: Dispatch<SetStateAction<TablePopup<RateRowData, RatePopupTypes>>>;
+  meds?: MedsRowData;
+  popup: TablePopup<MedsRowData, MedsPopupTypes>;
+  setPopup: Dispatch<SetStateAction<TablePopup<MedsRowData, MedsPopupTypes>>>;
 }
 
-type RateDeleteInput = RouterInputs["rate"]["delete"];
-type RateDeleteOutput = RouterOutputs["rate"]["delete"];
+type MedsDeleteInput = RouterInputs["meds"]["delete"];
+type MedsDeleteOutput = RouterOutputs["meds"]["delete"];
 
 /**
- * Rate delete component.
+ * Medication delete component.
  * @returns
  */
-const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
+const MedsDelete = ({ refetch, meds, setPopup }: MedsDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    RateDeleteOutput | undefined
+    MedsDeleteOutput | undefined
   >(undefined);
 
-  const { register, handleSubmit } = useForm<RateDeleteInput>();
+  const { register, handleSubmit } = useForm<MedsDeleteInput>();
 
-  const { mutate } = api.rate.delete.useMutation({
-    onSuccess: async (data: RateDeleteOutput) => {
+  const { mutate } = api.meds.delete.useMutation({
+    onSuccess: async (data: MedsDeleteOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -45,13 +45,13 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<RateDeleteInput> = (data) => {
+  const onSubmit: SubmitHandler<MedsDeleteInput> = (data) => {
     mutate(data);
   };
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted rate!</Alert>
+      <Alert type="success">Successfully deleted medication!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -65,28 +65,35 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <p>Do you want to delete this rate?</p>
+      <p>Do you want to delete this medication?</p>
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">
           <p className="col-span-10 font-semibold sm:col-span-2">Name:</p>
-          <p className="col-span-10 sm:col-span-8">{rate?.name}</p>
+          <p className="col-span-10 sm:col-span-8">{meds?.name}</p>
         </div>
 
         <div className="grid grid-cols-10">
           <p className="col-span-10 font-semibold sm:col-span-2">
-            Description:
+            Minimum Dosage:
           </p>
-          <p className="col-span-10 sm:col-span-8">{rate?.description}</p>
+          <p className="col-span-10 sm:col-span-8">{meds?.dosageMin}</p>
         </div>
 
         <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Price:</p>
-          <p className="col-span-10 sm:col-span-8">{rate?.price}</p>
+          <p className="col-span-10 font-semibold sm:col-span-2">
+            Maximum Dosage:
+          </p>
+          <p className="col-span-10 sm:col-span-8">{meds?.dosageMax}</p>
+        </div>
+
+        <div className="grid grid-cols-10">
+          <p className="col-span-10 font-semibold sm:col-span-2">Unit:</p>
+          <p className="col-span-10 sm:col-span-8">{meds?.unit}</p>
         </div>
       </div>
 
-      <input type="hidden" value={rate?.id} {...register("id")} />
+      <input type="hidden" value={meds?.id} {...register("id")} />
 
       <div className="flex gap-2">
         <button
@@ -107,4 +114,4 @@ const RateDelete = ({ refetch, rate, setPopup }: RateDeleteProps) => {
   );
 };
 
-export default RateDelete;
+export default MedsDelete;
