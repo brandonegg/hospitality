@@ -99,9 +99,9 @@ const MedsEdit = ({ refetch, meds, setPopup }: MedsEditProps) => {
 
         <div className="flex flex-grow flex-col">
           <label htmlFor="dosageMin">Minimum Dosage</label>
-          <textarea
-            rows={4}
+          <input
             id="dosageMin"
+            type="number"
             className="resize-none rounded border border-gray-300 p-2"
             {...register("dosageMin", {
               required: "Minimum Dosage is required",
@@ -121,9 +121,9 @@ const MedsEdit = ({ refetch, meds, setPopup }: MedsEditProps) => {
 
         <div className="flex flex-grow flex-col">
           <label htmlFor="dosageMax">Maximum Dosage</label>
-          <textarea
-            rows={4}
+          <input
             id="dosageMax"
+            type="number"
             className="resize-none rounded border border-gray-300 p-2"
             {...register("dosageMax", {
               required: "Maximum Dosage is required",
