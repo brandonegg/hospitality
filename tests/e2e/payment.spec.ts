@@ -86,7 +86,7 @@ test.describe("patient payments", () => {
   patientTest("make $0 payment", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcomming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
@@ -103,7 +103,7 @@ test.describe("patient payments", () => {
   patientTest("make payment greater than amount due", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcomming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
