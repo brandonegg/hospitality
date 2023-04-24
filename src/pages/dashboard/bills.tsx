@@ -51,16 +51,18 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
  * Wrapper for the different bills sections display on page (upcoming/paid etc.)
  */
 const BillsSection = ({
+  id,
   label,
   bills,
 }: {
+  id?: string;
   label: string;
   bills: InvoiceResponseData[];
 }) => {
   return (
     <section id="upcoming-bills" className="grow-0 px-8">
       <h1 className="text-center text-xl font-bold text-sky-900">{label}</h1>
-      <div className="mt-4 flex flex-row">
+      <div className="mt-4 flex flex-col space-y-6">
         {bills.map((bill, index) => {
           return <BillSummaryButton key={index} details={bill} />;
         })}

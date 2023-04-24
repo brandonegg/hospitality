@@ -156,7 +156,7 @@ model Payment {
   sourceId  String?
   source    PaymentSource? @relation(fields: [sourceId], references: [id], onDelete: SetNull)
   invoiceId String?
-  invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   userId    String?
   user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

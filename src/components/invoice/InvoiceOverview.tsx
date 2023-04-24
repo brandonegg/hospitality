@@ -68,7 +68,7 @@ const InvoicePaymentLineItem = ({
           ({dateToString(payment.date)})
         </span>
       </section>
-      <span>${payment.amount}</span>
+      <span>-${payment.amount}</span>
     </div>
   );
 };

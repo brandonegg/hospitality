@@ -1,3 +1,4 @@
+import type { Invoice, Payment, PaymentSource } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -27,11 +28,8 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const userIdMatches = await ctx.prisma.user.count({
-        where: {
-          id: userId,
-        },
-      });
+      const userIdMatches: number = await ctx.prisma
+        .$queryRaw`SELECT COUNT(*) FROM User WHERE id = ${userId};`;
 
       if (userIdMatches == 0) {
         throw new TRPCError({
@@ -40,11 +38,8 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const sourceIdMatches = await ctx.prisma.paymentSource.count({
-        where: {
-          id: sourceId,
-        },
-      });
+      const sourceIdMatches: number = await ctx.prisma
+        .$queryRaw`SELECT COUNT(*) FROM PaymentSource WHERE id = ${sourceId};`;
 
       if (sourceIdMatches == 0) {
         throw new TRPCError({
@@ -53,11 +48,10 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const invoice = await ctx.prisma.invoice.findUnique({
-        where: {
-          id: invoiceId,
-        },
-      });
+      const invoiceMatch: Invoice[] | undefined = await ctx.prisma
+        .$queryRaw`SELECT * FROM Invoice WHERE id = ${invoiceId};`;
+
+      const invoice = invoiceMatch ? invoiceMatch[0] : undefined;
 
       if (!invoice) {
         throw new TRPCError({
@@ -95,7 +89,9 @@ export const paymentRouter = createTRPCRouter({
       return payment;
     }),
   getSources: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.paymentSource.findMany();
+    const sources: PaymentSource[] | undefined = await ctx.prisma
+      .$queryRaw`SELECT * FROM PaymentSource`;
+    return sources;
   }),
   get: protectedProcedure
     .input(
@@ -104,10 +100,11 @@ export const paymentRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.payment.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
+      const payments: Payment[] | undefined = await ctx.prisma
+        .$queryRaw`SELECT * FROM Payment WHERE id = ${input.id};`;
+
+      const uniquePayment = payments ? payments[0] : undefined;
+
+      return uniquePayment;
     }),
 });

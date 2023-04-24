@@ -1,3 +1,5 @@
+import type { LineItem, Payment } from "@prisma/client";
+
 import { prisma } from "../../server/db";
 
 /**
@@ -5,17 +7,10 @@ import { prisma } from "../../server/db";
  * @param id Order ID
  */
 const updateInvoiceTotal = async (id: string) => {
-  const invoice = await prisma.invoice.findUniqueOrThrow({
-    where: {
-      id,
-    },
-    select: {
-      items: true,
-      payments: true,
-    },
-  });
+  const invoiceItems: LineItem[] =
+    await prisma.$queryRaw`SELECT * FROM LineItem WHERE invoiceId = ${id};`;
 
-  const billTotal = invoice.items
+  const billTotal = invoiceItems
     .map((item) => {
       return parseFloat(item.total);
     })
@@ -23,22 +18,22 @@ const updateInvoiceTotal = async (id: string) => {
       return sum + current;
     }, 0);
 
-  const paymentTotal: { "SUM(amount)": number }[] =
-    await prisma.$queryRawUnsafe(
-      `SELECT SUM(amount) FROM payment WHERE invoiceId = '${id}'`
-    );
+  const invoicePayments: Payment[] =
+    await prisma.$queryRaw`SELECT * FROM Payment WHERE invoiceId = ${id};`;
 
-  await prisma.invoice.update({
-    where: {
-      id,
-    },
-    data: {
-      total: billTotal.toFixed(2),
-      totalDue: (billTotal - (paymentTotal[0]?.["SUM(amount)"] ?? 0)).toFixed(
-        2
-      ),
-    },
-  });
+  const paymentTotal = invoicePayments
+    .map((payment) => {
+      return parseFloat(payment.amount);
+    })
+    .reduce((sum, current) => {
+      return sum + current;
+    }, 0);
+
+  /* eslint-disable prettier/prettier */
+  await prisma.$queryRaw`UPDATE Invoice
+                         SET total = ${billTotal.toFixed(2)}, totalDue = ${(billTotal - paymentTotal).toFixed(2)}
+                         WHERE id = ${id};`;
+  /* eslint-enable prettier/prettier */
 };
 
 export { updateInvoiceTotal };
