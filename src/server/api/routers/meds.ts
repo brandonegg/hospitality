@@ -38,29 +38,19 @@ export const medsRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        description: z.string(),
-        price: z.string(),
+        dosageMin: z.number(),
+        dosageMax: z.number(),
+        unit: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { name, description, price } = input;
+      const { name, dosageMin, dosageMax, unit } = input;
 
-      if (!price.match(/^\d+(.\d{1,2})?$/)) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Price must be a number with up to 2 decimal places",
-        });
-      }
+      const newMed = await ctx.prisma.$executeRawUnsafe(
+        `INSERT INTO Meds (name, dosageMin, dosageMax, unit) VALUES ("${name}", ${dosageMin}, ${dosageMax}, "${unit}");`
+      );
 
-      const newRate = await ctx.prisma.rate.create({
-        data: {
-          name,
-          description,
-          price,
-        },
-      });
-
-      return newRate;
+      return newMed;
     }),
   update: protectedProcedure
     .input(
