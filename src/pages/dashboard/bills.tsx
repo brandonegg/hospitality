@@ -48,7 +48,7 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
 };
 
 /**
- * Wrapper for the different bills sections display on page (upcomming/paid etc.)
+ * Wrapper for the different bills sections display on page (upcoming/paid etc.)
  */
 const BillsSection = ({
   label,
@@ -58,7 +58,7 @@ const BillsSection = ({
   bills: InvoiceResponseData[];
 }) => {
   return (
-    <section id="upcomming-bills" className="grow-0 px-8">
+    <section id="upcoming-bills" className="grow-0 px-8">
       <h1 className="text-center text-xl font-bold text-sky-900">{label}</h1>
       <div className="mt-4 flex flex-row">
         {bills.map((bill, index) => {
@@ -77,7 +77,7 @@ const BillsDashboardPage = ({ user }: { user: Session["user"] }) => {
     userId: user.id,
   });
 
-  const upcommingInvoices = userInvoices?.filter(
+  const upcomingInvoices = userInvoices?.filter(
     (item) => parseFloat(item.totalDue) > 0
   );
 
@@ -88,8 +88,8 @@ const BillsDashboardPage = ({ user }: { user: Session["user"] }) => {
   return (
     <Layout>
       <div className="mx-auto flex w-full flex-col justify-center divide-x md:flex-row">
-        {upcommingInvoices && upcommingInvoices.length !== 0 ? (
-          <BillsSection label="Upcomming Bills" bills={upcommingInvoices} />
+        {upcomingInvoices && upcomingInvoices.length !== 0 ? (
+          <BillsSection label="Upcoming Bills" bills={upcomingInvoices} />
         ) : undefined}
         {paidInvoices && paidInvoices.length !== 0 ? (
           <BillsSection label="Paid Bills" bills={paidInvoices} />

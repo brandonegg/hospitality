@@ -62,7 +62,7 @@ test.describe("patient payments", () => {
   patientTest("make payment on invoice", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcomming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
