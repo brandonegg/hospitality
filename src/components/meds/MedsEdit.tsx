@@ -152,7 +152,8 @@ const MedsEdit = ({ refetch, meds, setPopup }: MedsEditProps) => {
             })}
             onChange={changeDropDown}
           >
-            <option value="g">kg</option>
+            <option value="kg">kg</option>
+            <option value="g">g</option>
             <option value="mg">mg</option>
             <option value="μg">μg</option>
             <option value="L">L</option>
