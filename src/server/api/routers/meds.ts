@@ -47,6 +47,13 @@ export const medsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { name, dosageMin, dosageMax, unit } = input;
 
+      if (dosageMin > dosageMax) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Minimum Dosage cannot be greater than Maximum Dosage",
+        });
+      }
+
       const newMed = await ctx.prisma.$executeRawUnsafe(
         `INSERT INTO Meds (id, name, dosageMin, dosageMax, unit) VALUES ("${createId()}", "${name}", ${dosageMin}, ${dosageMax}, "${unit}");`
       );
