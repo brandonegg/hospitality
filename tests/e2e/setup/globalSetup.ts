@@ -212,17 +212,32 @@ async function globalSetup() {
   });
 
   // Create basic payment sources all patients can use for testing
-  await prisma.paymentSource.createMany({
-    data: [
-      {
-        type: PaymentSourceType.BANK,
-        name: "Bank Account",
-      },
-      {
-        type: PaymentSourceType.CARD,
-        name: "Discover Card",
-      },
-    ],
+  await prisma.paymentSource.upsert({
+    where: {
+      id: "test-bank-source",
+    },
+    create: {
+      type: PaymentSourceType.BANK,
+      name: "Bank Account",
+    },
+    update: {
+      type: PaymentSourceType.BANK,
+      name: "Bank Account",
+    },
+  });
+
+  await prisma.paymentSource.upsert({
+    where: {
+      id: "test-discover-source",
+    },
+    create: {
+      type: PaymentSourceType.CARD,
+      name: "Discover Card",
+    },
+    update: {
+      type: PaymentSourceType.CARD,
+      name: "Discover Card",
+    },
   });
 }
 
