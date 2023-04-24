@@ -3,9 +3,9 @@ import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 
+import type { RouterInputs, RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 import type { InvoiceRowData } from "../../pages/invoice/index";
-import type { RouterInputs, RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
@@ -108,7 +108,7 @@ const InvoiceRemoveBill = ({
           >
             {procedures?.map((lineItem, index) => (
               <option key={index} value={lineItem.id}>
-                {lineItem.Rate?.name} x {lineItem.quantity}
+                {lineItem.rate?.name} x {lineItem.quantity}
               </option>
             ))}
           </select>

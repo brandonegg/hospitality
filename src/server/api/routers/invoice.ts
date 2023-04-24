@@ -2,7 +2,7 @@ import type { Invoice, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { updateInvoiceTotal } from "../../../utils/invoice/update";
+import { updateInvoiceTotal } from "../../../lib/invoice/update";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const invoiceRouter = createTRPCRouter({
@@ -25,7 +25,7 @@ export const invoiceRouter = createTRPCRouter({
         select: {
           quantity: true,
           id: true,
-          Rate: true,
+          rate: true,
         },
       });
 
@@ -57,10 +57,14 @@ export const invoiceRouter = createTRPCRouter({
 
       const totalPrice = (parseFloat(rate.price) * quantity).toFixed(2);
 
-      const create = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO LineItem (id, rateId, invoiceId, quantity, total)
-        VALUES (UUID(), "${rateId}", "${invoiceId}", ${quantity}, "${totalPrice}");`
-      );
+      const create = await ctx.prisma.lineItem.create({
+        data: {
+          rateId,
+          invoiceId,
+          quantity,
+          total: totalPrice,
+        },
+      });
 
       await updateInvoiceTotal(invoiceId);
 
@@ -193,5 +197,47 @@ export const invoiceRouter = createTRPCRouter({
         `SELECT * FROM Invoice WHERE id="${id}"`
       );
       return invoices;
+    }),
+  getAllUserInvoices: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.invoice.findMany({
+        where: {
+          userId: input.userId,
+        },
+        include: {
+          items: {
+            include: {
+              rate: true,
+            },
+          },
+          payments: {
+            include: {
+              source: true,
+            },
+          },
+        },
+      });
+    }),
+  byId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.invoice.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          items: {
+            include: {
+              rate: true,
+            },
+          },
+          payments: {
+            include: {
+              source: true,
+            },
+          },
+        },
+      });
     }),
 });

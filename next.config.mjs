@@ -20,5 +20,8 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  eslint: {
+    dirs: ["src", "tests"],
+  },
 };
 export default config;

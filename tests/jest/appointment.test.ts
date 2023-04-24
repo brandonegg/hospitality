@@ -45,13 +45,15 @@ describe("appointment", () => {
 describe("test making an appointment removing availability time", () => {
   test("does the appointment object that is removed match the avail that is created when docId is not all doc", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["9:30 am", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["9:30 am", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "9:30 am",
       endTime: "10:00 am",
       docId: "test-doc-id",
@@ -62,13 +64,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("does the appointment object that is removed match the avail that is created when docId is all doc", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["9:30 am", 1, "AllDoctors", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["9:30 am", 1, "AllDoctors", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times, "actualDoctorIdNotAllDoctors");
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "9:30 am",
       endTime: "10:00 am",
       docId: "actualDoctorIdNotAllDoctors",
@@ -79,13 +83,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("new startTime", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["10:00 am", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["10:00 am", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "10:00 am",
       endTime: "10:30 am",
       docId: "test-doc-id",
@@ -96,13 +102,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("new startTime", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["10:30 am", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["10:30 am", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "10:30 am",
       endTime: "11:00 am",
       docId: "test-doc-id",
@@ -113,13 +121,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("new startTime", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["11:00 am", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["11:00 am", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "11:00 am",
       endTime: "11:30 am",
       docId: "test-doc-id",
@@ -130,13 +140,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("new startTime am to pm", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["11:30 am", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["11:30 am", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "11:30 am",
       endTime: "12:00 pm",
       docId: "test-doc-id",
@@ -147,13 +159,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("new startTime pm to am", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["11:30 pm", 1, "test-doc-id", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["11:30 pm", 1, "test-doc-id", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times);
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "11:30 pm",
       endTime: "12:00 am",
       docId: "test-doc-id",
@@ -164,13 +178,15 @@ describe("test making an appointment removing availability time", () => {
   });
   test("AllDoctors id doesn't save AllDoctors", () => {
     // startTime,day,docId,weekCount,userId
-    const times:[string,number,string,number,string][] = [["11:30 pm", 1, "AllDoctors", 0, "testUser2"]];
+    const times: [string, number, string, number, string][] = [
+      ["11:30 pm", 1, "AllDoctors", 0, "testUser2"],
+    ];
     const results = storeTestHelper(times, "testDocId");
 
-    const newDay = makeCorrectDate(new Date((new Date()).toDateString()), 1, 0);
+    const newDay = makeCorrectDate(new Date(new Date().toDateString()), 1, 0);
 
     const expectedOutput = {
-      day:1, 
+      day: 1,
       startTime: "11:30 pm",
       endTime: "12:00 am",
       docId: "AllDoctors",

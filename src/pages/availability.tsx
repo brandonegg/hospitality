@@ -5,7 +5,7 @@ import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
-import { api } from "../utils/api";
+import { api } from "../lib/api";
 
 interface AvailPageProps {
   user: Session["user"];

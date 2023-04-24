@@ -2,28 +2,27 @@ import { expect, test } from "@playwright/test";
 
 import { patientTest } from "./playwright/fixtures";
 
-
 test.describe("appointment page", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/appointment', {
-        waitUntil: "load",
-    });
-  });
-
-  test.describe('logged out', () => {
-    test('redirect off the page', ({page}) => {
-        expect(page.url()).not.toContain('appointment');
-    });
-  })
-});
-test.describe('logged in', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/appointment", {
       waitUntil: "load",
     });
   });
-  patientTest('on the appointment page', ({page}) => {
-    expect(page.url()).toContain('appointment');
+
+  test.describe("logged out", () => {
+    test("redirect off the page", ({ page }) => {
+      expect(page.url()).not.toContain("appointment");
+    });
+  });
+});
+test.describe("logged in", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/appointment", {
+      waitUntil: "load",
+    });
+  });
+  patientTest("on the appointment page", ({ page }) => {
+    expect(page.url()).toContain("appointment");
   });
   patientTest("has appointment title", async ({ page }) => {
     await expect(page).toHaveTitle(/Set Appointment/);

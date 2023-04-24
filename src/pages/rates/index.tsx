@@ -1,6 +1,5 @@
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
-import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
@@ -15,8 +14,8 @@ import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 
 export type RateRowData = RouterOutputs["rate"]["getAllPaged"]["items"][number];
 
@@ -89,7 +88,7 @@ const RateTable = ({
  * Rates page.
  * @returns
  */
-const RatesPage = ({ user }: { user: Session["user"] }) => {
+const RatesPage = () => {
   const [page, setPage] = useState<number>(0);
   const [limit] = useState<number>(10);
   const [popup, setPopup] = useState<TablePopup<RateRowData, UserPopupTypes>>({
@@ -128,7 +127,7 @@ const RatesPage = ({ user }: { user: Session["user"] }) => {
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader user={user} />
+      <MainHeader />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Rates" count={ratesLength} />

@@ -1,10 +1,9 @@
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 
 import Alert from "../../components/Alert";
-import MainHeader from "../../components/Header";
 import PageSelector from "../../components/PageSelector";
 import {
   AddButton,
@@ -15,9 +14,9 @@ import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
 import UserPopup from "../../components/users/UserPopup";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { dateFormatter } from "../../utils/date";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { dateFormatter } from "../../lib/date";
 
 export type UserRowData = RouterOutputs["user"]["getAll"]["items"][number];
 
@@ -42,8 +41,6 @@ const getInitial = (name: string) => {
  * @returns JSX
  */
 const UsersPage: NextPage = () => {
-  const { data: sessionData } = useSession();
-
   const [page, setPage] = useState(0);
   const [limit] = useState(10);
   const [popup, setPopup] = useState<TablePopup<UserRowData, UserPopupTypes>>({
@@ -82,8 +79,7 @@ const UsersPage: NextPage = () => {
   const users = data?.pages[page]?.items;
 
   return (
-    <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader user={sessionData?.user} />
+    <main className="mx-auto max-w-[1400px]">
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Users" count={usersLength} />

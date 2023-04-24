@@ -4,8 +4,8 @@ import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 
-import { api } from "../utils/api";
-
+import MainHeader from "../components/Header";
+import { api } from "../lib/api";
 import "../styles/globals.css";
 
 /**
@@ -28,6 +28,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
+        <section className="mx-auto max-w-[1400px]">
+          <MainHeader />
+        </section>
         <Component {...pageProps} />
       </SessionProvider>
     </>

@@ -6,12 +6,10 @@ import {
 } from "@heroicons/react/24/solid";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
-import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import MainHeader from "../../components/Header";
 import PageSelector from "../../components/PageSelector";
 import type { InvoicePopupTypes } from "../../components/invoice/InvoicePopup";
 import InvoicePopup from "../../components/invoice/InvoicePopup";
@@ -20,8 +18,8 @@ import { AddButton } from "../../components/tables/buttons";
 import { DeleteRowButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
 
 /**
  * Button for editing the row of a table.
@@ -294,7 +292,7 @@ const InvoiceTable = ({
  * Invoice page.
  * @returns
  */
-const InvoicePage = ({ user }: { user: Session["user"] }) => {
+const InvoicePage = () => {
   const [page, setPage] = useState<number>(0);
   const [limit] = useState<number>(10);
   const [popup, setPopup] = useState<
@@ -334,7 +332,6 @@ const InvoicePage = ({ user }: { user: Session["user"] }) => {
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader user={user} />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Invoices" count={invoicesLength} />

@@ -6,7 +6,6 @@ import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
-import MainHeader from "../../components/Header";
 import PageSelector from "../../components/PageSelector";
 import type { BedPopupTypes } from "../../components/beds/BedPopup";
 import BedPopup from "../../components/beds/BedPopup";
@@ -15,9 +14,9 @@ import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
-import type { RouterOutputs } from "../../utils/api";
-import { api } from "../../utils/api";
-import { addressToString } from "../../utils/text";
+import type { RouterOutputs } from "../../lib/api";
+import { api } from "../../lib/api";
+import { addressToString } from "../../lib/text";
 
 export type BedRowData = RouterOutputs["bed"]["getAll"]["items"][number];
 export type BedOccupantData = BedRowData["occupant"];
@@ -203,7 +202,6 @@ const BedsPage = ({ user }: { user: Session["user"] }) => {
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader user={user} />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Beds" count={bedsLength} />

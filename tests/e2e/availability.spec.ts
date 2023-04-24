@@ -2,28 +2,27 @@ import { expect, test } from "@playwright/test";
 
 import { doctorTest } from "./playwright/fixtures";
 
-
 test.describe("availability page", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/availability', {
-        waitUntil: "load",
-    });
-  });
-
-  test.describe('logged out', () => {
-    test('redirect off the page', ({page}) => {
-        expect(page.url()).not.toContain('availability');
-    });
-  })
-});
-test.describe('logged in', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/availability", {
       waitUntil: "load",
     });
   });
-  doctorTest('on the availability page', ({page}) => {
-    expect(page.url()).toContain('availability');
+
+  test.describe("logged out", () => {
+    test("redirect off the page", ({ page }) => {
+      expect(page.url()).not.toContain("availability");
+    });
+  });
+});
+test.describe("logged in", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/availability", {
+      waitUntil: "load",
+    });
+  });
+  doctorTest("on the availability page", ({ page }) => {
+    expect(page.url()).toContain("availability");
   });
   doctorTest("has availability title", async ({ page }) => {
     await expect(page).toHaveTitle(/Set Availability/);

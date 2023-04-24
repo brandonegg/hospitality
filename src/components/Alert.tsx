@@ -4,7 +4,7 @@ import {
 } from "@heroicons/react/24/solid";
 import React from "react";
 
-import { classNames } from "../utils/text";
+import { classNames } from "../lib/text";
 
 type Props = {
   type: string;
