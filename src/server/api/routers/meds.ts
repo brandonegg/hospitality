@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import type { Meds } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -47,7 +48,7 @@ export const medsRouter = createTRPCRouter({
       const { name, dosageMin, dosageMax, unit } = input;
 
       const newMed = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO Meds (name, dosageMin, dosageMax, unit) VALUES ("${name}", ${dosageMin}, ${dosageMax}, "${unit}");`
+        `INSERT INTO Meds (id, name, dosageMin, dosageMax, unit) VALUES ("${createId()}", "${name}", ${dosageMin}, ${dosageMax}, "${unit}");`
       );
 
       return newMed;
