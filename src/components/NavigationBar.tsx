@@ -49,6 +49,12 @@ const PagesConfig: NavLinkProps[] = [
     allowRoles: [Role.ADMIN],
   },
   {
+    label: "Medications",
+    href: "/meds",
+    requiresAccount: true,
+    allowRoles: [Role.ADMIN],
+  },
+  {
     label: "Support",
     href: "/support",
     requiresAccount: false,
