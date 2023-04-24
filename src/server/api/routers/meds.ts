@@ -84,7 +84,7 @@ export const medsRouter = createTRPCRouter({
       return deletedMeds;
     }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const data = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Rate;`);
+    const data = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Meds;`);
 
     return data as Meds[];
   }),
