@@ -4,7 +4,6 @@ import { getSession } from "next-auth/react";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
-import MainHeader from "../../components/Header";
 import PageSelector from "../../components/PageSelector";
 import MedsPopup from "../../components/meds/MedsPopup";
 import type { MedsPopupTypes } from "../../components/meds/MedsPopup";
@@ -129,7 +128,6 @@ const MedsPage = () => {
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Medications" count={medsLength} />
