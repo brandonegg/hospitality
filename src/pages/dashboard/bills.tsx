@@ -51,14 +51,16 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
  * Wrapper for the different bills sections display on page (upcoming/paid etc.)
  */
 const BillsSection = ({
+  id,
   label,
   bills,
 }: {
+  id?: string;
   label: string;
   bills: InvoiceResponseData[];
 }) => {
   return (
-    <section id="upcoming-bills" className="grow-0 px-8">
+    <section id={id} className="grow-0 px-8">
       <h1 className="text-center text-xl font-bold text-sky-900">{label}</h1>
       <div className="mt-4 flex flex-col space-y-6">
         {bills.map((bill, index) => {
@@ -89,7 +91,11 @@ const BillsDashboardPage = ({ user }: { user: Session["user"] }) => {
     <Layout>
       <div className="mx-auto flex w-full flex-col justify-center divide-x md:flex-row">
         {upcomingInvoices && upcomingInvoices.length !== 0 ? (
-          <BillsSection label="Upcoming Bills" bills={upcomingInvoices} />
+          <BillsSection
+            id="upcoming-bills"
+            label="Upcoming Bills"
+            bills={upcomingInvoices}
+          />
         ) : undefined}
         {paidInvoices && paidInvoices.length !== 0 ? (
           <BillsSection label="Paid Bills" bills={paidInvoices} />
