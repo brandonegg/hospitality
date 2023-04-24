@@ -19,7 +19,6 @@ export const paymentRouter = createTRPCRouter({
       const { userId, amount, invoiceId, sourceId } = input;
 
       const parsedAmount = parsePriceString(amount);
-      console.log(parsedAmount);
 
       if (!parsedAmount) {
         throw new TRPCError({
@@ -81,7 +80,7 @@ export const paymentRouter = createTRPCRouter({
         });
       }
 
-      const payment = ctx.prisma.payment.create({
+      const payment = await ctx.prisma.payment.create({
         data: {
           invoiceId,
           sourceId,
