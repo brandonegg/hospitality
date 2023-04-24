@@ -8,7 +8,7 @@ import { prisma } from "../../server/db";
  */
 const updateInvoiceTotal = async (id: string) => {
   const invoiceItems: LineItem[] =
-    await prisma.$queryRaw`SELECT * FROM LineItem WHERE invoiceId = "${id}";`;
+    await prisma.$queryRaw`SELECT * FROM LineItem WHERE invoiceId = ${id};`;
 
   const billTotal = invoiceItems
     .map((item) => {
@@ -19,7 +19,7 @@ const updateInvoiceTotal = async (id: string) => {
     }, 0);
 
   const invoicePayments: Payment[] =
-    await prisma.$queryRaw`SELECT * FROM Payment WHERE invoiceId = "${id}";`;
+    await prisma.$queryRaw`SELECT * FROM Payment WHERE invoiceId = ${id};`;
 
   const paymentTotal = invoicePayments
     .map((payment) => {
