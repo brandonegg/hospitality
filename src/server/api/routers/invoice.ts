@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import type { Invoice, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -139,13 +140,13 @@ export const invoiceRouter = createTRPCRouter({
           message: `Invoice date must be in the future.`,
         });
       }
-
-      const newInvoice = await ctx.prisma.invoice.create({
-        data: {
-          userId,
-          paymentDue: paymentDueDate,
-        },
-      });
+      const newInvoice = await ctx.prisma.$executeRawUnsafe(
+        `INSERT INTO Invoice (id, userId, paymentDue) VALUES ("${createId()}", "${userId}", "${new Date(
+          paymentDueDate.getTime() - paymentDueDate.getTimezoneOffset() * -60000
+        )
+          .toISOString()
+          .slice(0, 10)}")`
+      );
 
       return newInvoice;
     }),
