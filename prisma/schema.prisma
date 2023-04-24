@@ -116,6 +116,14 @@ model Rate {
   lineItems   LineItem[]
 }
 
+model Meds {
+  id          String     @id @default(cuid())
+  name        String
+  dosageMin   Int
+  dosageMax   Int
+  unit        String
+}
+
 model LineItem {
   id        String  @id @default(cuid())
   quantity  Int
