@@ -58,25 +58,19 @@ export const medsRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string(),
-        description: z.string(),
-        price: z.string(),
+        dosageMin: z.number(),
+        dosageMax: z.number(),
+        unit: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, name, description, price } = input;
+      const { id, name, dosageMin, dosageMax, unit } = input;
 
-      if (!price.match(/^\d+(.\d{1,2})?$/)) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Price must be a number with up to 2 decimal places",
-        });
-      }
-
-      const updatedRate = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Rate SET name="${name}", description="${description}", price=${price} WHERE id="${id}"`
+      const updatedMeds = await ctx.prisma.$executeRawUnsafe(
+        `UPDATE Meds SET name="${name}", dosageMin=${dosageMin}, dosageMax=${dosageMax}, unit="${unit}" WHERE id="${id}";`
       );
 
-      return updatedRate;
+      return updatedMeds;
     }),
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
