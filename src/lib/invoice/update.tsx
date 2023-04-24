@@ -23,13 +23,10 @@ const updateInvoiceTotal = async (id: string) => {
       return sum + current;
     }, 0);
 
-  const paymentTotal = invoice.payments
-    .map((payment) => {
-      return parseFloat(payment.amount);
-    })
-    .reduce((sum, current) => {
-      return sum + current;
-    }, 0);
+  const paymentTotal: { "SUM(amount)": number }[] =
+    await prisma.$queryRawUnsafe(
+      `SELECT SUM(amount) FROM payment WHERE invoiceId = '${id}'`
+    );
 
   await prisma.invoice.update({
     where: {
@@ -37,7 +34,9 @@ const updateInvoiceTotal = async (id: string) => {
     },
     data: {
       total: billTotal.toFixed(2),
-      totalDue: (billTotal - paymentTotal).toFixed(2),
+      totalDue: (billTotal - (paymentTotal[0]?.["SUM(amount)"] ?? 0)).toFixed(
+        2
+      ),
     },
   });
 };
