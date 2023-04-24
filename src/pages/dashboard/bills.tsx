@@ -38,7 +38,12 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
         <div className="px-4">
           <h1 className="inline-block text-lg font-semibold">Amount Due By</h1>
           <h2 className="italic text-neutral-600">
-            {details.paymentDue.toDateString()}
+            {new Date(
+              details.paymentDue.getTime() -
+                details.paymentDue.getTimezoneOffset() * -60000
+            )
+              .toISOString()
+              .slice(0, 10)}
           </h2>
         </div>
       </div>
