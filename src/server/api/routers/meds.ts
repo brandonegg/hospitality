@@ -77,11 +77,11 @@ export const medsRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      const deletedRate = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM Rate WHERE id="${id}"`
+      const deletedMeds = await ctx.prisma.$executeRawUnsafe(
+        `DELETE FROM Meds WHERE id="${id}"`
       );
 
-      return deletedRate;
+      return deletedMeds;
     }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const data = await ctx.prisma.$queryRawUnsafe(`SELECT * FROM Rate;`);
