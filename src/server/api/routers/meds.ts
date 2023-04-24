@@ -16,8 +16,8 @@ export const medsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, cursor } = input;
       const [count, items] = await ctx.prisma.$transaction([
-        ctx.prisma.rate.count(),
-        ctx.prisma.rate.findMany({
+        ctx.prisma.meds.count(),
+        ctx.prisma.meds.findMany({
           take: limit + 1,
           cursor: cursor ? { id: cursor } : undefined,
         }),
