@@ -39,15 +39,15 @@ export const medsRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        dosageMin: z.number(),
-        dosageMax: z.number(),
+        dosageMin: z.string(),
+        dosageMax: z.string(),
         unit: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { name, dosageMin, dosageMax, unit } = input;
 
-      if (dosageMin > dosageMax) {
+      if (parseInt(dosageMin) > parseInt(dosageMax)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Minimum Dosage cannot be greater than Maximum Dosage",
@@ -65,8 +65,8 @@ export const medsRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         name: z.string(),
-        dosageMin: z.number(),
-        dosageMax: z.number(),
+        dosageMin: z.string(),
+        dosageMax: z.string(),
         unit: z.string(),
       })
     )

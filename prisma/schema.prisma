@@ -119,8 +119,8 @@ model Rate {
 model Meds {
   id          String     @id @default(cuid())
   name        String
-  dosageMin   Int
-  dosageMax   Int
+  dosageMin   String
+  dosageMax   String
   unit        String
 }
 
