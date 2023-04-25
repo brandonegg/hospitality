@@ -68,7 +68,7 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created a Invoice!</Alert>
+      <Alert type="success">Successfully created an invoice!</Alert>
       <button
         type="button"
         onClick={() => {

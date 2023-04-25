@@ -92,7 +92,7 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted Invoice!</Alert>
+      <Alert type="success">Successfully deleted invoice!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
