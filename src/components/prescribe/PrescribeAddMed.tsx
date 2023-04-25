@@ -44,9 +44,10 @@ const PrescribeAddBill = ({
     formState: { errors },
   } = useForm<PrescribeUpdateInput>({
     // fix default values
-    // defaultValues: {
-    //   ...prescribe,
-    // },
+    defaultValues: {
+      ...prescribe,
+      dosage: "0",
+    },
   });
 
   const { mutate } = api.prescribe.addItem.useMutation({

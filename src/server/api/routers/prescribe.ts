@@ -19,7 +19,7 @@ export const prescribeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const results: MedItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM meditem WHERE id="${input.id}"`
+        `SELECT * FROM meditem WHERE prescriptionId="${input.id}"`
       );
 
       type MedItemWithMeds = MedItem & { meds: Meds };
@@ -43,12 +43,12 @@ export const prescribeRouter = createTRPCRouter({
     .input(
       z.object({
         medsId: z.string(),
-        prescriptionId: z.string(),
+        id: z.string(),
         dosage: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { medsId, prescriptionId, dosage } = input;
+      const { medsId, id, dosage } = input;
 
       const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
         `SELECT * FROM meds WHERE id = "${medsId}";`
@@ -77,7 +77,7 @@ export const prescribeRouter = createTRPCRouter({
       }
 
       const create = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO meditem (id, dosage, prescriptionId, medsId) VALUES ("${createId()}", "${dosage}", "${prescriptionId}", "${medsId}")`
+        `INSERT INTO meditem (id, dosage, prescriptionId, medsId) VALUES ("${createId()}", "${dosage}", "${id}", "${medsId}")`
       );
 
       return create;
@@ -86,16 +86,17 @@ export const prescribeRouter = createTRPCRouter({
     .input(
       z.object({
         medItemId: z.string(),
-        prescriptionId: z.string(),
+        id: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { medItemId, prescriptionId } = input;
+      const { medItemId, id } = input;
+      console.log(medItemId, id);
 
       const result = await ctx.prisma.medItem.deleteMany({
         where: {
           id: medItemId,
-          prescriptionId: prescriptionId,
+          prescriptionId: id,
         },
       });
 

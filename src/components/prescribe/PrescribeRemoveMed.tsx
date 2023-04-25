@@ -44,9 +44,10 @@ const PrescribeRemoveBill = ({
     formState: { errors },
   } = useForm<PrescribeRemoveBillInput>({
     // fix default values
-    // defaultValues: {
-    //   ...prescribe,
-    // },
+    defaultValues: {
+      ...prescribe,
+      id: prescribe?.id ?? "",
+    },
   });
 
   const { mutate } = api.prescribe.removeItem.useMutation({
@@ -78,6 +79,9 @@ const PrescribeRemoveBill = ({
     id: prescribe?.id ?? "",
   });
 
+  console.log(procedures);
+  console.log(prescribe?.id);
+
   if (procedures == undefined) {
     return <div />;
   }
@@ -108,13 +112,13 @@ const PrescribeRemoveBill = ({
             value={procedure}
             className="rounded border border-gray-300 p-2"
             {...register("medItemId", {
-              required: "A procedure is required",
+              required: "A medication is required",
             })}
             onChange={changeDropDown}
           >
             {procedures.map((medItem, index) => (
               <option key={index} value={medItem.id}>
-                {medItem.meds.name} x {medItem.dosage}
+                {medItem.meds.name} x {medItem.dosage} {medItem.meds.unit}
               </option>
             ))}
           </select>
