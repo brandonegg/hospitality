@@ -161,6 +161,9 @@ test.describe("meds > CRUD operations", () => {
       });
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("350");
+      await page.getByRole("button", { name: "Add" }).click();
+      await page.getByRole("button", { name: "Close" }).click();
+
       // remove the added med
       await page
         .getByRole("button", { name: "Remove Medication" })
