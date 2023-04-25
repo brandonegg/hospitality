@@ -44,9 +44,10 @@ const PrescribeEdit = ({
     formState: { errors },
   } = useForm<PrescribeUpdateInput>({
     // add default values
-    // defaultValues: {
-    //   ...prescribe,
-    // },
+    defaultValues: {
+      ...prescribe,
+      userId: prescribe?.userId ?? "",
+    },
   });
 
   const { mutate } = api.prescribe.update.useMutation({
