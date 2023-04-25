@@ -81,9 +81,9 @@ test.describe("meds > CRUD operations", () => {
     });
 
     adminTest("with valid inputs", async ({ page }) => {
-      await page.getByRole("button", { name: "Add Medication" }).click();
+      await page.getByRole("button", { name: "Edit" }).last().click();
       await page.getByLabel("Name").click();
-      await page.getByLabel("Name").fill("TestMedicationEdit");
+      await page.getByLabel("Name").fill("TestMedicationUpdated");
       await page.getByLabel("Minimum Dosage").click();
       await page.getByLabel("Minimum Dosage").fill("30");
       await page.getByLabel("Maximum Dosage").click();
