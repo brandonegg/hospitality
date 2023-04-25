@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-import { adminTest, patientTest } from "./playwright/fixtures";
+import { doctorTest, patientTest } from "./playwright/fixtures";
 
 test.describe("meds > page access", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/prescribe");
   });
 
-  adminTest("admin can access", async ({ page }) => {
+  doctorTest("admin can access", async ({ page }) => {
     await expect(
       page.getByRole("heading", { name: "All Prescriptions" })
     ).toBeVisible();
@@ -26,7 +26,7 @@ test.describe("meds > CRUD operations", () => {
       await page.goto("/prescribe");
     });
 
-    adminTest("with valid inputs", async ({ page }) => {
+    doctorTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Add Prescription" }).click();
       await page.getByLabel("User").selectOption({ label: "John" });
       await page.getByRole("button", { name: "Confirm" }).click();
@@ -42,7 +42,7 @@ test.describe("meds > CRUD operations", () => {
       await page.goto("/prescribe");
     });
 
-    adminTest("with valid inputs", async ({ page }) => {
+    doctorTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Edit" }).last().click();
       await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
@@ -58,7 +58,7 @@ test.describe("meds > CRUD operations", () => {
       await page.goto("/prescribe");
     });
 
-    adminTest("delete meds", async ({ page }) => {
+    doctorTest("delete meds", async ({ page }) => {
       await page.getByRole("button", { name: "Delete" }).last().click();
       await page.getByRole("button", { name: "Confirm" }).click();
 
@@ -73,7 +73,7 @@ test.describe("meds > CRUD operations", () => {
       await page.goto("/prescribe");
     });
 
-    adminTest("add medication", async ({ page }) => {
+    doctorTest("add medication", async ({ page }) => {
       await page.getByRole("button", { name: "Add Medication" }).last().click();
       await page.getByLabel("Medication").selectOption({
         label: "Ibuprofen",
@@ -88,7 +88,7 @@ test.describe("meds > CRUD operations", () => {
       ).toBeVisible();
     });
 
-    adminTest("missing name", async ({ page }) => {
+    doctorTest("missing name", async ({ page }) => {
       await page.getByRole("button", { name: "Add Medication" }).last().click();
       await page.getByLabel("Medication").selectOption({
         label: "Ibuprofen",
@@ -100,7 +100,7 @@ test.describe("meds > CRUD operations", () => {
 
       await expect(page.getByText("Dosage is required")).toBeVisible();
 
-      adminTest("below minimum dosage", async ({ page }) => {
+      doctorTest("below minimum dosage", async ({ page }) => {
         await page
           .getByRole("button", { name: "Add Medication" })
           .last()
@@ -123,7 +123,7 @@ test.describe("meds > CRUD operations", () => {
         ).toBeVisible();
       });
 
-      adminTest("above maximum dosage", async ({ page }) => {
+      doctorTest("above maximum dosage", async ({ page }) => {
         await page
           .getByRole("button", { name: "Add Medication" })
           .last()
@@ -153,7 +153,7 @@ test.describe("meds > CRUD operations", () => {
       await page.goto("/prescribe");
     });
 
-    adminTest("remove medication", async ({ page }) => {
+    doctorTest("remove medication", async ({ page }) => {
       // add med to remove
       await page.getByRole("button", { name: "Add Medication" }).last().click();
       await page.getByLabel("Medication").selectOption({
