@@ -271,6 +271,9 @@ async function globalSetup() {
       {
         userId: patient.id,
       },
+      {
+        userId: patient.id,
+      },
     ],
   });
 

@@ -85,7 +85,7 @@ const PrescribeEdit = ({
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully updated an Prescribe!</Alert>
+      <Alert type="success">Successfully updated a prescription!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}

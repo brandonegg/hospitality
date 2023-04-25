@@ -96,7 +96,7 @@ const PrescribeDelete = ({
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted Prescribe!</Alert>
+      <Alert type="success">Successfully deleted prescription!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -110,7 +110,7 @@ const PrescribeDelete = ({
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <p>Do you want to delete this Prescribe?</p>
+      <p>Do you want to delete this prescription?</p>
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">

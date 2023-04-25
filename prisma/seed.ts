@@ -336,6 +336,9 @@ async function main() {
       {
         userId: bob.id,
       },
+      {
+        userId: bob.id,
+      },
     ],
   });
 
