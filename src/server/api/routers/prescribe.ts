@@ -91,7 +91,6 @@ export const prescribeRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const { medItemId, id } = input;
-      console.log(medItemId, id);
 
       const result = await ctx.prisma.medItem.deleteMany({
         where: {

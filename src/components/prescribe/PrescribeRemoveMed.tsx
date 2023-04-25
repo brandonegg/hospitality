@@ -79,9 +79,6 @@ const PrescribeRemoveBill = ({
     id: prescribe?.id ?? "",
   });
 
-  console.log(procedures);
-  console.log(prescribe?.id);
-
   if (procedures == undefined) {
     return <div />;
   }

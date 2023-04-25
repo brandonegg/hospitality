@@ -1,3 +1,4 @@
+import type { Meds } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -46,7 +47,7 @@ const PrescribeAddBill = ({
     // fix default values
     defaultValues: {
       ...prescribe,
-      dosage: "0",
+      dosage: "",
     },
   });
 
@@ -71,11 +72,20 @@ const PrescribeAddBill = ({
    */
   const changeDropDown = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setValue(event.target.value);
+    if (medsQuery.data) {
+      const newIndex = medsQuery.data
+        .map((x) => {
+          return x.id;
+        })
+        .indexOf(event.target.value);
+      setIndex(newIndex);
+    }
   };
 
   const medsQuery = api.meds.getAll.useQuery();
 
   const [med, setValue] = useState("");
+  const [index, setIndex] = useState(0);
 
   return serverResult ? (
     <div className="space-y-2">
@@ -124,7 +134,16 @@ const PrescribeAddBill = ({
 
         {/** Quantity input */}
         <div className="flex grow flex-col">
-          <label htmlFor="dosage">Dosage</label>
+          <label htmlFor="dosage">
+            Dosage
+            {medsQuery.data &&
+              medsQuery.data[index] &&
+              ` (Min: ${(medsQuery.data[index] as Meds).dosageMin} ${
+                (medsQuery.data[index] as Meds).unit
+              }, Max: ${(medsQuery.data[index] as Meds).dosageMax} ${
+                (medsQuery.data[index] as Meds).unit
+              })`}
+          </label>
           <input
             id="dosage"
             type="number"
