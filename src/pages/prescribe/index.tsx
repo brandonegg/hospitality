@@ -382,7 +382,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const authorizedUsers: Role[] = [Role.ADMIN];
+  const authorizedUsers: Role[] = [Role.DOCTOR];
 
   // If the user is not an admin, redirect to the dashboard
   if (!authorizedUsers.includes(session.user.role)) {

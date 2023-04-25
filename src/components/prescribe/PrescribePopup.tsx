@@ -107,7 +107,7 @@ interface PrescribePopupProps {
 const PrescribePopup = ({ refetch, popup, setPopup }: PrescribePopupProps) => {
   return (
     <TablePopup<PrescribeRowData, PrescribePopupTypes>
-      label="Prescribe"
+      label="Prescription"
       popup={popup}
       setPopup={setPopup}
       refetch={refetch}
