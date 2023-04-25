@@ -35,18 +35,25 @@ async function main() {
     update: {},
   });
 
+  const passwordBob = await argon2.hash("bob");
+  // create patient to be used for invoice seeding
+  const bob = await prisma.user.upsert({
+    where: { email: "bob@prisma.io" },
+    update: {},
+    create: {
+      name: "Bob",
+      username: "bob",
+      email: "bob@prisma.io",
+      password: passwordBob,
+      dateOfBirth: new Date("3/18/2000"),
+      addressId: address.id,
+      role: Role.PATIENT,
+    },
+  });
+
   // create some dummy users
   await prisma.user.createMany({
     data: [
-      {
-        name: "Bob",
-        username: "bob",
-        email: "bob@prisma.io",
-        password: password,
-        dateOfBirth: new Date("3/18/2000"),
-        addressId: address.id,
-        role: Role.PATIENT,
-      },
       {
         name: "Bobo",
         username: "bobo",
@@ -299,6 +306,35 @@ async function main() {
         name: "Anesthesia",
         description: "Anesthesia rate",
         price: "1000",
+      },
+    ],
+  });
+
+  await prisma.invoice.deleteMany();
+
+  await prisma.invoice.createMany({
+    data: [
+      {
+        paymentDue: new Date("3/18/2055"),
+        total: "0",
+        totalDue: "0",
+        userId: bob.id,
+      },
+      {
+        paymentDue: new Date("5/7/2045"),
+        total: "0",
+        totalDue: "0",
+        userId: bob.id,
+      },
+    ],
+  });
+
+  await prisma.prescription.deleteMany();
+
+  await prisma.prescription.createMany({
+    data: [
+      {
+        userId: bob.id,
       },
     ],
   });

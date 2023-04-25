@@ -39,7 +39,7 @@ async function globalSetup() {
   });
 
   // create patient test user
-  await prisma.user.upsert({
+  const patient = await prisma.user.upsert({
     where: {
       id: "e2e-patient",
     },
@@ -241,6 +241,35 @@ async function globalSetup() {
         dosageMax: "10",
         unit: "mg",
         //daily
+      },
+    ],
+  });
+
+  await prisma.invoice.deleteMany();
+
+  await prisma.invoice.createMany({
+    data: [
+      {
+        paymentDue: new Date("3/18/2055"),
+        total: "0",
+        totalDue: "0",
+        userId: patient.id,
+      },
+      {
+        paymentDue: new Date("5/7/2045"),
+        total: "0",
+        totalDue: "0",
+        userId: patient.id,
+      },
+    ],
+  });
+
+  await prisma.prescription.deleteMany();
+
+  await prisma.prescription.createMany({
+    data: [
+      {
+        userId: patient.id,
       },
     ],
   });
