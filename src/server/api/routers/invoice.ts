@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import type { Invoice, Rate } from "@prisma/client";
+import type { Invoice, LineItem, Rate } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -19,18 +19,25 @@ export const invoiceRouter = createTRPCRouter({
   getProcedures: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const result = await ctx.prisma.lineItem.findMany({
-        where: {
-          invoiceId: input.id,
-        },
-        select: {
-          quantity: true,
-          id: true,
-          rate: true,
-        },
-      });
+      const results: LineItem[] = await ctx.prisma.$queryRawUnsafe(
+        `SELECT * FROM lineItem WHERE invoiceId="${input.id}"`
+      );
+      type LineItemWithRate = LineItem & { rate: Rate };
 
-      return result;
+      const clones: LineItemWithRate[] = [];
+
+      for (const result of results) {
+        const rate: Rate[] = await ctx.prisma.$queryRawUnsafe(
+          `SELECT * FROM rate WHERE id="${result.rateId as string}"` // this is the line that needs to be fixed
+        );
+        (result as LineItemWithRate).rate = rate[0] as Rate;
+        // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
+        //even though the object itself changes because "technically" the reference is the same despite the rate updating
+        const clone = JSON.parse(JSON.stringify(result)) as LineItemWithRate;
+        clones.push(clone);
+      }
+
+      return clones;
     }),
   addItem: protectedProcedure
     .input(
