@@ -5,52 +5,52 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-type InvoiceRemoveBillInput = RouterInputs["invoice"]["removeItem"];
-type InvoiceRemoveBillOutput = RouterOutputs["invoice"]["removeItem"];
+type PrescribeRemoveBillInput = RouterInputs["prescribe"]["removeItem"];
+type PrescribeRemoveBillOutput = RouterOutputs["prescribe"]["removeItem"];
 
-interface InvoiceAddBillProps {
+interface PrescribeAddBillProps {
   refetch: () => Promise<void>;
-  invoice?: InvoiceRowData;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  prescribe?: PrescribeRowData;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
 /**
- * Invoice add to bill component.
+ * Prescribe add to bill component.
  * @returns
  */
-const InvoiceRemoveBill = ({
+const PrescribeRemoveBill = ({
   refetch,
-  invoice,
+  prescribe,
   setPopup,
-}: InvoiceAddBillProps) => {
+}: PrescribeAddBillProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceRemoveBillOutput | undefined
+    PrescribeRemoveBillOutput | undefined
   >(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InvoiceRemoveBillInput>({
-    defaultValues: {
-      ...invoice,
-      invoiceId: invoice?.id,
-    },
+  } = useForm<PrescribeRemoveBillInput>({
+    // fix default values
+    // defaultValues: {
+    //   ...prescribe,
+    // },
   });
 
-  const { mutate } = api.invoice.removeItem.useMutation({
-    onSuccess: async (data: InvoiceRemoveBillOutput) => {
+  const { mutate } = api.prescribe.removeItem.useMutation({
+    onSuccess: async (data: PrescribeRemoveBillOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -61,7 +61,7 @@ const InvoiceRemoveBill = ({
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceRemoveBillInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeRemoveBillInput> = (data) => {
     mutate(data);
   };
 
@@ -74,8 +74,8 @@ const InvoiceRemoveBill = ({
 
   const [procedure, setValue] = useState("");
 
-  const { data: procedures } = api.invoice.getProcedures.useQuery({
-    id: invoice?.id ?? "",
+  const { data: procedures } = api.prescribe.getProcedures.useQuery({
+    id: prescribe?.id ?? "",
   });
 
   if (procedures == undefined) {
@@ -84,7 +84,9 @@ const InvoiceRemoveBill = ({
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully removed from invoice bill!</Alert>
+      <Alert type="success">
+        Successfully removed medication from prescription!
+      </Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -100,25 +102,25 @@ const InvoiceRemoveBill = ({
 
       <div className="flex-1">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="rateId">Procedure - Name x quantity</label>
+          <label htmlFor="medItemId">Medication - Name x dosage</label>
           <select
-            id="lineItemId"
+            id="medItemId"
             value={procedure}
             className="rounded border border-gray-300 p-2"
-            {...register("lineItemId", {
+            {...register("medItemId", {
               required: "A procedure is required",
             })}
             onChange={changeDropDown}
           >
-            {procedures.map((lineItem, index) => (
-              <option key={index} value={lineItem.id}>
-                {lineItem.rate?.name} x {lineItem.quantity}
+            {procedures.map((medItem, index) => (
+              <option key={index} value={medItem.id}>
+                {medItem.meds.name} x {medItem.dosage}
               </option>
             ))}
           </select>
-          {errors.lineItemId && (
+          {errors.medItemId && (
             <ErrorMessage id="rate-error">
-              {errors.lineItemId.message}
+              {errors.medItemId.message}
             </ErrorMessage>
           )}
         </div>
@@ -142,4 +144,4 @@ const InvoiceRemoveBill = ({
   );
 };
 
-export default InvoiceRemoveBill;
+export default PrescribeRemoveBill;

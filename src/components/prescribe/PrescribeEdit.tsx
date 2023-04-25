@@ -5,52 +5,52 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-type InvoiceRemoveBillInput = RouterInputs["invoice"]["removeItem"];
-type InvoiceRemoveBillOutput = RouterOutputs["invoice"]["removeItem"];
+type PrescribeUpdateInput = RouterInputs["prescribe"]["update"];
+type PrescribeUpdateOutput = RouterOutputs["prescribe"]["update"];
 
-interface InvoiceAddBillProps {
+interface PrescribeEditProps {
   refetch: () => Promise<void>;
-  invoice?: InvoiceRowData;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  prescribe?: PrescribeRowData;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
 /**
- * Invoice add to bill component.
+ * Prescribe edit component.
  * @returns
  */
-const InvoiceRemoveBill = ({
+const PrescribeEdit = ({
   refetch,
-  invoice,
+  prescribe,
   setPopup,
-}: InvoiceAddBillProps) => {
+}: PrescribeEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceRemoveBillOutput | undefined
+    PrescribeUpdateOutput | undefined
   >(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InvoiceRemoveBillInput>({
-    defaultValues: {
-      ...invoice,
-      invoiceId: invoice?.id,
-    },
+  } = useForm<PrescribeUpdateInput>({
+    // add default values
+    // defaultValues: {
+    //   ...prescribe,
+    // },
   });
 
-  const { mutate } = api.invoice.removeItem.useMutation({
-    onSuccess: async (data: InvoiceRemoveBillOutput) => {
+  const { mutate } = api.prescribe.update.useMutation({
+    onSuccess: async (data: PrescribeUpdateOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -61,7 +61,7 @@ const InvoiceRemoveBill = ({
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceRemoveBillInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeUpdateInput> = (data) => {
     mutate(data);
   };
 
@@ -72,19 +72,19 @@ const InvoiceRemoveBill = ({
     setValue(event.target.value);
   };
 
-  const [procedure, setValue] = useState("");
+  const patientsQuery = api.user.getAllPatients.useQuery();
 
-  const { data: procedures } = api.invoice.getProcedures.useQuery({
-    id: invoice?.id ?? "",
-  });
+  const [patient, setValue] = useState<string | undefined>(
+    prescribe?.userId ?? undefined
+  );
 
-  if (procedures == undefined) {
-    return <div />;
+  if (!prescribe) {
+    return <></>;
   }
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully removed from invoice bill!</Alert>
+      <Alert type="success">Successfully updated an Prescribe!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -100,26 +100,26 @@ const InvoiceRemoveBill = ({
 
       <div className="flex-1">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="rateId">Procedure - Name x quantity</label>
+          <label htmlFor="userId">User</label>
           <select
-            id="lineItemId"
-            value={procedure}
+            id="userId"
+            value={patient}
             className="rounded border border-gray-300 p-2"
-            {...register("lineItemId", {
-              required: "A procedure is required",
+            {...register("userId", {
+              required: "User is required",
             })}
             onChange={changeDropDown}
           >
-            {procedures.map((lineItem, index) => (
-              <option key={index} value={lineItem.id}>
-                {lineItem.rate?.name} x {lineItem.quantity}
-              </option>
-            ))}
+            {patientsQuery.data
+              ? patientsQuery.data.map((user, index) => (
+                  <option key={index} value={user.id}>
+                    {user.name}
+                  </option>
+                ))
+              : undefined}
           </select>
-          {errors.lineItemId && (
-            <ErrorMessage id="rate-error">
-              {errors.lineItemId.message}
-            </ErrorMessage>
+          {errors.userId && (
+            <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
           )}
         </div>
       </div>
@@ -128,7 +128,7 @@ const InvoiceRemoveBill = ({
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Remove
+          Confirm
         </button>
         <button
           type="button"
@@ -142,4 +142,4 @@ const InvoiceRemoveBill = ({
   );
 };
 
-export default InvoiceRemoveBill;
+export default PrescribeEdit;
