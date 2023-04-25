@@ -207,6 +207,40 @@ async function main() {
     ],
   });
 
+  await prisma.meds.deleteMany();
+  await prisma.meds.createMany({
+    data: [
+      {
+        name: "Liquid Tylenol",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // every 4 hours
+      },
+      {
+        name: "Tylenol Pills",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // a day
+      },
+      {
+        name: "Ibuprofen",
+        dosageMin: "300",
+        dosageMax: "800",
+        unit: "mg",
+        // every 4 hours
+      },
+      {
+        name: "Claritin",
+        dosageMin: "10",
+        dosageMax: "10",
+        unit: "mg",
+        //daily
+      },
+    ],
+  });
+
   await prisma.rate.deleteMany();
 
   await prisma.rate.createMany({
