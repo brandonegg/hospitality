@@ -103,7 +103,7 @@ const AddBillRowButton = ({
         onClick={onClick}
       >
         <DocumentPlusIcon className="h-4 w-4" />
-        Add Bill
+        Add Medication
       </button>
     );
   }
@@ -115,7 +115,7 @@ const AddBillRowButton = ({
       onClick={onClick}
     >
       <DocumentPlusIcon className="h-4 w-4" />
-      Add Bill
+      Add Medication
     </button>
   );
 };
@@ -136,7 +136,7 @@ const RemoveBillRowButton = ({
         onClick={onClick}
       >
         <DocumentMinusIcon className="h-4 w-4" />
-        Remove Bill
+        Remove Medication
       </button>
     );
   }
@@ -148,7 +148,7 @@ const RemoveBillRowButton = ({
       onClick={onClick}
     >
       <DocumentMinusIcon className="h-4 w-4" />
-      Remove Bill
+      Remove Medication
     </button>
   );
 };
@@ -239,7 +239,7 @@ const PrescribeTableRow = ({
         removeBillDetails={removeBillDetails}
         editDetails={editDetails}
         deleteDetails={deleteDetails}
-        label="Prescribe"
+        label="Prescription"
       />
     </tr>
   );
@@ -263,10 +263,7 @@ const PrescribeTable = ({
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">User</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">Total</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">Balance</th>
-            <th className="w-[125px] px-6 py-3">Due Date</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/2">User</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
@@ -327,10 +324,10 @@ const PrescribePage = () => {
     <main className="mx-auto mb-4 max-w-[1400px]">
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
-          <TablePageHeader label="Prescribes" count={PrescribesLength} />
+          <TablePageHeader label="Prescriptions" count={PrescribesLength} />
           <div>
             <AddButton
-              label="Prescribe"
+              label="Prescription"
               onClick={() => setPopup({ show: true, type: "create" })}
             />
           </div>

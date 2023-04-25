@@ -96,13 +96,13 @@ const PrescribeAddBill = ({
 
       <div className="flex flex-row justify-between space-x-4">
         <div className="flex grow flex-col">
-          <label htmlFor="medsId">Procedure</label>
+          <label htmlFor="medsId">Medication</label>
           <select
             id="medsId"
             value={med}
             className="rounded border border-gray-300 p-2"
             {...register("medsId", {
-              required: "A procedure is required",
+              required: "A medication is required",
             })}
             onChange={changeDropDown}
           >
@@ -115,7 +115,9 @@ const PrescribeAddBill = ({
               : undefined}
           </select>
           {errors.medsId && (
-            <ErrorMessage id="rate-error">{errors.medsId.message}</ErrorMessage>
+            <ErrorMessage id="medsId-error">
+              {errors.medsId.message}
+            </ErrorMessage>
           )}
         </div>
 

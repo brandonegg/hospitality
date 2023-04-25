@@ -68,7 +68,7 @@ const PrescribeCreate = ({ refetch, setPopup }: PrescribeCreateProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created a Prescribe!</Alert>
+      <Alert type="success">Successfully created a prescription!</Alert>
       <button
         type="button"
         onClick={() => {
