@@ -12,7 +12,7 @@ export const invoiceRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { id } = input;
       const result: [{ name: string }] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT name FROM User WHERE id="${id}"`
+        `SELECT name FROM "User" WHERE id="${id}"`
       );
       return result[0] as { name: string };
     }),
@@ -20,7 +20,7 @@ export const invoiceRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const results: LineItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM lineItem WHERE invoiceId="${input.id}"`
+        `SELECT * FROM "lineItem" WHERE invoiceId="${input.id}"`
       );
       type LineItemWithRate = LineItem & { rate: Rate };
 
@@ -28,7 +28,7 @@ export const invoiceRouter = createTRPCRouter({
 
       for (const result of results) {
         const rate: Rate[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM rate WHERE id="${result.rateId as string}"` // this is the line that needs to be fixed
+          `SELECT * FROM "rate" WHERE id="${result.rateId as string}"` // this is the line that needs to be fixed
         );
         (result as LineItemWithRate).rate = rate[0] as Rate;
         // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
@@ -58,7 +58,7 @@ export const invoiceRouter = createTRPCRouter({
       }
 
       const rates: Rate[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Rate WHERE id = "${rateId}";`
+        `SELECT * FROM "Rate" WHERE id = "${rateId}";`
       );
 
       const rate = rates[0];
@@ -197,7 +197,7 @@ export const invoiceRouter = createTRPCRouter({
       const { id } = input;
 
       const deletedInvoice = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM Invoice WHERE id="${id}"`
+        `DELETE FROM "Invoice" WHERE id="${id}"`
       );
 
       return deletedInvoice;
@@ -209,7 +209,7 @@ export const invoiceRouter = createTRPCRouter({
 
       //get all invoices with this id
       const invoices: Invoice[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Invoice WHERE id="${id}"`
+        `SELECT * FROM "Invoice" WHERE id="${id}"`
       );
       return invoices;
     }),

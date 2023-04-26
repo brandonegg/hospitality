@@ -155,9 +155,6 @@ test.describe("invoice > CRUD operations", () => {
 
       await page.getByRole("button", { name: "Remove" }).click();
 
-      // without this it fails github action as playwright is too fast for our popup to popup
-      await page.waitForTimeout(3000);
-
       await expect(
         page.getByText("Successfully removed from invoice bill!")
       ).toBeVisible();
