@@ -155,13 +155,9 @@ test.describe("meds > CRUD operations", () => {
       // without this await it tries to click before button is there I think
       await page.getByRole("button", { name: "Remove" }).isVisible();
       await page.getByRole("button", { name: "Remove" }).click();
-      // without this it checks before the text is there I think
-      await page
-        .getByText("Successfully removed from from invoice bill!")
-        .isVisible();
 
       await expect(
-        page.getByText("Successfully removed from from invoice bill!")
+        page.getByText("Successfully removed from invoice bill!")
       ).toBeVisible();
     });
   });
