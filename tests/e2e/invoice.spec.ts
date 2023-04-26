@@ -152,9 +152,6 @@ test.describe("meds > CRUD operations", () => {
       await page.getByRole("button", { name: "Close" }).click();
       // remove the added med
       await page.getByRole("button", { name: "Remove Bill" }).last().click();
-      await page
-        .getByLabel("Procedure - Name x quantity")
-        .selectOption({ index: 0 });
       await page.getByRole("button", { name: "Remove" }).click();
 
       await expect(

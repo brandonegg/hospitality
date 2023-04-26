@@ -28,7 +28,7 @@ test.describe("meds > CRUD operations", () => {
 
     doctorTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Add Prescription" }).click();
-      await page.getByLabel("User").selectOption({ label: "John" });
+      await page.getByLabel("User").selectOption({ index: 3 });
       await page.getByRole("button", { name: "Confirm" }).click();
 
       await expect(
