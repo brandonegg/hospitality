@@ -2,7 +2,7 @@ import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
-import { InvoiceOverview } from "../../components/invoice/InvoiceOverview";
+import { PrescriptionOverview } from "../../components/prescribe/PrescriptionOverview";
 import { api } from "../../lib/api";
 
 /**
@@ -29,38 +29,38 @@ export const getServerSideProps = async (
   return {
     props: {
       user: session.user,
-      invoiceId: context.params?.id?.toString(),
+      PrescriptionId: context.params?.id?.toString(),
     },
   };
 };
 
 /**
- * Single invoice page
+ * Single prescription page
  */
-const InvoiceViewPage = ({
+const PrescriptionViewPage = ({
   user,
-  invoiceId,
+  PrescriptionId,
 }: {
   user: Session["user"];
-  invoiceId: string | undefined;
+  PrescriptionId: string | undefined;
 }) => {
-  const { data: invoice } = api.invoice.byId.useQuery({
-    id: invoiceId ?? "",
+  const { data: Prescription } = api.prescribe.byId.useQuery({
+    id: PrescriptionId ?? "",
   });
 
-  if (invoice === null) {
-    return <p>No invoice found with this ID</p>;
+  if (Prescription === null) {
+    return <p>No Prescription found with this ID</p>;
   }
 
-  if (!invoice) {
+  if (!Prescription) {
     return <div></div>;
   }
 
   return (
     <div className="mx-auto">
-      <InvoiceOverview invoice={invoice} user={user} />
+      <PrescriptionOverview Prescription={Prescription} user={user} />
     </div>
   );
 };
 
-export default InvoiceViewPage;
+export default PrescriptionViewPage;

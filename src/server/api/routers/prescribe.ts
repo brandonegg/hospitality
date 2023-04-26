@@ -126,6 +126,49 @@ export const prescribeRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+  getAllUserPrescriptions: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      // return prescriptions with userId = userId
+      const { userId } = input;
+      const results: Prescription[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Prescription WHERE userId=${userId}`;
+      return results;
+    }),
+  byId: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const results: PrescriptionWithMedItemAndMeds[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Prescription WHERE id=${id}`;
+      const result = results[0] as PrescriptionWithMedItemAndMeds;
+
+      result.medItems = [];
+
+      type MedItemAndMeds = MedItem & { meds: Meds };
+
+      type PrescriptionWithMedItemAndMeds = Prescription & {
+        medItems: MedItemAndMeds[];
+      };
+
+      const clones: PrescriptionWithMedItemAndMeds[] = [];
+
+      const medItems: MedItemAndMeds[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM MedItem WHERE prescriptionId=${id}`;
+      for (const medItem of medItems) {
+        const medsId = medItem.medsId;
+        const meds: Meds[] = await ctx.prisma
+          .$queryRaw`SELECT * FROM Meds WHERE id=${medsId}`;
+        medItem.meds = meds[0] as Meds;
+        result.medItems.push(medItem);
+        const clone = JSON.parse(
+          JSON.stringify(result)
+        ) as PrescriptionWithMedItemAndMeds;
+        clones.push(clone);
+      }
+
+      return clones;
+    }),
   create: protectedProcedure
     .input(
       z.object({
@@ -172,14 +215,5 @@ export const prescribeRouter = createTRPCRouter({
       const prescription: Prescription[] = await ctx.prisma
         .$queryRaw`SELECT * FROM Prescription WHERE id=${id}`;
       return prescription[0] as Prescription;
-    }),
-  byId: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.prescription.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
     }),
 });
