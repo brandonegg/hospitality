@@ -20,7 +20,7 @@ test.describe("prescribe > page access", () => {
   });
 });
 
-test.describe("invoice > CRUD operations", () => {
+test.describe("prescribe > CRUD operations", () => {
   test.describe("create", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/prescribe");
@@ -31,8 +31,8 @@ test.describe("invoice > CRUD operations", () => {
       await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
 
-      const text = page.getByText("Successfully created a prescription!");
-      await text.waitFor({ state: "visible" });
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await expect(
         page.getByText("Successfully created a prescription!")
@@ -50,8 +50,8 @@ test.describe("invoice > CRUD operations", () => {
       await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
 
-      const text = page.getByText("Successfully updated a prescription!");
-      await text.waitFor({ state: "visible" });
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await expect(
         page.getByText("Successfully updated a prescription!")
@@ -89,10 +89,8 @@ test.describe("invoice > CRUD operations", () => {
 
       await page.getByRole("button", { name: "Add" }).click();
 
-      const text = page.getByText(
-        "Successfully added medication to prescription!"
-      );
-      await text.waitFor({ state: "visible" });
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await expect(
         page.getByText("Successfully added medication to prescription!")
@@ -169,11 +167,9 @@ test.describe("invoice > CRUD operations", () => {
         .getByLabel("Medication - Name x dosage")
         .selectOption({ label: "Ibuprofen x 350 mg" });
       await page.getByRole("button", { name: "Remove" }).click();
-      const text = page.getByText(
-        "Successfully removed medication from prescription!"
-      );
-      // without this await, the looks for text before it shows up
-      await text.waitFor({ state: "visible" });
+
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await expect(
         page.getByText("Successfully removed medication from prescription!")

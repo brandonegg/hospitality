@@ -152,9 +152,8 @@ test.describe("invoice > CRUD operations", () => {
       await page.getByRole("button", { name: "Close" }).click();
       // remove the added procedure
       await page.getByRole("button", { name: "Remove Bill" }).last().click();
-      // without this await it tries to click before button is there I think
-      const button = page.getByRole("button", { name: "Remove" });
-      await button.waitFor({ state: "visible" });
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await page.getByRole("button", { name: "Remove" }).click();
 
