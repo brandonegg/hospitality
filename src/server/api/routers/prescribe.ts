@@ -18,7 +18,7 @@ export const prescribeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const results: MedItem[] = await ctx.prisma
-        .$queryRaw`SELECT * FROM Meditem WHERE prescriptionId=${input.id}`;
+        .$queryRaw`SELECT * FROM MedItem WHERE prescriptionId=${input.id}`;
       type MedItemWithMeds = MedItem & { meds: Meds };
 
       const clones: MedItemWithMeds[] = [];
@@ -74,7 +74,7 @@ export const prescribeRouter = createTRPCRouter({
       const newId = createId();
 
       const create = await ctx.prisma
-        .$executeRaw`INSERT INTO Meditem (id, dosage, prescriptionId, medsId) VALUES (${newId}, ${dosage}, ${id}, ${medsId})`;
+        .$executeRaw`INSERT INTO MedItem (id, dosage, prescriptionId, medsId) VALUES (${newId}, ${dosage}, ${id}, ${medsId})`;
       return create;
     }),
   removeItem: protectedProcedure

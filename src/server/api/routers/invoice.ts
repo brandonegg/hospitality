@@ -20,7 +20,7 @@ export const invoiceRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { id } = input;
       const results: LineItem[] = await ctx.prisma
-        .$queryRaw`SELECT * FROM Lineitem WHERE invoiceId=${id}`;
+        .$queryRaw`SELECT * FROM LineItem WHERE invoiceId=${id}`;
       type LineItemWithRate = LineItem & { rate: Rate };
 
       const clones: LineItemWithRate[] = [];
