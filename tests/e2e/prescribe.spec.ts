@@ -28,7 +28,7 @@ test.describe("meds > CRUD operations", () => {
 
     doctorTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Add Prescription" }).click();
-      await page.getByLabel("User").selectOption({ index: 3 });
+      await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
 
       await expect(
@@ -88,63 +88,48 @@ test.describe("meds > CRUD operations", () => {
       ).toBeVisible();
     });
 
-    doctorTest("missing name", async ({ page }) => {
+    doctorTest("missing dosage", async ({ page }) => {
       await page.getByRole("button", { name: "Add Medication" }).last().click();
       await page.getByLabel("Medication").selectOption({
         label: "Ibuprofen",
       });
-      await page.getByRole("button", { name: "Add Medication" }).last().click();
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("");
-      await page.getByRole("button", { name: "Confirm" }).click();
+      await page.getByRole("button", { name: "Add" }).click();
 
       await expect(page.getByText("Dosage is required")).toBeVisible();
+    });
 
-      doctorTest("below minimum dosage", async ({ page }) => {
-        await page
-          .getByRole("button", { name: "Add Medication" })
-          .last()
-          .click();
-        await page.getByLabel("Medication").selectOption({
-          label: "Ibuprofen",
-        });
-        await page
-          .getByRole("button", { name: "Add Medication" })
-          .last()
-          .click();
-        await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
-        await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("200");
-        await page.getByRole("button", { name: "Confirm" }).click();
-
-        await expect(
-          page.getByText(
-            "Dosage is lower than the minimum dosage set by admin: 300 mg."
-          )
-        ).toBeVisible();
+    doctorTest("below minimum dosage", async ({ page }) => {
+      await page.getByRole("button", { name: "Add Medication" }).last().click();
+      await page.getByLabel("Medication").selectOption({
+        label: "Ibuprofen",
       });
+      await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
+      await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("200");
+      await page.getByRole("button", { name: "Add" }).click();
 
-      doctorTest("above maximum dosage", async ({ page }) => {
-        await page
-          .getByRole("button", { name: "Add Medication" })
-          .last()
-          .click();
-        await page.getByLabel("Medication").selectOption({
-          label: "Ibuprofen",
-        });
-        await page
-          .getByRole("button", { name: "Add Medication" })
-          .last()
-          .click();
-        await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
-        await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("1000");
-        await page.getByRole("button", { name: "Confirm" }).click();
+      await expect(
+        page.getByText(
+          "Dosage is lower than the minimum dosage set by admin: 300 mg."
+        )
+      ).toBeVisible();
+    });
 
-        await expect(
-          page.getByText(
-            "Dosage is higher than the maximum dosage set by admin: 800 mg."
-          )
-        ).toBeVisible();
+    doctorTest("above maximum dosage", async ({ page }) => {
+      await page.getByRole("button", { name: "Add Medication" }).last().click();
+      await page.getByLabel("Medication").selectOption({
+        label: "Ibuprofen",
       });
+      await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
+      await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("1000");
+      await page.getByRole("button", { name: "Add" }).click();
+
+      await expect(
+        page.getByText(
+          "Dosage is higher than the maximum dosage set by admin: 800 mg."
+        )
+      ).toBeVisible();
     });
   });
 
