@@ -97,8 +97,8 @@ jobs:
       - name: Get installed Playwright version
         id: playwright-version
         run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').dependencies['@playwright/test'].version)")" >> $GITHUB_ENV
-      - name: Migrate DB
-        run: npx prisma migrate dev
+      - name: Push schema to DB
+        run: npx prisma db push
         env:
           DATABASE_URL: "mysql://root:password@127.0.0.1:${{ job.services.mariadb.ports[3306] }}/${MYSQL_DATABASE}"
       - name: Install playwright
