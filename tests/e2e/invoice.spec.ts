@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { adminTest, patientTest } from "./playwright/fixtures";
 
-test.describe("meds > page access", () => {
+test.describe("invoice > page access", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/invoice");
   });
@@ -29,6 +29,7 @@ test.describe("meds > CRUD operations", () => {
     adminTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Add Invoice" }).click();
       await page.getByLabel("User").selectOption({ label: "John" });
+      await page.getByLabel("Due Date").fill("2050-05-25");
       await page.getByRole("button", { name: "Confirm" }).click();
 
       await expect(
@@ -124,7 +125,7 @@ test.describe("meds > CRUD operations", () => {
     // });
 
     adminTest("missing quantity", async ({ page }) => {
-      await page.getByLabel("Quantity").click();
+      await page.getByRole("button", { name: "Add Bill" }).last().click();
       await page.getByLabel("Quantity").fill("");
 
       await page.getByRole("button", { name: "Add" }).click();
@@ -153,7 +154,7 @@ test.describe("meds > CRUD operations", () => {
       await page.getByRole("button", { name: "Remove Bill" }).last().click();
       await page
         .getByLabel("Procedure - Name x quantity")
-        .selectOption({ label: "Laboratory x 3" });
+        .selectOption({ index: 0 });
       await page.getByRole("button", { name: "Remove" }).click();
 
       await expect(
