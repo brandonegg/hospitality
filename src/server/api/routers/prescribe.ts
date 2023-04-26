@@ -160,10 +160,10 @@ export const prescribeRouter = createTRPCRouter({
         const meds: Meds[] = await ctx.prisma
           .$queryRaw`SELECT * FROM Meds WHERE id=${medsId}`;
         medItem.meds = meds[0] as Meds;
-        result.medItems.push(medItem);
         const clone = JSON.parse(
           JSON.stringify(result)
         ) as PrescriptionWithMedItemAndMeds;
+        clone.medItems.push(medItem);
         clones.push(clone);
       }
 
