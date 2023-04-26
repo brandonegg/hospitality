@@ -139,9 +139,8 @@ export const prescribeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { userId } = input;
 
-      const newInvoice = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO prescription (id, userId) VALUES ("${createId()}", "${userId}")`
-      );
+      const newInvoice = await ctx.prisma
+        .$executeRaw`INSERT INTO Prescription (id, userId) VALUES (${createId()}, ${userId})`;
 
       return newInvoice;
     }),
