@@ -20,7 +20,7 @@ test.describe("prescribe > page access", () => {
   });
 });
 
-test.describe("meds > CRUD operations", () => {
+test.describe("invoice > CRUD operations", () => {
   test.describe("create", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/prescribe");
@@ -30,6 +30,9 @@ test.describe("meds > CRUD operations", () => {
       await page.getByRole("button", { name: "Add Prescription" }).click();
       await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
+
+      const text = page.getByText("Successfully created a prescription!");
+      await text.waitFor({ state: "visible" });
 
       await expect(
         page.getByText("Successfully created a prescription!")
@@ -46,6 +49,9 @@ test.describe("meds > CRUD operations", () => {
       await page.getByRole("button", { name: "Edit" }).last().click();
       await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
+
+      const text = page.getByText("Successfully updated a prescription!");
+      await text.waitFor({ state: "visible" });
 
       await expect(
         page.getByText("Successfully updated a prescription!")
@@ -82,6 +88,11 @@ test.describe("meds > CRUD operations", () => {
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("350");
 
       await page.getByRole("button", { name: "Add" }).click();
+
+      const text = page.getByText(
+        "Successfully added medication to prescription!"
+      );
+      await text.waitFor({ state: "visible" });
 
       await expect(
         page.getByText("Successfully added medication to prescription!")

@@ -20,7 +20,7 @@ test.describe("invoice > page access", () => {
   });
 });
 
-test.describe("meds > CRUD operations", () => {
+test.describe("invoice > CRUD operations", () => {
   test.describe("create", () => {
     test.beforeEach(async ({ page }) => {
       await page.goto("/invoice");
@@ -153,7 +153,9 @@ test.describe("meds > CRUD operations", () => {
       // remove the added procedure
       await page.getByRole("button", { name: "Remove Bill" }).last().click();
       // without this await it tries to click before button is there I think
-      await page.getByRole("button", { name: "Remove" }).isVisible();
+      const button = page.getByRole("button", { name: "Remove" });
+      await button.waitFor({ state: "visible" });
+
       await page.getByRole("button", { name: "Remove" }).click();
 
       await expect(
