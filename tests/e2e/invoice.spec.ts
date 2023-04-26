@@ -109,20 +109,20 @@ test.describe("invoice > CRUD operations", () => {
       ).toBeVisible();
     });
 
-    // adminTest("negative quantity", async ({ page }) => {
-    //   await page.getByRole("button", { name: "Add Bill" }).last().click();
-    //   await page.getByLabel("Procedure").selectOption({
-    //     label: "Laboratory",
-    //   });
-    //   await page.getByLabel("Quantity").click();
-    //   await page.getByLabel("Quantity").fill("-3");
+    adminTest("negative quantity", async ({ page }) => {
+      await page.getByRole("button", { name: "Add Bill" }).last().click();
+      await page.getByLabel("Procedure").selectOption({
+        label: "Laboratory",
+      });
+      await page.getByLabel("Quantity").click();
+      await page.getByLabel("Quantity").fill("-3");
 
-    //   await page.getByRole("button", { name: "Add" }).click();
+      await page.getByRole("button", { name: "Add" }).click();
 
-    //   await expect(
-    //     page.getByText("Quantity must be greater than 0.")
-    //   ).toBeVisible();
-    // });
+      await expect(
+        page.getByText("Quantity must be greater than 0.")
+      ).toBeVisible();
+    });
 
     adminTest("missing quantity", async ({ page }) => {
       await page.getByRole("button", { name: "Add Bill" }).last().click();
