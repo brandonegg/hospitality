@@ -19,7 +19,7 @@ export const prescribeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const results: MedItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM meditem WHERE prescriptionId="${input.id}"`
+        `SELECT * FROM Meditem WHERE prescriptionId="${input.id}"`
       );
 
       type MedItemWithMeds = MedItem & { meds: Meds };
@@ -28,7 +28,7 @@ export const prescribeRouter = createTRPCRouter({
 
       for (const result of results) {
         const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM meds WHERE id="${result.medsId}"`
+          `SELECT * FROM Meds WHERE id="${result.medsId}"`
         );
         (result as MedItemWithMeds).meds = meds[0] as Meds;
         // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
@@ -51,7 +51,7 @@ export const prescribeRouter = createTRPCRouter({
       const { medsId, id, dosage } = input;
 
       const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM meds WHERE id = "${medsId}";`
+        `SELECT * FROM Meds WHERE id = "${medsId}";`
       );
 
       const med = meds[0];
@@ -166,7 +166,7 @@ export const prescribeRouter = createTRPCRouter({
       const { id } = input;
 
       const deletedPrescription = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM prescription WHERE id="${id}"`
+        `DELETE FROM Prescription WHERE id="${id}"`
       );
 
       return deletedPrescription;
