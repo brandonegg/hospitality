@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { doctorTest, patientTest } from "./playwright/fixtures";
 
-test.describe("meds > page access", () => {
+test.describe("prescribe > page access", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/prescribe");
   });
