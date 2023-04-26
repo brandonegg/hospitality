@@ -11,7 +11,7 @@ export const prescribeRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { id } = input;
       const result: [{ name: string }] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT name FROM "User" WHERE id="${id}"`
+        `SELECT name FROM User WHERE id="${id}"`
       );
       return result[0] as { name: string };
     }),
@@ -19,7 +19,7 @@ export const prescribeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const results: MedItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM "meditem" WHERE prescriptionId="${input.id}"`
+        `SELECT * FROM meditem WHERE prescriptionId="${input.id}"`
       );
 
       type MedItemWithMeds = MedItem & { meds: Meds };
@@ -28,7 +28,7 @@ export const prescribeRouter = createTRPCRouter({
 
       for (const result of results) {
         const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM "meds" WHERE id="${result.medsId}"`
+          `SELECT * FROM meds WHERE id="${result.medsId}"`
         );
         (result as MedItemWithMeds).meds = meds[0] as Meds;
         // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
@@ -51,7 +51,7 @@ export const prescribeRouter = createTRPCRouter({
       const { medsId, id, dosage } = input;
 
       const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM "meds" WHERE id = "${medsId}";`
+        `SELECT * FROM meds WHERE id = "${medsId}";`
       );
 
       const med = meds[0];
@@ -167,7 +167,7 @@ export const prescribeRouter = createTRPCRouter({
       const { id } = input;
 
       const deletedPrescription = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM "prescription" WHERE id="${id}"`
+        `DELETE FROM prescription WHERE id="${id}"`
       );
 
       return deletedPrescription;
@@ -179,7 +179,7 @@ export const prescribeRouter = createTRPCRouter({
 
       //get the prescription with this id
       const prescription: Prescription[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM "Prescription" WHERE id="${id}"`
+        `SELECT * FROM Prescription WHERE id="${id}"`
       );
       return prescription[0] as Prescription;
     }),
