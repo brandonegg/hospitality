@@ -68,6 +68,9 @@ test.describe("prescribe > CRUD operations", () => {
       await page.getByRole("button", { name: "Delete" }).last().click();
       await page.getByRole("button", { name: "Confirm" }).click();
 
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
+
       await expect(
         page.getByText("Successfully deleted prescription!")
       ).toBeVisible();
@@ -118,6 +121,9 @@ test.describe("prescribe > CRUD operations", () => {
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("200");
       await page.getByRole("button", { name: "Add" }).click();
 
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
+
       await expect(
         page.getByText(
           "Dosage is lower than the minimum dosage set by admin: 300 mg."
@@ -133,6 +139,9 @@ test.describe("prescribe > CRUD operations", () => {
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("1000");
       await page.getByRole("button", { name: "Add" }).click();
+
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
 
       await expect(
         page.getByText(
@@ -156,6 +165,8 @@ test.describe("prescribe > CRUD operations", () => {
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").click();
       await page.getByLabel("Dosage (Min: 300 mg, Max: 800 mg)").fill("350");
       await page.getByRole("button", { name: "Add" }).click();
+      // without this it fails github action as playwright is too fast for our popup to popup
+      await page.waitForTimeout(3000);
       await page.getByRole("button", { name: "Close" }).click();
 
       // remove the added med
