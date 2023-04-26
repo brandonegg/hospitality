@@ -1,6 +1,5 @@
 import type { Availability } from "@prisma/client";
 import type { GetServerSideProps, GetServerSidePropsContext } from "next";
-import { type NextPage } from "next";
 import Head from "next/head";
 import Router from "next/router";
 import type { Session } from "next-auth";
@@ -8,6 +7,8 @@ import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 import { api } from "../lib/api";
+
+let availGetter: Promise<void>;
 
 export const timeSort = function (a: Availability, b: Availability) {
   // sort by date, then time
@@ -34,6 +35,7 @@ export const timeSort = function (a: Availability, b: Availability) {
 
 interface AppointPageProps {
   user: Session["user"];
+  url: string;
 }
 
 const today = new Date();
@@ -61,31 +63,6 @@ type day =
 // sets the time ranges to be displayed by the ui, change i to start and stop during available to set hours in military time
 // change minutes and j for different minutes. hour 7, <hour 20 means 7 to 7 can be marked as available
 const times: Availability[] = [];
-/**
- * instead of displaying all hours, grab the available times for the current doctor
- */
-const getAvailability = async function (docId: string, weekCount = 0) {
-  try {
-    const body = { docId, weekCount };
-    await fetch(`/api/getAvail`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((avails: Availability[]) => {
-        times.length = 0;
-        avails.sort(timeSort);
-        avails.forEach((time) => {
-          times.push(time);
-        });
-      });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-let availGetter = getAvailability("AllDoctors");
 
 /**
  * make a button for Appointment
@@ -179,7 +156,7 @@ const ColOfAppoint = (props: {
  * Doctor availabilty react component.
  * @returns JSX
  */
-const Appointment: NextPage = () => {
+function Appointment({ url }: { url: string }) {
   const realButtons = {
     border: "1px solid black" /* Green border */,
     borderRadius: 20,
@@ -188,6 +165,32 @@ const Appointment: NextPage = () => {
     cursor: "pointer" /* Pointer/hand icon */,
     display: "block" /* Make the buttons appear below each other */,
   };
+
+  /**
+   * instead of displaying all hours, grab the available times for the current doctor
+   */
+  const getAvailability = async function (docId: string, weekCount = 0) {
+    try {
+      const body = { docId, weekCount };
+      await fetch(`http://${url}/api/getAvail`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+        .then((response) => response.json())
+        .then((avails: Availability[]) => {
+          times.length = 0;
+          avails.sort(timeSort);
+          avails.forEach((time) => {
+            times.push(time);
+          });
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  availGetter = getAvailability("AllDoctors");
 
   const { data: sessionData } = useSession();
   /**
@@ -212,7 +215,7 @@ const Appointment: NextPage = () => {
     });
     try {
       const body = { times };
-      await fetch(`/api/storeAppoint`, {
+      await fetch(`http://${url}/api/storeAppoint`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -362,7 +365,7 @@ const Appointment: NextPage = () => {
       </main>
     </>
   );
-};
+}
 
 /**
  * Server side page setup
@@ -374,6 +377,7 @@ export const getServerSideProps: GetServerSideProps<AppointPageProps> = async (
 ) => {
   // Get the user session
   const session = await getSession(context);
+  const url = context.req.headers.host as string;
 
   if (session?.user?.role !== "PATIENT") {
     return {
@@ -386,6 +390,7 @@ export const getServerSideProps: GetServerSideProps<AppointPageProps> = async (
     return {
       props: {
         user: session.user,
+        url: url,
       },
     };
   }
