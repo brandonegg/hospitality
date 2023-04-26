@@ -68,15 +68,9 @@ export const invoiceRouter = createTRPCRouter({
       }
 
       const totalPrice = (parseFloat(rate.price) * quantity).toFixed(2);
-
-      const create = await ctx.prisma.lineItem.create({
-        data: {
-          rateId,
-          invoiceId,
-          quantity,
-          total: totalPrice,
-        },
-      });
+      const createsId = createId();
+      const create = await ctx.prisma
+        .$queryRaw`INSERT INTO LineItem (id, quantity, rateId, invoiceId, total) VALUES (${createsId}, ${quantity}, ${rateId}, ${invoiceId}, ${totalPrice})`;
 
       await updateInvoiceTotal(invoiceId);
 
@@ -92,12 +86,8 @@ export const invoiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { lineItemId, invoiceId } = input;
 
-      const result = await ctx.prisma.lineItem.deleteMany({
-        where: {
-          id: lineItemId,
-          invoiceId: invoiceId,
-        },
-      });
+      const result = await ctx.prisma
+        .$executeRaw`DELETE FROM LineItem WHERE id=${lineItemId} AND invoiceId=${invoiceId}`;
 
       await updateInvoiceTotal(invoiceId);
 
@@ -113,7 +103,7 @@ export const invoiceRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { limit, cursor } = input;
       const [count, items] = await ctx.prisma.$transaction([
-        ctx.prisma.invoice.count(),
+        ctx.prisma.$executeRaw`SELECT COUNT(*) FROM Invoice`,
         ctx.prisma.invoice.findMany({
           take: limit + 1,
           cursor: cursor ? { id: cursor } : undefined,
