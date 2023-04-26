@@ -56,6 +56,24 @@ async function globalSetup() {
     update: {},
   });
 
+  // create patient test user
+  const yewande = await prisma.user.upsert({
+    where: {
+      id: "Yewande",
+    },
+    create: {
+      id: "Yewande",
+      name: "Yewande",
+      dateOfBirth: new Date(),
+      username: "Yewande",
+      email: "Yewande@e2e.com",
+      password: await argon2.hash("password"),
+      addressId: address.id,
+      role: Role.PATIENT,
+    },
+    update: {},
+  });
+
   // create doctor test user
   await prisma.user.upsert({
     where: {
@@ -259,7 +277,7 @@ async function globalSetup() {
         paymentDue: new Date("5/7/2045"),
         total: "0",
         totalDue: "0",
-        userId: patient.id,
+        userId: yewande.id,
       },
     ],
   });
@@ -272,7 +290,7 @@ async function globalSetup() {
         userId: patient.id,
       },
       {
-        userId: patient.id,
+        userId: yewande.id,
       },
     ],
   });

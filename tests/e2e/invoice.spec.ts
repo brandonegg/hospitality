@@ -28,7 +28,7 @@ test.describe("invoice > CRUD operations", () => {
 
     adminTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Add Invoice" }).click();
-      await page.getByLabel("User").selectOption({ index: 1 });
+      await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByLabel("Due Date").fill("2050-05-25");
       await page.getByRole("button", { name: "Confirm" }).click();
 
@@ -55,7 +55,7 @@ test.describe("invoice > CRUD operations", () => {
 
     adminTest("with valid inputs", async ({ page }) => {
       await page.getByRole("button", { name: "Edit" }).last().click();
-      await page.getByLabel("User").selectOption({ index: 1 });
+      await page.getByLabel("User").selectOption({ label: "Yewande" });
       await page.getByRole("button", { name: "Confirm" }).click();
 
       await expect(
