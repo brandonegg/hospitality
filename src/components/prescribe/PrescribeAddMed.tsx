@@ -82,9 +82,19 @@ const PrescribeAddBill = ({
     }
   };
 
+  /**
+   * update state when dropdown changes
+   */
+  const changeDropDownFrequency = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setFreq(event.target.value);
+  };
+
   const medsQuery = api.meds.getAll.useQuery();
 
   const [med, setValue] = useState("");
+  const [freq, setFreq] = useState("Daily");
   const [index, setIndex] = useState(0);
 
   return serverResult ? (
@@ -157,6 +167,34 @@ const PrescribeAddBill = ({
           {errors.dosage && (
             <ErrorMessage id="dosage-error">
               {errors.dosage.message}
+            </ErrorMessage>
+          )}
+        </div>
+
+        <div className="flex grow flex-col">
+          <label htmlFor="dosageFreq">Dosage Frequency</label>
+          <select
+            id="dosageFreq"
+            value={freq}
+            className="rounded border border-gray-300 p-2"
+            {...register("dosageFreq", {
+              required: "A dosage frequency is required",
+            })}
+            onChange={changeDropDownFrequency}
+          >
+            <option value="Daily">Daily</option>
+            <option value="Every Other Day">Every Other Day</option>
+            <option value="Twice a Day">Twice a Day</option>
+            <option value="Three Times a Day">Three Times a Day</option>
+            <option value="Four Times a Day">Four Times a Day</option>
+            <option value="Every Bedtime">Every Bedtime</option>
+            <option value="Every Four Hours">Every Four Hours</option>
+            <option value="Every Six Hours">Every Six Hours</option>
+            <option value="Weekly">Weekly</option>
+          </select>
+          {errors.dosageFreq && (
+            <ErrorMessage id="medsId-error">
+              {errors.dosageFreq.message}
             </ErrorMessage>
           )}
         </div>

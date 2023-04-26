@@ -157,6 +157,7 @@ model Prescription {
 model MedItem {
   id             String  @id @default(cuid())
   dosage         String
+  dosageFreq     String
   prescriptionId String
   medsId         String
   prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)

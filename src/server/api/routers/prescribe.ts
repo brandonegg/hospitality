@@ -42,10 +42,11 @@ export const prescribeRouter = createTRPCRouter({
         medsId: z.string(),
         id: z.string(),
         dosage: z.string(),
+        dosageFreq: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { medsId, id, dosage } = input;
+      const { medsId, id, dosage, dosageFreq } = input;
 
       const meds: Meds[] = await ctx.prisma
         .$queryRaw`SELECT * FROM Meds WHERE id = ${medsId}`;
@@ -74,7 +75,7 @@ export const prescribeRouter = createTRPCRouter({
       const newId = createId();
 
       const create = await ctx.prisma
-        .$executeRaw`INSERT INTO MedItem (id, dosage, prescriptionId, medsId) VALUES (${newId}, ${dosage}, ${id}, ${medsId})`;
+        .$executeRaw`INSERT INTO MedItem (id, dosage, dosageFreq, prescriptionId, medsId) VALUES (${newId}, ${dosage}, ${dosageFreq}, ${id}, ${medsId})`;
       return create;
     }),
   removeItem: protectedProcedure
