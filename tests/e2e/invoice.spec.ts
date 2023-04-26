@@ -150,8 +150,10 @@ test.describe("meds > CRUD operations", () => {
 
       await page.getByRole("button", { name: "Add" }).click();
       await page.getByRole("button", { name: "Close" }).click();
-      // remove the added med
+      // remove the added procedure
       await page.getByRole("button", { name: "Remove Bill" }).last().click();
+      // without this await it tries to click before button is there i think
+      await page.getByRole("button", { name: "Remove" }).isVisible();
       await page.getByRole("button", { name: "Remove" }).click();
 
       await expect(
