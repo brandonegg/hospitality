@@ -11,25 +11,22 @@ export const invoiceRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const result: [{ name: string }] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT name FROM User WHERE id="${id}"`
-      );
+      const result: [{ name: string }] = await ctx.prisma
+        .$queryRaw`SELECT name FROM User WHERE id="${id}"`;
       return result[0] as { name: string };
     }),
   getProcedures: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const results: LineItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM lineItem WHERE invoiceId="${input.id}"`
-      );
+      const results: LineItem[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Lineitem WHERE invoiceId="${input.id}"`;
       type LineItemWithRate = LineItem & { rate: Rate };
 
       const clones: LineItemWithRate[] = [];
 
       for (const result of results) {
-        const rate: Rate[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM rate WHERE id="${result.rateId as string}"` // this is the line that needs to be fixed
-        );
+        const rate: Rate[] = await ctx.prisma
+          .$queryRaw`SELECT * FROM Rate WHERE id="${result.rateId as string}"`; // this is the line that needs to be fixed
         (result as LineItemWithRate).rate = rate[0] as Rate;
         // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
         //even though the object itself changes because "technically" the reference is the same despite the rate updating
@@ -57,10 +54,8 @@ export const invoiceRouter = createTRPCRouter({
         });
       }
 
-      const rates: Rate[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Rate WHERE id = "${rateId}";`
-      );
-
+      const rates: Rate[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Rate WHERE id = "${rateId}";`;
       const rate = rates[0];
 
       if (!rate) {
@@ -154,14 +149,12 @@ export const invoiceRouter = createTRPCRouter({
           message: `Invoice date must be in the future.`,
         });
       }
-      const newInvoice = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO Invoice (id, userId, paymentDue) VALUES ("${createId()}", "${userId}", "${new Date(
-          paymentDueDate.getTime() - paymentDueDate.getTimezoneOffset() * -60000
-        )
-          .toISOString()
-          .slice(0, 10)}")`
-      );
-
+      const newInvoice = await ctx.prisma
+        .$executeRaw`INSERT INTO Invoice (id, userId, paymentDue) VALUES ("${createId()}", "${userId}", "${new Date(
+        paymentDueDate.getTime() - paymentDueDate.getTimezoneOffset() * -60000
+      )
+        .toISOString()
+        .slice(0, 10)}")`;
       return newInvoice;
     }),
   update: protectedProcedure
@@ -185,10 +178,8 @@ export const invoiceRouter = createTRPCRouter({
         });
       }
 
-      const updatedInvoice = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Invoice SET userId="${userId}", paymentDue="${paymentDue}" WHERE id="${id}"`
-      );
-
+      const updatedInvoice = await ctx.prisma
+        .$executeRaw`UPDATE Invoice SET userId="${userId}", paymentDue="${paymentDue}" WHERE id="${id}"`;
       return updatedInvoice;
     }),
   delete: protectedProcedure
@@ -196,10 +187,8 @@ export const invoiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      const deletedInvoice = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM Invoice WHERE id="${id}"`
-      );
-
+      const deletedInvoice = await ctx.prisma
+        .$executeRaw`DELETE FROM Invoice WHERE id="${id}"`;
       return deletedInvoice;
     }),
   send: protectedProcedure
@@ -208,9 +197,8 @@ export const invoiceRouter = createTRPCRouter({
       const { id } = input;
 
       //get all invoices with this id
-      const invoices: Invoice[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Invoice WHERE id="${id}"`
-      );
+      const invoices: Invoice[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Invoice WHERE id="${id}"`;
       return invoices;
     }),
   getAllUserInvoices: protectedProcedure

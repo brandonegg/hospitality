@@ -10,26 +10,22 @@ export const prescribeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const result: [{ name: string }] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT name FROM User WHERE id="${id}"`
-      );
+      const result: [{ name: string }] = await ctx.prisma
+        .$queryRaw`SELECT name FROM User WHERE id="${id}"`;
       return result[0] as { name: string };
     }),
   getProcedures: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const results: MedItem[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Meditem WHERE prescriptionId="${input.id}"`
-      );
-
+      const results: MedItem[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Meditem WHERE prescriptionId="${input.id}"`;
       type MedItemWithMeds = MedItem & { meds: Meds };
 
       const clones: MedItemWithMeds[] = [];
 
       for (const result of results) {
-        const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-          `SELECT * FROM Meds WHERE id="${result.medsId}"`
-        );
+        const meds: Meds[] = await ctx.prisma
+          .$queryRaw`SELECT * FROM Meds WHERE id="${result.medsId}"`;
         (result as MedItemWithMeds).meds = meds[0] as Meds;
         // need a deep copy of these objects or for whatever reason react doesn't re render to show the rate,
         //even though the object itself changes because "technically" the reference is the same despite the meds updating
@@ -50,10 +46,8 @@ export const prescribeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { medsId, id, dosage } = input;
 
-      const meds: Meds[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Meds WHERE id = "${medsId}";`
-      );
-
+      const meds: Meds[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Meds WHERE id = "${medsId}";`;
       const med = meds[0];
 
       if (!med) {
@@ -76,10 +70,8 @@ export const prescribeRouter = createTRPCRouter({
         });
       }
 
-      const create = await ctx.prisma.$executeRawUnsafe(
-        `INSERT INTO meditem (id, dosage, prescriptionId, medsId) VALUES ("${createId()}", "${dosage}", "${id}", "${medsId}")`
-      );
-
+      const create = await ctx.prisma
+        .$executeRaw`INSERT INTO Meditem (id, dosage, prescriptionId, medsId) VALUES ("${createId()}", "${dosage}", "${id}", "${medsId}")`;
       return create;
     }),
   removeItem: protectedProcedure
@@ -154,10 +146,8 @@ export const prescribeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, userId } = input;
 
-      const updatedPrescription = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE prescription SET userId="${userId}" WHERE id="${id}"`
-      );
-
+      const updatedPrescription = await ctx.prisma
+        .$executeRaw`UPDATE Prescription SET userId="${userId}" WHERE id="${id}"`;
       return updatedPrescription;
     }),
   delete: protectedProcedure
@@ -165,10 +155,8 @@ export const prescribeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id } = input;
 
-      const deletedPrescription = await ctx.prisma.$executeRawUnsafe(
-        `DELETE FROM Prescription WHERE id="${id}"`
-      );
-
+      const deletedPrescription = await ctx.prisma
+        .$executeRaw`DELETE FROM Prescription WHERE id="${id}"`;
       return deletedPrescription;
     }),
   send: protectedProcedure
@@ -177,9 +165,8 @@ export const prescribeRouter = createTRPCRouter({
       const { id } = input;
 
       //get the prescription with this id
-      const prescription: Prescription[] = await ctx.prisma.$queryRawUnsafe(
-        `SELECT * FROM Prescription WHERE id="${id}"`
-      );
+      const prescription: Prescription[] = await ctx.prisma
+        .$queryRaw`SELECT * FROM Prescription WHERE id="${id}"`;
       return prescription[0] as Prescription;
     }),
   byId: protectedProcedure
