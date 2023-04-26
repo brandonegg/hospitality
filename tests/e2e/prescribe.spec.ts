@@ -158,6 +158,11 @@ test.describe("meds > CRUD operations", () => {
         .getByLabel("Medication - Name x dosage")
         .selectOption({ label: "Ibuprofen x 350 mg" });
       await page.getByRole("button", { name: "Remove" }).click();
+      const text = page.getByText(
+        "Successfully removed medication from prescription!"
+      );
+      // without this await, the looks for text before it shows up
+      await text.waitFor({ state: "visible" });
 
       await expect(
         page.getByText("Successfully removed medication from prescription!")
