@@ -43,7 +43,7 @@ const PrescriptionSummary = ({
   }
   if (noMedItems) {
     return (
-      <div className="h-fit content-center rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
+      <div className="h-fit rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
         <h1 className="mb-2 text-center text-lg font-bold">
           Prescription Summary
         </h1>
@@ -56,7 +56,7 @@ const PrescriptionSummary = ({
     );
   }
   return (
-    <div className="h-fit content-center rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
+    <div className="h-fit rounded-xl border border-neutral-400 bg-yellow-200 p-2 drop-shadow-xl">
       <h1 className="mb-2 text-center text-lg font-bold">
         Prescription Summary
       </h1>
@@ -85,7 +85,7 @@ const PrescriptionOverview = ({
   user: Session["user"];
 }) => {
   return (
-    <div className="mx-auto flex space-x-8">
+    <div className="mx-auto space-x-8">
       <PrescriptionSummary Prescription={Prescription} />
     </div>
   );

@@ -57,7 +57,7 @@ const PrescriptionViewPage = ({
   }
 
   return (
-    <div className="mx-auto">
+    <div className="flex justify-center">
       <PrescriptionOverview Prescription={Prescription} user={user} />
     </div>
   );
