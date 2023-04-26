@@ -50,6 +50,13 @@ export const invoiceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { rateId, invoiceId, quantity } = input;
 
+      if (quantity <= 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Quantity must be greater than 0.",
+        });
+      }
+
       const rates: Rate[] = await ctx.prisma.$queryRawUnsafe(
         `SELECT * FROM Rate WHERE id = "${rateId}";`
       );
