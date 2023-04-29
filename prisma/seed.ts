@@ -282,6 +282,102 @@ async function main() {
       },
     ],
   });
+
+  await prisma.test.deleteMany();
+
+  await prisma.test.createMany({
+    data: [
+      {
+        name: "Antinuclear Antibody (ANA)",
+        description:
+          "This test helps to diagnose lupus and to rule out certain other autoimmune diseases.",
+      },
+      {
+        name: "Basic Metabolic Panel (BMP)",
+        description:
+          "A group of 7-8 tests used as a screening tool to check for conditions like diabetes and kidney disease. You may be asked to fast for 10 to 12 hours prior to the test.",
+      },
+      {
+        name: "Complete Blood Count (CBC)",
+        description:
+          "Determines general health and screens for disorders such as anemia or infections, as well as nutritional status and toxic substance exposure.",
+      },
+      {
+        name: "Comprehensive Metabolic Panel (CMP)",
+        description:
+          "A group of 14 tests used as a screening tool to check for conditions like diabetes and kidney disease. You may be asked to fast for 10 to 12 hours prior to the test.",
+      },
+      {
+        name: "Sedimentation Rate (ESR)",
+        description:
+          "A test that measures the rate at which red blood cells settle to the bottom of a test tube. It is used to help diagnose inflammation and infection.",
+      },
+      {
+        name: "Flu Test (Influenza A & B Screen)",
+        description:
+          "A test that detects the presence of the influenza A and B viruses in the blood. It is used to help diagnose the flu.",
+      },
+      {
+        name: "Glucose Level",
+        description:
+          "A test that measures the amount of glucose in the blood. It is used to help diagnose diabetes and to monitor the effectiveness of diabetes treatment.",
+      },
+      {
+        name: "Pregnancy Test (hCG)",
+        description:
+          "A test that measures the amount of human chorionic gonadotropin (hCG) in the blood. It is used to help diagnose pregnancy.",
+      },
+      {
+        name: "Hemoglobin A1c (HbA1c)",
+        description:
+          "A test that measures the amount of hemoglobin A1c in the blood. It is used to help diagnose diabetes and to monitor the effectiveness of diabetes treatment.",
+      },
+      {
+        name: "HIV Antibody Test",
+        description:
+          "A test that detects the presence of antibodies to the human immunodeficiency virus (HIV) in the blood. It is used to help diagnose HIV infection.",
+      },
+      {
+        name: "Liver Function Tests (LFTs)",
+        description:
+          "A group of 5-6 tests used to check for liver damage and disease. You may be asked to fast for 10 to 12 hours prior to the test.",
+      },
+      {
+        name: "Lipid Panel",
+        description:
+          "This group of tests can determine risk of coronary heart disease, and may be a good indicator of whether someone is likely to have a heart attack or stroke, as caused by blockage of blood vessels.",
+      },
+      {
+        name: "Lyme Antibody Test",
+        description:
+          "A test that detects the presence of antibodies to the Borrelia burgdorferi bacteria in the blood. It is used to help diagnose Lyme disease.",
+      },
+      {
+        name: "Mononucleosis Test (Mono Spot)",
+        description:
+          "A test that detects the presence of antibodies to the Epstein-Barr virus in the blood. It is used to help diagnose mononucleosis.",
+      },
+      {
+        name: "Pap Smear",
+        description:
+          "A test that detects the presence of human papillomavirus (HPV) in the cervix. It is used to help diagnose cervical cancer.",
+      },
+      {
+        name: "Partial Thromboplastin Time (PTT)",
+        description:
+          "A test that measures the time it takes for blood to clot.",
+      },
+      {
+        name: "Prostate Specific Antigen (PSA)",
+        description: "This test is to screen for and monitor prostate cancer.",
+      },
+      {
+        name: "Urinalysis",
+        description:
+          "A test that measures the physical, chemical, and microscopic characteristics of urine. It is used to help diagnose and monitor a wide variety of conditions.",
+      },
+    ],
+  });
 }
 
 main()
