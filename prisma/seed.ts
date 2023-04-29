@@ -35,18 +35,24 @@ async function main() {
     update: {},
   });
 
+  const passwordBob = await argon2.hash("bob");
+  const bob = await prisma.user.upsert({
+    where: { email: "bob@prisma.io" },
+    update: {},
+    create: {
+      name: "Bob",
+      username: "bob",
+      email: "bob@prisma.io",
+      password: passwordBob,
+      dateOfBirth: new Date("3/18/2000"),
+      addressId: address.id,
+      role: Role.PATIENT,
+    },
+  });
+
   // create some dummy users
   await prisma.user.createMany({
     data: [
-      {
-        name: "Bob",
-        username: "bob",
-        email: "bob@prisma.io",
-        password: password,
-        dateOfBirth: new Date("3/18/2000"),
-        addressId: address.id,
-        role: Role.PATIENT,
-      },
       {
         name: "Bobo",
         username: "bobo",
@@ -269,6 +275,8 @@ async function main() {
     ],
   });
 
+  await prisma.paymentSource.deleteMany();
+
   // Create basic payment sources all patients can use for testing
   await prisma.paymentSource.createMany({
     data: [
@@ -285,13 +293,15 @@ async function main() {
 
   await prisma.test.deleteMany();
 
+  const test = await prisma.test.create({
+    data: {
+      name: "Antinuclear Antibody (ANA)",
+      description:
+        "This test helps to diagnose lupus and to rule out certain other autoimmune diseases.",
+    },
+  });
   await prisma.test.createMany({
     data: [
-      {
-        name: "Antinuclear Antibody (ANA)",
-        description:
-          "This test helps to diagnose lupus and to rule out certain other autoimmune diseases.",
-      },
       {
         name: "Basic Metabolic Panel (BMP)",
         description:
@@ -375,6 +385,17 @@ async function main() {
         name: "Urinalysis",
         description:
           "A test that measures the physical, chemical, and microscopic characteristics of urine. It is used to help diagnose and monitor a wide variety of conditions.",
+      },
+    ],
+  });
+
+  await prisma.labTest.deleteMany();
+
+  await prisma.labTest.createMany({
+    data: [
+      {
+        testId: test.id,
+        userId: bob.id,
       },
     ],
   });
