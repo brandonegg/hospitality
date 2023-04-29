@@ -7,7 +7,7 @@ import { removeAppointRouter } from "./routers/myAppoint";
 import { paymentRouter } from "./routers/payment";
 import { rateRouter } from "./routers/rate";
 import { storeAvailRouter } from "./routers/storeAvail";
-import { testRouter } from "./routers/tests";
+import { testRouter } from "./routers/test";
 import { userRouter } from "./routers/user";
 import { createTRPCRouter } from "./trpc";
 
