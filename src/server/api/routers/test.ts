@@ -64,7 +64,7 @@ export const testRouter = createTRPCRouter({
       const { id, name, description } = input;
 
       const updatedTest = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE Rate Test name="${name}", description="${description}" WHERE id="${id}"`
+        `UPDATE Test SET name="${name}", description="${description}" WHERE id="${id}"`
       );
 
       return updatedTest;
