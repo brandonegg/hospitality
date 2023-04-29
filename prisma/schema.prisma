@@ -170,11 +170,10 @@ model Test {
 }
 
 model LabTest {
-  id     String   @id @default(cuid())
-  date   DateTime
+  id     String  @id @default(cuid())
   result String?
-  User   User?    @relation(fields: [userId], references: [id])
+  User   User?   @relation(fields: [userId], references: [id])
   userId String?
-  Test   Test?    @relation(fields: [testId], references: [id])
+  Test   Test?   @relation(fields: [testId], references: [id])
   testId String?
 }
