@@ -310,7 +310,6 @@ async function main() {
     ],
   });
 
-  await prisma.paymentSource.deleteMany();
   await prisma.invoice.deleteMany();
 
   await prisma.invoice.createMany({
@@ -342,6 +341,8 @@ async function main() {
       },
     ],
   });
+
+  await prisma.paymentSource.deleteMany();
 
   // Create basic payment sources all patients can use for testing
   await prisma.paymentSource.createMany({
