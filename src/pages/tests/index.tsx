@@ -84,10 +84,10 @@ const RateTable = ({
 };
 
 /**
- * Rates page.
+ * Tests page.
  * @returns
  */
-const RatesPage = () => {
+const TestsPage = () => {
   const [page, setPage] = useState<number>(0);
   const [limit] = useState<number>(10);
   const [popup, setPopup] = useState<TablePopup<RateRowData, UserPopupTypes>>({
@@ -202,4 +202,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default RatesPage;
+export default TestsPage;
