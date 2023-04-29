@@ -1,3 +1,4 @@
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import type { Test, User } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
@@ -43,7 +44,17 @@ const TestTableRow = ({
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
       <td className="px-6 py-2">{(item.user as User).name ?? ""}</td>
       <td className="px-6 py-2">{(item.test as Test).name ?? ""}</td>
-      <td className="px-6 py-2">{item.result ? "Y" : "N"}</td>
+      <td className="px-6 py-2">
+        {item.result ? (
+          <div className="flex justify-center">
+            <CheckIcon className="h-6 w-6 text-green-600" />
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <XMarkIcon className="h-6 w-6 text-red-600" />
+          </div>
+        )}
+      </td>
       <ActionsEntry
         editDetails={editDetails}
         deleteDetails={deleteDetails}
@@ -71,7 +82,7 @@ const TestTable = ({
           <tr>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Test</th>
-            <th className="w-[175px] px-6 py-3">Is Completed</th>
+            <th className="w-[175px] px-6 py-3 text-center">Is Completed</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
