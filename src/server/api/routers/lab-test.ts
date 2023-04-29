@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
+import { defaultUserSelect } from "./user";
+
 export const labTestRouter = createTRPCRouter({
   getAllPaged: protectedProcedure
     .input(
@@ -16,6 +18,12 @@ export const labTestRouter = createTRPCRouter({
       const [count, items] = await ctx.prisma.$transaction([
         ctx.prisma.labTest.count(),
         ctx.prisma.labTest.findMany({
+          include: {
+            user: {
+              select: defaultUserSelect,
+            },
+            test: true,
+          },
           take: limit + 1,
           cursor: cursor ? { id: cursor } : undefined,
         }),
