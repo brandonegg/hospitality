@@ -36,6 +36,7 @@ model User {
   beds          Bed[]
   invoices      Invoice[]
   payments      Payment[]
+  LabTest       LabTest[]
 }
 
 model Bed {
@@ -111,7 +112,7 @@ model Hours {
 model Rate {
   id          String     @id @default(cuid())
   name        String
-  description String
+  description String     @db.Text
   price       String
   lineItems   LineItem[]
 }
@@ -159,4 +160,21 @@ model Payment {
   invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   userId    String?
   user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Test {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @db.Text
+  LabTest     LabTest[]
+}
+
+model LabTest {
+  id     String   @id @default(cuid())
+  date   DateTime
+  result String?
+  User   User?    @relation(fields: [userId], references: [id])
+  userId String?
+  Test   Test?    @relation(fields: [testId], references: [id])
+  testId String?
 }
