@@ -5,12 +5,12 @@ import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
 import PageSelector from "../../components/PageSelector";
-import type { RatePopupTypes } from "../../components/rates/RatePopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
+import type { TestPopupTypes } from "../../components/tests/TestPopup";
 import TestPopup from "../../components/tests/TestPopup";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../lib/api";
@@ -27,7 +27,7 @@ const TestTableRow = ({
   setPopup,
 }: {
   item: TestRowData;
-  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, RatePopupTypes>>>;
+  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, TestPopupTypes>>>;
 }) => {
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
@@ -59,7 +59,7 @@ const TestTable = ({
   setPopup,
 }: {
   items: TestRowData[] | undefined;
-  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, RatePopupTypes>>>;
+  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, TestPopupTypes>>>;
 }) => {
   return (
     <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
