@@ -36,6 +36,7 @@ model User {
   beds          Bed[]
   invoices      Invoice[]
   payments      Payment[]
+  prescriptions Prescription[]
 }
 
 model Bed {
@@ -116,6 +117,15 @@ model Rate {
   lineItems   LineItem[]
 }
 
+model Meds {
+  id            String     @id @default(cuid())
+  name          String
+  dosageMin     String
+  dosageMax     String
+  unit          String
+  meds          MedItem[]
+}
+
 model LineItem {
   id        String  @id @default(cuid())
   quantity  Int
@@ -135,6 +145,23 @@ model Invoice {
   payments   Payment[]
   userId     String?
   User       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Prescription {
+  id         String     @id @default(cuid())
+  userId     String?
+  User       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  meds       MedItem[]
+}
+
+model MedItem {
+  id             String  @id @default(cuid())
+  dosage         String
+  dosageFreq     String
+  prescriptionId String
+  medsId         String
+  prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+  med            Meds?   @relation(fields: [medsId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentSourceType {

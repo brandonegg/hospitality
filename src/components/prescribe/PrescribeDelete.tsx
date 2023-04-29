@@ -5,36 +5,40 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-interface InvoiceDeleteProps {
+interface PrescribeDeleteProps {
   refetch: () => Promise<void>;
-  invoice?: InvoiceRowData;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  prescribe?: PrescribeRowData;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
-type InvoiceDeleteInput = RouterInputs["invoice"]["delete"];
-type InvoiceDeleteOutput = RouterOutputs["invoice"]["delete"];
+type PrescribeDeleteInput = RouterInputs["prescribe"]["delete"];
+type PrescribeDeleteOutput = RouterOutputs["prescribe"]["delete"];
 
 /**
- * Invoice delete component.
+ * Prescribe delete component.
  * @returns
  */
-const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
+const PrescribeDelete = ({
+  refetch,
+  prescribe,
+  setPopup,
+}: PrescribeDeleteProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceDeleteOutput | undefined
+    PrescribeDeleteOutput | undefined
   >(undefined);
   const [name, setName] = useState<string | undefined>(undefined);
 
-  const leName = getName(invoice?.userId ?? "");
+  const leName = getName(prescribe?.userId ?? "");
 
   useEffect(() => {
     let ignore = false;
@@ -52,10 +56,10 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
     };
   }, [leName]);
 
-  const { register, handleSubmit } = useForm<InvoiceDeleteInput>();
+  const { register, handleSubmit } = useForm<PrescribeDeleteInput>();
 
-  const { mutate } = api.invoice.delete.useMutation({
-    onSuccess: async (data: InvoiceDeleteOutput) => {
+  const { mutate } = api.prescribe.delete.useMutation({
+    onSuccess: async (data: PrescribeDeleteOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -66,7 +70,7 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceDeleteInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeDeleteInput> = (data) => {
     mutate(data);
   };
 
@@ -77,22 +81,22 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
    */
   function getName(id: string | undefined): string | undefined {
     if (id) {
-      const { data: name } = api.invoice.getName.useQuery({ id: id });
+      const { data: name } = api.prescribe.getName.useQuery({ id: id });
       return name?.name;
     } else {
       // to make react happy
-      const { data: name } = api.invoice.getName.useQuery({ id: "" });
+      const { data: name } = api.prescribe.getName.useQuery({ id: "" });
       return name?.name;
     }
   }
 
-  if (!invoice) {
+  if (!prescribe) {
     return <></>;
   }
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully deleted invoice!</Alert>
+      <Alert type="success">Successfully deleted prescription!</Alert>
       <button
         type="button"
         onClick={() => setPopup({ show: false })}
@@ -106,7 +110,7 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
       {/* server response error */}
       {serverError && <Alert type="error">{serverError}</Alert>}
 
-      <p>Do you want to delete this Invoice?</p>
+      <p>Do you want to delete this prescription?</p>
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">
@@ -115,21 +119,9 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
             {name ? name : "User not found"}
           </p>
         </div>
-
-        <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Due Date:</p>
-          <p className="col-span-10 sm:col-span-8">
-            {new Date(
-              invoice.paymentDue.getTime() -
-                invoice.paymentDue.getTimezoneOffset() * -60000
-            )
-              .toISOString()
-              .slice(0, 10)}
-          </p>
-        </div>
       </div>
 
-      <input type="hidden" value={invoice?.id} {...register("id")} />
+      <input type="hidden" value={prescribe?.id} {...register("id")} />
 
       <div className="flex gap-2">
         <button
@@ -150,4 +142,4 @@ const InvoiceDelete = ({ refetch, invoice, setPopup }: InvoiceDeleteProps) => {
   );
 };
 
-export default InvoiceDelete;
+export default PrescribeDelete;

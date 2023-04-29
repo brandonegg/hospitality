@@ -78,6 +78,10 @@ const InvoiceRemoveBill = ({
     id: invoice?.id ?? "",
   });
 
+  if (procedures == undefined) {
+    return <div />;
+  }
+
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully removed from invoice bill!</Alert>
@@ -106,7 +110,7 @@ const InvoiceRemoveBill = ({
             })}
             onChange={changeDropDown}
           >
-            {procedures?.map((lineItem, index) => (
+            {procedures.map((lineItem, index) => (
               <option key={index} value={lineItem.id}>
                 {lineItem.rate?.name} x {lineItem.quantity}
               </option>

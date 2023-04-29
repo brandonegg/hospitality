@@ -5,42 +5,53 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-type InvoiceCreateInput = RouterInputs["invoice"]["create"];
-type InvoiceCreateOutput = RouterOutputs["invoice"]["create"];
+type PrescribeUpdateInput = RouterInputs["prescribe"]["update"];
+type PrescribeUpdateOutput = RouterOutputs["prescribe"]["update"];
 
-interface InvoiceCreateProps {
+interface PrescribeEditProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  prescribe?: PrescribeRowData;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
 /**
- * Invoice delete component.
+ * Prescribe edit component.
  * @returns
  */
-const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
+const PrescribeEdit = ({
+  refetch,
+  prescribe,
+  setPopup,
+}: PrescribeEditProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceCreateOutput | undefined
+    PrescribeUpdateOutput | undefined
   >(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InvoiceCreateInput>();
+  } = useForm<PrescribeUpdateInput>({
+    // add default values
+    defaultValues: {
+      ...prescribe,
+      userId: prescribe?.userId ?? "",
+    },
+  });
 
-  const { mutate } = api.invoice.create.useMutation({
-    onSuccess: async (data: InvoiceCreateOutput) => {
+  const { mutate } = api.prescribe.update.useMutation({
+    onSuccess: async (data: PrescribeUpdateOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -48,12 +59,10 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     onError: (error) => setServerError(error.message),
   });
 
-  const patientsQuery = api.user.getAllPatients.useQuery();
-
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceCreateInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeUpdateInput> = (data) => {
     mutate(data);
   };
 
@@ -64,16 +73,22 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     setValue(event.target.value);
   };
 
-  const [patient, setValue] = useState("");
+  const patientsQuery = api.user.getAllPatients.useQuery();
+
+  const [patient, setValue] = useState<string | undefined>(
+    prescribe?.userId ?? undefined
+  );
+
+  if (!prescribe) {
+    return <></>;
+  }
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created an invoice!</Alert>
+      <Alert type="success">Successfully updated a prescription!</Alert>
       <button
         type="button"
-        onClick={() => {
-          setPopup({ show: false });
-        }}
+        onClick={() => setPopup({ show: false })}
         className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
       >
         Close
@@ -108,23 +123,6 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
             <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
           )}
         </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">Due Date</label>
-          <input
-            type="date"
-            id="paymentDue"
-            className="resize-none rounded border border-gray-300 p-2"
-            {...register("paymentDue", {
-              required: "Due date is required",
-            })}
-          />
-          {errors.paymentDue && (
-            <ErrorMessage id="paymentDue-error">
-              {errors.paymentDue.message}
-            </ErrorMessage>
-          )}
-        </div>
       </div>
       <div className="flex gap-2">
         <button
@@ -145,4 +143,4 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
   );
 };
 
-export default InvoiceCreate;
+export default PrescribeEdit;

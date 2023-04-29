@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
+import type { Prescription } from "@prisma/client";
 import { Role } from "@prisma/client";
 import type { GetServerSidePropsContext } from "next";
 import Image from "next/image";
@@ -10,16 +11,22 @@ import Layout from "../../components/dashboard/layout";
 import type { RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
 
-type InvoiceResponseData =
-  RouterOutputs["invoice"]["getAllUserInvoices"][number];
+type PrescriptionResponseData =
+  RouterOutputs["prescribe"]["getAllUserPrescriptions"];
 
 /**
  * Bill summary view button
  */
-const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
+const PrescriptionSummaryButton = ({
+  details,
+  index,
+}: {
+  details: Prescription;
+  index: number;
+}) => {
   return (
     <Link
-      href={`/invoice/${details.id}`}
+      href={`/prescribe/${details.id}`}
       className="group flex flex-row space-x-6 rounded-xl border border-neutral-300 bg-neutral-100 p-4 drop-shadow-lg transition duration-100 hover:drop-shadow-none"
     >
       <div className="my-auto grow-0 rounded-xl border border-neutral-900 bg-yellow-200 p-2 drop-shadow">
@@ -28,23 +35,8 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
       <div className="flex grow flex-row divide-x divide-neutral-700">
         <div className="px-4">
           <h1 className="inline-block text-lg font-semibold">
-            Remaining Balance
+            Number {index}{" "}
           </h1>
-          <h2>
-            <span className="text-green-700">$</span>
-            <span className="text-neutral-600">{details.totalDue}</span>
-          </h2>
-        </div>
-        <div className="px-4">
-          <h1 className="inline-block text-lg font-semibold">Amount Due By</h1>
-          <h2 className="italic text-neutral-600">
-            {new Date(
-              details.paymentDue.getTime() -
-                details.paymentDue.getTimezoneOffset() * -60000
-            )
-              .toISOString()
-              .slice(0, 10)}
-          </h2>
         </div>
       </div>
       <ChevronRightIcon className="my-auto h-8 grow-0 group-hover:animate-bounce_x" />
@@ -53,23 +45,29 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
 };
 
 /**
- * Wrapper for the different bills sections display on page (upcoming/paid etc.)
+ * Wrapper for the different Prescriptions sections display on page (upcoming/paid etc.)
  */
-const BillsSection = ({
+const PrescriptionsSection = ({
   id,
   label,
-  bills,
+  Prescriptions,
 }: {
   id?: string;
   label: string;
-  bills: InvoiceResponseData[];
+  Prescriptions: PrescriptionResponseData;
 }) => {
   return (
-    <section id="upcoming-bills" className="grow-0 px-8">
+    <section id="upcoming-Prescriptions" className="grow-0 px-8">
       <h1 className="text-center text-xl font-bold text-sky-900">{label}</h1>
       <div className="mt-4 flex flex-col space-y-6">
-        {bills.map((bill, index) => {
-          return <BillSummaryButton key={index} details={bill} />;
+        {Prescriptions.map((prescription, index) => {
+          return (
+            <PrescriptionSummaryButton
+              key={index}
+              details={prescription}
+              index={index}
+            />
+          );
         })}
       </div>
     </section>
@@ -77,29 +75,22 @@ const BillsSection = ({
 };
 
 /**
- * Main bills page. Will only show bills tied to the user.
+ * Main Prescriptions page. Will only show Prescriptions tied to the user.
  */
-const BillsDashboardPage = ({ user }: { user: Session["user"] }) => {
-  const { data: userInvoices } = api.invoice.getAllUserInvoices.useQuery({
-    userId: user.id,
-  });
-
-  const upcomingInvoices = userInvoices?.filter(
-    (item) => parseFloat(item.totalDue) > 0
-  );
-
-  const paidInvoices = userInvoices?.filter(
-    (item) => parseFloat(item.totalDue) == 0
-  );
+const PrescriptionsDashboardPage = ({ user }: { user: Session["user"] }) => {
+  const { data: userPrescriptions } =
+    api.prescribe.getAllUserPrescriptions.useQuery({
+      userId: user.id,
+    });
 
   return (
     <Layout>
       <div className="mx-auto flex w-full flex-col justify-center divide-x md:flex-row">
-        {upcomingInvoices && upcomingInvoices.length !== 0 ? (
-          <BillsSection label="Upcoming Bills" bills={upcomingInvoices} />
-        ) : undefined}
-        {paidInvoices && paidInvoices.length !== 0 ? (
-          <BillsSection label="Paid Bills" bills={paidInvoices} />
+        {userPrescriptions && userPrescriptions.length !== 0 ? (
+          <PrescriptionsSection
+            label="Prescriptions"
+            Prescriptions={userPrescriptions}
+          />
         ) : undefined}
       </div>
     </Layout>
@@ -129,7 +120,7 @@ export const getServerSideProps = async (
 
   const authorizedUsers: Role[] = [Role.PATIENT];
 
-  // If the user is not an admin, redirect to the dashboard
+  // If the user is not patient, redirect to the dashboard
   if (!authorizedUsers.includes(session.user.role)) {
     return {
       redirect: {
@@ -146,4 +137,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default BillsDashboardPage;
+export default PrescriptionsDashboardPage;

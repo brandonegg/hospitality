@@ -5,42 +5,42 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-type InvoiceCreateInput = RouterInputs["invoice"]["create"];
-type InvoiceCreateOutput = RouterOutputs["invoice"]["create"];
+type PrescribeCreateInput = RouterInputs["prescribe"]["create"];
+type PrescribeCreateOutput = RouterOutputs["prescribe"]["create"];
 
-interface InvoiceCreateProps {
+interface PrescribeCreateProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
 /**
- * Invoice delete component.
+ * Prescribe delete component.
  * @returns
  */
-const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
+const PrescribeCreate = ({ refetch, setPopup }: PrescribeCreateProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceCreateOutput | undefined
+    PrescribeCreateOutput | undefined
   >(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InvoiceCreateInput>();
+  } = useForm<PrescribeCreateInput>();
 
-  const { mutate } = api.invoice.create.useMutation({
-    onSuccess: async (data: InvoiceCreateOutput) => {
+  const { mutate } = api.prescribe.create.useMutation({
+    onSuccess: async (data: PrescribeCreateOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -53,7 +53,7 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceCreateInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeCreateInput> = (data) => {
     mutate(data);
   };
 
@@ -68,7 +68,7 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created an invoice!</Alert>
+      <Alert type="success">Successfully created a prescription!</Alert>
       <button
         type="button"
         onClick={() => {
@@ -108,23 +108,6 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
             <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
           )}
         </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">Due Date</label>
-          <input
-            type="date"
-            id="paymentDue"
-            className="resize-none rounded border border-gray-300 p-2"
-            {...register("paymentDue", {
-              required: "Due date is required",
-            })}
-          />
-          {errors.paymentDue && (
-            <ErrorMessage id="paymentDue-error">
-              {errors.paymentDue.message}
-            </ErrorMessage>
-          )}
-        </div>
       </div>
       <div className="flex gap-2">
         <button
@@ -145,4 +128,4 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
   );
 };
 
-export default InvoiceCreate;
+export default PrescribeCreate;

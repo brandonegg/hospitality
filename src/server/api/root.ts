@@ -3,8 +3,10 @@ import { exampleRouter } from "./routers/example";
 import { getAppointRouter } from "./routers/getAppoint";
 import { hoursRouter } from "./routers/hours";
 import { invoiceRouter } from "./routers/invoice";
+import { medsRouter } from "./routers/meds";
 import { removeAppointRouter } from "./routers/myAppoint";
 import { paymentRouter } from "./routers/payment";
+import { prescribeRouter } from "./routers/prescribe";
 import { rateRouter } from "./routers/rate";
 import { storeAvailRouter } from "./routers/storeAvail";
 import { userRouter } from "./routers/user";
@@ -20,7 +22,9 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   bed: bedRouter,
   rate: rateRouter,
+  meds: medsRouter,
   invoice: invoiceRouter,
+  prescribe: prescribeRouter,
   storeAvail: storeAvailRouter,
   getAppoint: getAppointRouter,
   myAppoint: removeAppointRouter,
