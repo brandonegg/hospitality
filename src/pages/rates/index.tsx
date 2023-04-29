@@ -127,7 +127,6 @@ const RatesPage = () => {
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
-      <MainHeader />
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Rates" count={ratesLength} />
