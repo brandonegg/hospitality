@@ -1,6 +1,6 @@
 # Hospitality
 
-TODO: A brief description of the project
+Building an open platform hospital management system for the University of Iowa!
 
 # Developer Environment
 

@@ -62,14 +62,14 @@ test.describe("patient payments", () => {
   patientTest("make payment on invoice", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcoming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").first().click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
       .selectOption({ label: "Bank Account" });
 
     // Get total due from page to pay it.
-    const amountText = await page.locator("#amount-due").innerText();
+    const amountText = await page.locator("#amount-due").first().innerText();
 
     await page.getByLabel("Amount").fill(amountText.replace("$", ""));
 
@@ -86,7 +86,7 @@ test.describe("patient payments", () => {
   patientTest("make $0 payment", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcoming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").first().click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
@@ -103,14 +103,14 @@ test.describe("patient payments", () => {
   patientTest("make payment greater than amount due", async ({ page }) => {
     await page.goto("/dashboard");
     await page.getByRole("link", { name: "Pay Bills" }).click();
-    await page.locator("#upcoming-bills div a:first-of-type").click();
+    await page.locator("#upcoming-bills div a:first-of-type").first().click();
 
     await page
       .getByRole("combobox", { name: "Payment Source" })
       .selectOption({ label: "Bank Account" });
 
     // Get total due from page to pay it.
-    const amountText = await page.locator("#amount-due").innerText();
+    const amountText = await page.locator("#amount-due").first().innerText();
     const amountToPay = (parseFloat(amountText.replace("$", "")) + 10).toFixed(
       2
     );

@@ -49,6 +49,11 @@ const dashboardNavLinks: DashBoardNavButtonProperties[] = [
     href: "/dashboard/bills",
     requireRole: [Role.PATIENT],
   },
+  {
+    label: "View Prescriptions",
+    href: "/dashboard/prescription",
+    requireRole: [Role.PATIENT],
+  },
 ];
 
 /**

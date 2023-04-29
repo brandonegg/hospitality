@@ -39,7 +39,7 @@ async function globalSetup() {
   });
 
   // create patient test user
-  await prisma.user.upsert({
+  const patient = await prisma.user.upsert({
     where: {
       id: "e2e-patient",
     },
@@ -49,6 +49,24 @@ async function globalSetup() {
       dateOfBirth: new Date(),
       username: "e2e-patient",
       email: "e2e-patient@e2e.com",
+      password: await argon2.hash("password"),
+      addressId: address.id,
+      role: Role.PATIENT,
+    },
+    update: {},
+  });
+
+  // create patient test user
+  const yewande = await prisma.user.upsert({
+    where: {
+      id: "Yewande",
+    },
+    create: {
+      id: "Yewande",
+      name: "Yewande",
+      dateOfBirth: new Date(),
+      username: "Yewande",
+      email: "Yewande@e2e.com",
       password: await argon2.hash("password"),
       addressId: address.id,
       role: Role.PATIENT,
@@ -207,6 +225,72 @@ async function globalSetup() {
         name: "Anesthesia",
         description: "Anesthesia rate",
         price: "1000",
+      },
+    ],
+  });
+
+  await prisma.meds.deleteMany();
+  await prisma.meds.createMany({
+    data: [
+      {
+        name: "Liquid Tylenol",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // every 4 hours
+      },
+      {
+        name: "Tylenol Pills",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // a day
+      },
+      {
+        name: "Ibuprofen",
+        dosageMin: "300",
+        dosageMax: "800",
+        unit: "mg",
+        // every 4 hours
+      },
+      {
+        name: "Claritin",
+        dosageMin: "10",
+        dosageMax: "10",
+        unit: "mg",
+        //daily
+      },
+    ],
+  });
+
+  await prisma.invoice.deleteMany();
+
+  await prisma.invoice.createMany({
+    data: [
+      {
+        paymentDue: new Date("3/18/2055"),
+        total: "0",
+        totalDue: "0",
+        userId: patient.id,
+      },
+      {
+        paymentDue: new Date("5/7/2045"),
+        total: "0",
+        totalDue: "0",
+        userId: yewande.id,
+      },
+    ],
+  });
+
+  await prisma.prescription.deleteMany();
+
+  await prisma.prescription.createMany({
+    data: [
+      {
+        userId: patient.id,
+      },
+      {
+        userId: yewande.id,
       },
     ],
   });

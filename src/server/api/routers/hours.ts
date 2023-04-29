@@ -1,3 +1,4 @@
+import { createId } from "@paralleldrive/cuid2";
 import type { Hours } from "@prisma/client";
 import { z } from "zod";
 
@@ -17,12 +18,9 @@ export const hoursRouter = createTRPCRouter({
       );
       if (databaseResponse.length == 0) {
         // if there is no hours in the database set it to the default
-        await ctx.prisma.hours.create({
-          data: {
-            startHour: 14,
-            endHour: 38,
-          },
-        });
+        await ctx.prisma.$executeRawUnsafe(
+          `INSERT INTO Hours (id, startHour, endHour) VALUES ("${createId()}", 14, 38);`
+        );
       }
       const result: Hours[] = await ctx.prisma.$queryRawUnsafe(
         `SELECT * FROM Hours`
@@ -41,12 +39,9 @@ export const hoursRouter = createTRPCRouter({
     );
     if (databaseResponse.length == 0) {
       // if there is no hours in the database set it to the default
-      await ctx.prisma.hours.create({
-        data: {
-          startHour: 14,
-          endHour: 38,
-        },
-      });
+      await ctx.prisma.$executeRawUnsafe(
+        `INSERT INTO Hours (id, startHour, endHour) VALUES ("${createId()}", 14, 38);`
+      );
     } else {
       return databaseResponse[0];
     }

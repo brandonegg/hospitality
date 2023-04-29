@@ -36,6 +36,7 @@ async function main() {
   });
 
   const passwordBob = await argon2.hash("bob");
+  // create patient to be used for invoice seeding
   const bob = await prisma.user.upsert({
     where: { email: "bob@prisma.io" },
     update: {},
@@ -213,6 +214,40 @@ async function main() {
     ],
   });
 
+  await prisma.meds.deleteMany();
+  await prisma.meds.createMany({
+    data: [
+      {
+        name: "Liquid Tylenol",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // every 4 hours
+      },
+      {
+        name: "Tylenol Pills",
+        dosageMin: "10",
+        dosageMax: "30",
+        unit: "mL",
+        // a day
+      },
+      {
+        name: "Ibuprofen",
+        dosageMin: "300",
+        dosageMax: "800",
+        unit: "mg",
+        // every 4 hours
+      },
+      {
+        name: "Claritin",
+        dosageMin: "10",
+        dosageMax: "10",
+        unit: "mg",
+        //daily
+      },
+    ],
+  });
+
   await prisma.rate.deleteMany();
 
   await prisma.rate.createMany({
@@ -276,6 +311,37 @@ async function main() {
   });
 
   await prisma.paymentSource.deleteMany();
+  await prisma.invoice.deleteMany();
+
+  await prisma.invoice.createMany({
+    data: [
+      {
+        paymentDue: new Date("3/18/2055"),
+        total: "0",
+        totalDue: "0",
+        userId: bob.id,
+      },
+      {
+        paymentDue: new Date("5/7/2045"),
+        total: "0",
+        totalDue: "0",
+        userId: bob.id,
+      },
+    ],
+  });
+
+  await prisma.prescription.deleteMany();
+
+  await prisma.prescription.createMany({
+    data: [
+      {
+        userId: bob.id,
+      },
+      {
+        userId: bob.id,
+      },
+    ],
+  });
 
   // Create basic payment sources all patients can use for testing
   await prisma.paymentSource.createMany({

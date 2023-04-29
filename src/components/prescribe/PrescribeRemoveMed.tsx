@@ -5,42 +5,53 @@ import { useForm } from "react-hook-form";
 
 import type { RouterInputs, RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
-import type { InvoiceRowData } from "../../pages/invoice/index";
+import type { PrescribeRowData } from "../../pages/prescribe/index";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
 import type { TablePopup } from "../tables/input";
 
-import type { InvoicePopupTypes } from "./InvoicePopup";
+import type { PrescribePopupTypes } from "./PrescribePopup";
 
-type InvoiceCreateInput = RouterInputs["invoice"]["create"];
-type InvoiceCreateOutput = RouterOutputs["invoice"]["create"];
+type PrescribeRemoveBillInput = RouterInputs["prescribe"]["removeItem"];
+type PrescribeRemoveBillOutput = RouterOutputs["prescribe"]["removeItem"];
 
-interface InvoiceCreateProps {
+interface PrescribeAddBillProps {
   refetch: () => Promise<void>;
-  popup: TablePopup<InvoiceRowData, InvoicePopupTypes>;
+  prescribe?: PrescribeRowData;
+  popup: TablePopup<PrescribeRowData, PrescribePopupTypes>;
   setPopup: Dispatch<
-    SetStateAction<TablePopup<InvoiceRowData, InvoicePopupTypes>>
+    SetStateAction<TablePopup<PrescribeRowData, PrescribePopupTypes>>
   >;
 }
 
 /**
- * Invoice delete component.
+ * Prescribe add to bill component.
  * @returns
  */
-const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
+const PrescribeRemoveBill = ({
+  refetch,
+  prescribe,
+  setPopup,
+}: PrescribeAddBillProps) => {
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<
-    InvoiceCreateOutput | undefined
+    PrescribeRemoveBillOutput | undefined
   >(undefined);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<InvoiceCreateInput>();
+  } = useForm<PrescribeRemoveBillInput>({
+    // fix default values
+    defaultValues: {
+      ...prescribe,
+      id: prescribe?.id ?? "",
+    },
+  });
 
-  const { mutate } = api.invoice.create.useMutation({
-    onSuccess: async (data: InvoiceCreateOutput) => {
+  const { mutate } = api.prescribe.removeItem.useMutation({
+    onSuccess: async (data: PrescribeRemoveBillOutput) => {
       setServerResult(data);
 
       await refetch();
@@ -48,12 +59,10 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     onError: (error) => setServerError(error.message),
   });
 
-  const patientsQuery = api.user.getAllPatients.useQuery();
-
   /**
    * Form submit handler.
    */
-  const onSubmit: SubmitHandler<InvoiceCreateInput> = (data) => {
+  const onSubmit: SubmitHandler<PrescribeRemoveBillInput> = (data) => {
     mutate(data);
   };
 
@@ -64,16 +73,24 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
     setValue(event.target.value);
   };
 
-  const [patient, setValue] = useState("");
+  const [procedure, setValue] = useState("");
+
+  const { data: procedures } = api.prescribe.getProcedures.useQuery({
+    id: prescribe?.id ?? "",
+  });
+
+  if (procedures == undefined) {
+    return <div />;
+  }
 
   return serverResult ? (
     <div className="space-y-2">
-      <Alert type="success">Successfully created an invoice!</Alert>
+      <Alert type="success">
+        Successfully removed medication from prescription!
+      </Alert>
       <button
         type="button"
-        onClick={() => {
-          setPopup({ show: false });
-        }}
+        onClick={() => setPopup({ show: false })}
         className="inline-flex cursor-pointer items-center gap-2 rounded bg-red-600 py-2 px-3 font-semibold text-white hover:bg-red-700"
       >
         Close
@@ -86,42 +103,25 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
 
       <div className="flex-1">
         <div className="flex flex-grow flex-col">
-          <label htmlFor="userId">User</label>
+          <label htmlFor="medItemId">Medication - Name x dosage</label>
           <select
-            id="userId"
-            value={patient}
+            id="medItemId"
+            value={procedure}
             className="rounded border border-gray-300 p-2"
-            {...register("userId", {
-              required: "User is required",
+            {...register("medItemId", {
+              required: "A medication is required",
             })}
             onChange={changeDropDown}
           >
-            {patientsQuery.data
-              ? patientsQuery.data.map((user, index) => (
-                  <option key={index} value={user.id}>
-                    {user.name}
-                  </option>
-                ))
-              : undefined}
+            {procedures.map((medItem, index) => (
+              <option key={index} value={medItem.id}>
+                {medItem.meds.name} x {medItem.dosage} {medItem.meds.unit}
+              </option>
+            ))}
           </select>
-          {errors.userId && (
-            <ErrorMessage id="user-error">{errors.userId.message}</ErrorMessage>
-          )}
-        </div>
-
-        <div className="flex flex-grow flex-col">
-          <label htmlFor="paymentDue">Due Date</label>
-          <input
-            type="date"
-            id="paymentDue"
-            className="resize-none rounded border border-gray-300 p-2"
-            {...register("paymentDue", {
-              required: "Due date is required",
-            })}
-          />
-          {errors.paymentDue && (
-            <ErrorMessage id="paymentDue-error">
-              {errors.paymentDue.message}
+          {errors.medItemId && (
+            <ErrorMessage id="rate-error">
+              {errors.medItemId.message}
             </ErrorMessage>
           )}
         </div>
@@ -131,7 +131,7 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          Confirm
+          Remove
         </button>
         <button
           type="button"
@@ -145,4 +145,4 @@ const InvoiceCreate = ({ refetch, setPopup }: InvoiceCreateProps) => {
   );
 };
 
-export default InvoiceCreate;
+export default PrescribeRemoveBill;
