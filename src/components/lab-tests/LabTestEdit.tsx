@@ -131,9 +131,7 @@ const TestEdit = ({ refetch, test, setPopup }: TestEditProps) => {
             rows={4}
             id="result"
             className="resize-none rounded border border-gray-300 p-2"
-            {...register("result", {
-              required: "Result is required",
-            })}
+            {...register("result")}
           />
           {errors.result && (
             <ErrorMessage id="result-error">
