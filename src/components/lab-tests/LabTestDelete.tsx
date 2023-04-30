@@ -1,3 +1,4 @@
+import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import type { Test, User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
@@ -70,19 +71,22 @@ const TestDelete = ({ refetch, test, setPopup }: TestDeleteProps) => {
 
       <div className="space-y-1">
         <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">Name:</p>
+          <p className="col-span-10 font-semibold sm:col-span-2">User:</p>
           <p className="col-span-10 sm:col-span-8">
             {(test?.user as User).name ?? ""}
           </p>
         </div>
 
         <div className="grid grid-cols-10">
-          <p className="col-span-10 font-semibold sm:col-span-2">
-            Description:
-          </p>
+          <p className="col-span-10 font-semibold sm:col-span-2">Test:</p>
           <p className="col-span-10 sm:col-span-8">
             {(test?.test as Test).name ?? ""}
           </p>
+        </div>
+
+        <div className="grid grid-cols-10">
+          <p className="col-span-10 font-semibold sm:col-span-2">Result:</p>
+          <p className="col-span-10 sm:col-span-8">{test?.result}</p>
         </div>
       </div>
 
