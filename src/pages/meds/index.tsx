@@ -68,10 +68,10 @@ const MedsTable = ({
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
-            <th className="w-[200px] px-6 py-3 lg:w-1/4">Name</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
             <th className="w-[200px] px-6 py-3 lg:w-1/4">Minimum Dosage</th>
-            <th className="w-[125px] px-6 py-3">Maximum Dosage</th>
-            <th className="w-[125px] px-6 py-3">Unit</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/4">Maximum Dosage</th>
+            <th className="w-[100px] px-6 py-3">Unit</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
