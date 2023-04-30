@@ -57,13 +57,49 @@ async function main() {
   await prisma.user.createMany({
     data: [
       {
+        name: "e2e",
+        dateOfBirth: new Date(),
+        username: "e2e",
+        email: "e2e@e2e.com",
+        password: await argon2.hash("password"),
+        addressId: address.id,
+        role: Role.ADMIN,
+      },
+      {
+        id: "e2e-patient",
+        name: "e2e-patient",
+        dateOfBirth: new Date(),
+        username: "e2e-patient",
+        email: "e2e-patient@e2e.com",
+        password: await argon2.hash("password"),
+        addressId: address.id,
+        role: Role.PATIENT,
+      },
+      {
+        name: "e2e-doctor",
+        dateOfBirth: new Date(),
+        username: "e2e-doctor",
+        email: "e2e-doctor@e2e.com",
+        password: await argon2.hash("password"),
+        addressId: address.id,
+        role: Role.DOCTOR,
+      },
+      {
+        name: "e2e-nurse",
+        dateOfBirth: new Date(),
+        username: "e2e-nurse",
+        email: "e2e-nurse@e2e.com",
+        password: await argon2.hash("password"),
+        addressId: address.id,
+        role: Role.NURSE,
+      },
+      {
         name: "Bobo",
         username: "bobo",
         email: "bob@prisma.io",
         password: password,
         dateOfBirth: new Date("3/18/2000"),
         addressId: address.id,
-
         role: Role.DOCTOR,
       },
       {
@@ -73,7 +109,6 @@ async function main() {
         password: password,
         dateOfBirth: new Date("3/18/2000"),
         addressId: address.id,
-
         role: Role.PATIENT,
       },
       {
