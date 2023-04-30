@@ -79,7 +79,7 @@ const UsersPage: NextPage = () => {
   const users = data?.pages[page]?.items;
 
   return (
-    <main className="mx-auto max-w-[1400px]">
+    <main className="mx-auto mb-4 max-w-[1400px]">
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
           <TablePageHeader label="Users" count={usersLength} />
