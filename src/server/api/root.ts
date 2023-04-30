@@ -1,3 +1,4 @@
+import { testRouter } from "./routers/admin-test";
 import { bedRouter } from "./routers/bed";
 import { exampleRouter } from "./routers/example";
 import { getAppointRouter } from "./routers/getAppoint";
@@ -10,7 +11,6 @@ import { paymentRouter } from "./routers/payment";
 import { prescribeRouter } from "./routers/prescribe";
 import { rateRouter } from "./routers/rate";
 import { storeAvailRouter } from "./routers/storeAvail";
-import { testRouter } from "./routers/test";
 import { userRouter } from "./routers/user";
 import { createTRPCRouter } from "./trpc";
 
