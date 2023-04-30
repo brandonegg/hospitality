@@ -1,4 +1,3 @@
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import type { Test, User } from "@prisma/client";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";

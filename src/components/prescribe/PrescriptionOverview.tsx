@@ -79,7 +79,6 @@ const PrescriptionSummary = ({
  */
 const PrescriptionOverview = ({
   Prescription,
-  user,
 }: {
   Prescription: PrescriptionDetails;
   user: Session["user"];

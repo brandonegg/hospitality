@@ -48,7 +48,6 @@ const PrescriptionSummaryButton = ({
  * Wrapper for the different Prescriptions sections display on page (upcoming/paid etc.)
  */
 const PrescriptionsSection = ({
-  id,
   label,
   Prescriptions,
 }: {
