@@ -66,14 +66,16 @@ export const labTestRouter = createTRPCRouter({
         id: z.string(),
         userId: z.string(),
         testId: z.string(),
-        result: z.string(),
+        result: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { id, userId, testId, result } = input;
 
       const updatedTest = await ctx.prisma.$executeRawUnsafe(
-        `UPDATE LabTest SET userId="${userId}", testId="${testId}", result="${result}" WHERE id="${id}"`
+        `UPDATE LabTest SET userId="${userId}", testId="${testId}", result="${
+          result ?? ""
+        }" WHERE id="${id}"`
       );
 
       return updatedTest;
