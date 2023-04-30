@@ -323,6 +323,47 @@ async function globalSetup() {
       name: "Discover Card",
     },
   });
-}
 
+  // create tests
+  await prisma.test.deleteMany();
+
+  const test = await prisma.test.create({
+    data: {
+      name: "Basic Metabolic Panel (BMP)",
+      description:
+        "A group of 7-8 tests used as a screening tool to check for conditions like diabetes and kidney disease. You may be asked to fast for 10 to 12 hours prior to the test.",
+    },
+  });
+  await prisma.test.createMany({
+    data: [
+      {
+        name: "Complete Blood Count (CBC)",
+        description:
+          "Determines general health and screens for disorders such as anemia or infections, as well as nutritional status and toxic substance exposure.",
+      },
+      {
+        name: "Comprehensive Metabolic Panel (CMP)",
+        description:
+          "A group of 14 tests used as a screening tool to check for conditions like diabetes and kidney disease. You may be asked to fast for 10 to 12 hours prior to the test.",
+      },
+      {
+        name: "Sedimentation Rate (ESR)",
+        description:
+          "A test that measures the rate at which red blood cells settle to the bottom of a test tube. It is used to help diagnose inflammation and infection.",
+      },
+    ],
+  });
+
+  // create lab tests
+  await prisma.labTest.deleteMany();
+
+  await prisma.labTest.createMany({
+    data: [
+      {
+        testId: test.id,
+        userId: patient.id,
+      },
+    ],
+  });
+}
 export default globalSetup;
