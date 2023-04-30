@@ -7,6 +7,8 @@ import { prisma } from "../../../src/server/db";
  * Sets up the testing environment
  */
 async function globalSetup() {
+  await prisma.user.deleteMany();
+
   const address = await prisma.address.upsert({
     where: {
       id: "test_address",

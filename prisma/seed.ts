@@ -7,6 +7,8 @@ const prisma = new PrismaClient(); // Prisma client instance
  * Seed the database with admin user
  */
 async function main() {
+  await prisma.user.deleteMany();
+
   const password = await argon2.hash("admin");
   const admin = await prisma.user.upsert({
     where: { email: "admin@admin.com" },
