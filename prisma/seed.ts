@@ -103,15 +103,6 @@ async function main() {
         role: Role.DOCTOR,
       },
       {
-        name: "Yewande",
-        username: "yewande",
-        email: "yewande@prisma.io",
-        password: password,
-        dateOfBirth: new Date("3/18/2000"),
-        addressId: address.id,
-        role: Role.PATIENT,
-      },
-      {
         name: "Angelique",
         username: "angelique",
         email: "angelique@prisma.io",

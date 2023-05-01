@@ -59,7 +59,6 @@ const BillsSection = ({
   label,
   bills,
 }: {
-  id?: string;
   label: string;
   bills: InvoiceResponseData[];
 }) => {

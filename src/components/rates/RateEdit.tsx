@@ -56,6 +56,10 @@ const RateEdit = ({ refetch, rate, setPopup }: RateEditProps) => {
     mutate(data);
   };
 
+  if (!rate) {
+    return <></>;
+  }
+
   return serverResult ? (
     <div className="space-y-2">
       <Alert type="success">Successfully updated a rate!</Alert>

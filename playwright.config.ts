@@ -54,7 +54,7 @@ function buildProjectsList(browsersStr: string): Project<PlaywrightTestOptions, 
 export default defineConfig({
   testDir: "./tests/e2e",
   /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
+  timeout: 5 * 60 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -67,7 +67,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: 2,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

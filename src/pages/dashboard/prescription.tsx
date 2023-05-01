@@ -51,7 +51,6 @@ const PrescriptionsSection = ({
   label,
   Prescriptions,
 }: {
-  id?: string;
   label: string;
   Prescriptions: PrescriptionResponseData;
 }) => {
