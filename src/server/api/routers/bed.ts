@@ -125,6 +125,21 @@ export const bedRouter = createTRPCRouter({
   assign: protectedProcedure
     .input(z.object({ bedId: z.string(), patientId: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
+      const userMatches: Record<string, string>[] | null = await ctx.prisma
+        .$queryRaw`SELECT COUNT(*) as count FROM Bed WHERE userId = ${input.patientId}`;
+
+      if (userMatches && userMatches[0] && userMatches[0]["count"]) {
+        const matchCount = parseInt(userMatches[0]["count"]);
+
+        if (matchCount > 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message:
+              "User is already assigned to a bed and cannot be reassigned!",
+          });
+        }
+      }
+
       return await ctx.prisma.bed.update({
         where: { id: input.bedId },
         data: { userId: input.patientId ? input.patientId : null },
