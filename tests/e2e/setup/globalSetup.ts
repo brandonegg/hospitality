@@ -59,10 +59,10 @@ async function globalSetup() {
   // create patient test user
   const yewande = await prisma.user.upsert({
     where: {
-      id: "Yewande",
+      id: "yewande",
     },
     create: {
-      id: "Yewande",
+      id: "yewande",
       name: "Yewande",
       dateOfBirth: new Date(),
       username: "Yewande",
