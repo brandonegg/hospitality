@@ -94,10 +94,10 @@ test.describe("beds > CRUD operations", () => {
     adminTest("assigned bed", async ({ page }) => {
       await expect(
         page
-          .getByRole("row", {
-            name: "200 Hawkins Dr. Iowa City, Iowa 52242 401A occupied e2e Edit Delete",
-          })
-          .getByRole("button", { name: "Delete" })
+          .getByRole("row")
+          .filter({ has: page.getByText(/^occupied$/) })
+          .first()
+          .getByText("Delete")
       ).toBeDisabled();
     });
 
