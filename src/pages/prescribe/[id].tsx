@@ -1,5 +1,4 @@
 import type { GetServerSidePropsContext } from "next";
-import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
 import { PrescriptionOverview } from "../../components/prescribe/PrescriptionOverview";
@@ -38,10 +37,8 @@ export const getServerSideProps = async (
  * Single prescription page
  */
 const PrescriptionViewPage = ({
-  user,
   PrescriptionId,
 }: {
-  user: Session["user"];
   PrescriptionId: string | undefined;
 }) => {
   const { data: Prescription } = api.prescribe.byId.useQuery({
@@ -58,7 +55,7 @@ const PrescriptionViewPage = ({
 
   return (
     <div className="flex justify-center">
-      <PrescriptionOverview Prescription={Prescription} user={user} />
+      <PrescriptionOverview Prescription={Prescription} />
     </div>
   );
 };

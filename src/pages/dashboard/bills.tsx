@@ -56,11 +56,9 @@ const BillSummaryButton = ({ details }: { details: InvoiceResponseData }) => {
  * Wrapper for the different bills sections display on page (upcoming/paid etc.)
  */
 const BillsSection = ({
-  id,
   label,
   bills,
 }: {
-  id?: string;
   label: string;
   bills: InvoiceResponseData[];
 }) => {

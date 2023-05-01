@@ -1,5 +1,4 @@
 import type { MedItem, Meds } from "@prisma/client";
-import type { Session } from "next-auth";
 
 import type { RouterOutputs } from "../../lib/api";
 
@@ -79,10 +78,8 @@ const PrescriptionSummary = ({
  */
 const PrescriptionOverview = ({
   Prescription,
-  user,
 }: {
   Prescription: PrescriptionDetails;
-  user: Session["user"];
 }) => {
   return (
     <div className="mx-auto space-x-8">
