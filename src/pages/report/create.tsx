@@ -15,7 +15,7 @@ interface CreateReportPageProps {
  */
 const CreateReportPage = () => {
   return (
-    <div>
+    <div className="mx-auto max-w-xl">
       <CreateReportForm />
     </div>
   );

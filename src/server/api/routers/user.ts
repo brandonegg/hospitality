@@ -27,6 +27,7 @@ export const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   email: true,
   username: true,
   role: true,
+  dateOfBirth: true,
 });
 
 export const userRouter = createTRPCRouter({
