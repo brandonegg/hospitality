@@ -3,6 +3,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
+import Layout from "../../components/dashboard/layout";
 import { DoctorReportDashboard } from "../../components/reports/doctor";
 import { PatientReportDashboard } from "../../components/reports/patient";
 
@@ -15,10 +16,18 @@ interface ReportPageProps {
  */
 const DashboardReportsPage = ({ user }: ReportPageProps) => {
   if (["DOCTOR"].includes(user.role)) {
-    return <DoctorReportDashboard />;
+    return (
+      <Layout>
+        <DoctorReportDashboard />
+      </Layout>
+    );
   }
 
-  return <PatientReportDashboard />;
+  return (
+    <Layout>
+      <PatientReportDashboard />
+    </Layout>
+  );
 };
 
 /**
