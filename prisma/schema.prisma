@@ -220,6 +220,7 @@ model VitalsReport {
 
 model VisitReport {
   id        String        @id @default(cuid())
+  date      DateTime @db.Date
   doctorId  String?
   author    User?         @relation("AuthoredVisitReport", fields: [doctorId], references: [id], onDelete: SetNull)
   patientId String
