@@ -3,6 +3,10 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+export interface VisitReportSummary extends VisitReport {
+  patient_name: string | null;
+  author_name: string | null;
+}
 
 export const visitReportRouter = createTRPCRouter({
   create: protectedProcedure
@@ -112,14 +116,24 @@ export const visitReportRouter = createTRPCRouter({
       }
 
       if (patientId) {
-        const visitReports: VisitReport[] = await ctx.prisma
-          .$queryRaw`SELECT * from VisitReport WHERE patientId = ${patientId}`;
+        const visitReports: VisitReportSummary[] = await ctx.prisma.$queryRaw`
+          SELECT vr.*, a.name as author_name, p.name as patient_name 
+          FROM 
+            VisitReport vr 
+            JOIN User a ON vr.doctorId = a.id 
+            JOIN User p ON vr.patientId = p.id 
+          WHERE vr.patientId = ${patientId};`;
 
         return visitReports;
       }
 
-      const visitReports: VisitReport[] = await ctx.prisma
-        .$queryRaw`SELECT * from VisitReport WHERE doctorId = ${doctorId}`;
+      const visitReports: VisitReportSummary[] = await ctx.prisma.$queryRaw`
+        SELECT vr.*, a.name as author_name, p.name as patient_name 
+        FROM 
+          VisitReport vr 
+          JOIN User a ON vr.doctorId = a.id 
+          JOIN User p ON vr.patientId = p.id 
+        WHERE vr.doctorId = ${doctorId};`;
 
       return visitReports;
     }),
