@@ -13,10 +13,10 @@ interface CreateReportPageProps {
  * Create report page
  * @returns
  */
-const CreateReportPage = () => {
+const CreateReportPage = ({ user }: CreateReportPageProps) => {
   return (
-    <div className="mx-auto max-w-xl">
-      <CreateReportForm />
+    <div className="mx-auto max-w-3xl">
+      <CreateReportForm doctor={user} />
     </div>
   );
 };

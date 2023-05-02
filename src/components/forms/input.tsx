@@ -1,4 +1,9 @@
-import type { ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import type {
+  ChangeEventHandler,
+  Dispatch,
+  InputHTMLAttributes,
+  SetStateAction,
+} from "react";
 import { useState } from "react";
 import type { FieldValues, Path, UseFormRegisterReturn } from "react-hook-form";
 
@@ -11,6 +16,7 @@ export type UserSearchOutput = RouterOutputs["user"]["search"];
 export interface FormInputProps<T extends FieldValues> {
   label?: string;
   id: string;
+  type?: InputHTMLAttributes<HTMLInputElement>["type"];
   registerDetails: UseFormRegisterReturn<Path<T>>;
   errorMessage: string | undefined;
   unit?: string;
@@ -30,6 +36,7 @@ const FormGap = () => {
 const FormInput = <T extends FieldValues>({
   label,
   id,
+  type = "text",
   errorMessage,
   registerDetails,
   unit,
@@ -38,16 +45,16 @@ const FormInput = <T extends FieldValues>({
     <div className="w-full">
       {label && <label htmlFor={id}>{label}</label>}
       <div className="flex flex-row overflow-hidden rounded border border-gray-300">
-        <input type="text" id={id} className="grow p-2" {...registerDetails} />
-        {errorMessage && (
-          <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>
-        )}
+        <input type={type} id={id} className="grow p-2" {...registerDetails} />
         {unit ? (
           <span className="w-12 shrink border-l bg-gray-300 p-2 text-center text-gray-600">
             {unit}
           </span>
         ) : undefined}
       </div>
+      {errorMessage && (
+        <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>
+      )}
     </div>
   );
 };
