@@ -1,3 +1,4 @@
+import type { VisitReport } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -85,5 +86,41 @@ export const visitReportRouter = createTRPCRouter({
           },
         },
       });
+    }),
+  getAll: protectedProcedure
+    .input(
+      z.object({
+        doctorId: z.string().optional(),
+        patientId: z.string().optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { doctorId, patientId } = input;
+
+      if (!doctorId && !patientId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "A doctor ID or patient ID is required.",
+        });
+      }
+
+      if (doctorId && patientId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Supply either a doctor ID or patient ID, not both",
+        });
+      }
+
+      if (patientId) {
+        const visitReports: VisitReport[] = await ctx.prisma
+          .$queryRaw`SELECT * from VisitReport WHERE patientId = ${patientId}`;
+
+        return visitReports;
+      }
+
+      const visitReports: VisitReport[] = await ctx.prisma
+        .$queryRaw`SELECT * from VisitReport WHERE doctorId = ${doctorId}`;
+
+      return visitReports;
     }),
 });
