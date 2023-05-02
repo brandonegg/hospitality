@@ -65,7 +65,13 @@ const CreateReportForm = ({ doctor }: { doctor: Session["user"] }) => {
   const Body = () => {
     if (serverResult) {
       return (
-        <div className="overflow-hidden rounded-xl border border-gray-600 bg-slate-100 pb-4 drop-shadow"></div>
+        <div className="space-y-8 overflow-hidden rounded-xl border border-gray-600 bg-slate-100 py-16 px-4 text-center drop-shadow">
+          <h1 className="text-4xl font-bold text-green-500">Success!</h1>
+          <p>
+            The post visit report has been submitted successfully for{" "}
+            {selectedPatient?.name ?? "ERROR"}
+          </p>
+        </div>
       );
     }
 
