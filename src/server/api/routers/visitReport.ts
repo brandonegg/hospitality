@@ -15,7 +15,7 @@ export const visitReportRouter = createTRPCRouter({
         }),
         vitals: z.object({
           pulse: z.number().min(0),
-          temeprature: z.number().min(0),
+          temperature: z.number().min(0),
           weight: z.number().min(0),
           oxygenSaturation: z.number().max(100).min(0),
           respiration: z.number().min(0),
@@ -27,19 +27,29 @@ export const visitReportRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { soapNotes, vitals, patientId, doctorId } = input;
 
-      const patientIdMatches = await ctx.prisma
-        .$executeRaw`SELECT id FROM User WHERE id = ${patientId}`;
-      const doctorIdMatches = await ctx.prisma
-        .$executeRaw`SELECT id FROM User WHERE id = ${doctorId}`;
+      const patientIdMatches: Record<string, string>[] = await ctx.prisma
+        .$queryRaw`SELECT COUNT(*) as count FROM User WHERE id = ${patientId}`;
+      const doctorIdMatches: Record<string, string>[] = await ctx.prisma
+        .$queryRaw`SELECT COUNT(*) as count FROM User WHERE id = ${doctorId}`;
 
-      if (patientIdMatches < 1) {
+      console.log(patientIdMatches);
+
+      if (
+        (patientIdMatches[0] &&
+          parseInt(patientIdMatches[0]["count"] ?? "0") === 0) ||
+        !patientIdMatches[0]?.count
+      ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "No patient found with the provided patientId",
         });
       }
 
-      if (doctorIdMatches < 1) {
+      if (
+        (doctorIdMatches[0] &&
+          parseInt(doctorIdMatches[0]["count"] ?? "0") === 0) ||
+        !doctorIdMatches[0]?.count
+      ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "No doctor found with the provided doctorId",
@@ -66,7 +76,7 @@ export const visitReportRouter = createTRPCRouter({
             create: {
               date: creationDate,
               pulse: vitals.pulse,
-              temperature: vitals.temeprature,
+              temperature: vitals.temperature,
               weight: vitals.weight,
               respiration: vitals.respiration,
               oxygenSaturation: vitals.oxygenSaturation,
