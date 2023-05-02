@@ -13,6 +13,7 @@ export interface FormInputProps<T extends FieldValues> {
   id: string;
   registerDetails: UseFormRegisterReturn<Path<T>>;
   errorMessage: string | undefined;
+  unit?: string;
 }
 
 /**
@@ -20,7 +21,7 @@ export interface FormInputProps<T extends FieldValues> {
  * if you don't want a FormInput to span the full width.
  */
 const FormGap = () => {
-  return <div className="flex flex-1 flex-grow flex-col"></div>;
+  return <div className="w-full grow"></div>;
 };
 
 /**
@@ -31,19 +32,55 @@ const FormInput = <T extends FieldValues>({
   id,
   errorMessage,
   registerDetails,
+  unit,
+}: FormInputProps<T>) => {
+  return (
+    <div className="w-full">
+      {label && <label htmlFor={id}>{label}</label>}
+      <div className="flex flex-row overflow-hidden rounded border border-gray-300">
+        <input type="text" id={id} className="grow p-2" {...registerDetails} />
+        {errorMessage && (
+          <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>
+        )}
+        {unit ? (
+          <span className="w-12 shrink border-l bg-gray-300 p-2 text-center text-gray-600">
+            {unit}
+          </span>
+        ) : undefined}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * General section of form label
+ */
+const SectionLabel = ({ children }: { children: JSX.Element | string }) => {
+  return (
+    <h2 className="mb-4 text-xl font-semibold text-neutral-600">{children}</h2>
+  );
+};
+
+/**
+ * Basic error handling form input
+ */
+const FormTextField = <T extends FieldValues>({
+  label,
+  id,
+  errorMessage,
+  registerDetails,
 }: FormInputProps<T>) => {
   return (
     <div className="flex flex-1 flex-col">
       {label && <label htmlFor={id}>{label}</label>}
-      <input
-        type="text"
-        id={id}
-        className="rounded border border-gray-300 p-2"
-        {...registerDetails}
-      />
       {errorMessage && (
         <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>
       )}
+      <textarea
+        id={id}
+        className="flex h-32 rounded border border-gray-300 p-2 text-start"
+        {...registerDetails}
+      />
     </div>
   );
 };
@@ -183,4 +220,4 @@ const UserSearch = ({
 
 // TODO: Add form text field for SOAP notes
 
-export { FormInput, FormGap, UserSearch };
+export { FormInput, FormGap, UserSearch, FormTextField, SectionLabel };
