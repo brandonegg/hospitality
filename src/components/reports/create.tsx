@@ -287,7 +287,7 @@ const CreateReportForm = ({ doctor }: { doctor: Session["user"] }) => {
             {serverError && <Alert type="error">{serverError}</Alert>}
             <button
               type="submit"
-              className="mx-auto block w-32 rounded-lg border bg-neutral-500 px-4 py-2 text-lg font-semibold"
+              className="mx-auto block w-32 rounded-lg border bg-blue-600 px-4 py-2 text-lg font-semibold text-white hover:bg-blue-700"
             >
               Submit
             </button>

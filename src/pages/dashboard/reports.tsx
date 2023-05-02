@@ -6,6 +6,7 @@ import { getSession } from "next-auth/react";
 import Layout from "../../components/dashboard/layout";
 import { DoctorReportDashboard } from "../../components/reports/doctor";
 import { PatientReportDashboard } from "../../components/reports/patient";
+import { api } from "../../lib/api";
 
 interface ReportPageProps {
   user: Session["user"];
@@ -15,10 +16,14 @@ interface ReportPageProps {
  * Report dashboard page
  */
 const DashboardReportsPage = ({ user }: ReportPageProps) => {
+  const { data: reports } = api.visitReport.getAll.useQuery({
+    doctorId: user.id,
+  });
+
   if (["DOCTOR"].includes(user.role)) {
     return (
       <Layout>
-        <DoctorReportDashboard />
+        <DoctorReportDashboard reports={reports} />
       </Layout>
     );
   }
