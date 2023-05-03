@@ -91,6 +91,44 @@ export const visitReportRouter = createTRPCRouter({
         },
       });
     }),
+  get: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const postVisit = await ctx.prisma.visitReport.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          patient: true,
+          author: true,
+          vitals: true,
+          soapNotes: true,
+        },
+      });
+
+      if (!postVisit) {
+        new TRPCError({
+          code: "BAD_REQUEST",
+          message: "No visit request found with this ID",
+        });
+      }
+
+      if (
+        postVisit?.patientId === ctx.session.user.id ||
+        postVisit?.doctorId === ctx.session.user.id
+      ) {
+        return postVisit;
+      }
+
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You do not have access to this page",
+      });
+    }),
   getAll: protectedProcedure
     .input(
       z.object({
