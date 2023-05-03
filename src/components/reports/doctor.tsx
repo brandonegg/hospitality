@@ -43,9 +43,12 @@ const ReportLine = ({ report }: { report: VisitReportSummary }) => {
         </div>
       </div>
       <div className="my-auto flex h-fit flex-row space-x-4">
-        <button className="group my-auto grid h-12 place-items-center rounded-lg border border-blue-300 bg-blue-200 px-4 font-semibold text-neutral-600 hover:bg-blue-400 hover:text-white">
+        <Link
+          href={`/report/${report.id}`}
+          className="group my-auto grid h-12 place-items-center rounded-lg border border-blue-300 bg-blue-200 px-4 font-semibold text-neutral-600 hover:bg-blue-400 hover:text-white"
+        >
           View Report
-        </button>
+        </Link>
         <button className="group my-auto grid h-12 w-12 place-items-center rounded-lg border border-red-300 bg-red-200 hover:bg-red-400">
           <TrashIcon className="w-8 text-neutral-600 group-hover:text-black" />
         </button>
