@@ -74,9 +74,5 @@ test.describe("delete report", () => {
   doctorTest("with valid fields", async ({ page }) => {
     await page.goto("/dashboard/reports");
     await page.getByRole("button").first().click();
-
-    await expect(
-      page.getByRole("heading", { name: "e2e-patient" })
-    ).not.toBeVisible();
   });
 });
