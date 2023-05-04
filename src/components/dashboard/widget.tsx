@@ -1,7 +1,7 @@
 interface SquareWidgetProperties {
   title?: string;
   width: 1 | 2; // Width of the widget relative to grid cells.
-  children: JSX.Element;
+  children: JSX.Element | undefined;
 }
 
 /**
