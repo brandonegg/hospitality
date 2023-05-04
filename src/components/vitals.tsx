@@ -2,6 +2,8 @@ import { HeartIcon } from "@heroicons/react/24/solid";
 import type { VitalsReport } from "@prisma/client";
 import Image from "next/image";
 
+import { dateToString } from "../lib/text";
+
 interface VitalsInfo {
   icon: JSX.Element;
   label: string;
@@ -130,7 +132,7 @@ const VitalsWidget = ({ vitals }: { vitals: VitalsReport }) => {
             <ul className="w-full divide-y-2 divide-gray-300">{vitalsRows}</ul>
           </div>
           <h1 className="text-right text-xs italic text-gray-400">
-            Last recorded on 3/10/2023
+            Recorded on {dateToString(vitals.date)}
           </h1>
         </div>
       </div>
