@@ -1,3 +1,5 @@
+import type { SoapNote } from "@prisma/client";
+
 import type { RouterOutputs } from "../../lib/api";
 import { dateToString } from "../../lib/text";
 import { VitalsWidget } from "../vitals";
@@ -25,11 +27,39 @@ const SectionContainer = ({
 };
 
 /**
+ * Creates the soap summary view
+ */
+const SoapSummary = ({ subjective, objective, assessment, plan }: SoapNote) => {
+  /**
+   * Single soap field section
+   */
+  const SoapEntry = ({ label, body }: { label: string; body: string }) => {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-xl">{label}</h3>
+        <p className="h-48 w-full overflow-y-auto rounded-xl border border-neutral-400 bg-white p-2">
+          {body}
+        </p>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      <SoapEntry label="Subjective" body={subjective} />
+      <SoapEntry label="Objective" body={objective} />
+      <SoapEntry label="Assessment" body={assessment} />
+      <SoapEntry label="Plan" body={plan} />
+    </div>
+  );
+};
+
+/**
  * Displays full report, vitals and soap notes
  */
 const FullVisitReportSummary = ({ report }: { report: FullVisitReport }) => {
   return (
-    <div className="space-y-8">
+    <div className="mb-8 space-y-8">
       <div className="flex flex-row justify-between border-b border-neutral-600 pb-2">
         <div>
           <h1 className="text-4xl font-bold">Report Summary</h1>
@@ -54,7 +84,13 @@ const FullVisitReportSummary = ({ report }: { report: FullVisitReport }) => {
         </SectionContainer>
       </div>
 
-      <SectionContainer label="Doctor Notes"></SectionContainer>
+      {report.soapNotes ? (
+        <SectionContainer label="Doctor Notes">
+          <div className="bg-slate-100 p-4">
+            <SoapSummary {...report.soapNotes} />
+          </div>
+        </SectionContainer>
+      ) : undefined}
     </div>
   );
 };
