@@ -23,7 +23,7 @@ const PatientReportDashboard = ({ patientId }: { patientId: string }) => {
           </h1>
         )}
         {/** Display reports created by doctor */}
-        <div className="">
+        <div className="space-y-4">
           {reports?.map((report, index) => {
             return <ReportLine key={index} report={report} />;
           })}

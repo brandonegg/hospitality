@@ -77,9 +77,10 @@ async function globalSetup() {
   // create doctor test user
   await prisma.user.upsert({
     where: {
-      email: "e2e-doctor@e2e.com",
+      id: "e2e-doctor",
     },
     create: {
+      id: "e2e-doctor",
       name: "e2e-doctor",
       dateOfBirth: new Date(),
       username: "e2e-doctor",
