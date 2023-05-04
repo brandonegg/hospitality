@@ -26,7 +26,7 @@ const DashboardReportsPage = ({ user }: ReportPageProps) => {
 
   return (
     <Layout>
-      <PatientReportDashboard />
+      <PatientReportDashboard patientId={user.id} />
     </Layout>
   );
 };
