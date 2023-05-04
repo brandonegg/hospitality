@@ -17,11 +17,33 @@ const SectionContainer = ({
   children?: JSX.Element | JSX.Element[];
 }) => {
   return (
-    <div className="grow overflow-hidden rounded-xl border border-gray-600">
+    <div className="flex grow flex-col overflow-hidden rounded-xl border border-gray-600">
       <div className="bg-slate-800 p-1">
         <h2 className="text-center font-semibold text-white">{label}</h2>
       </div>
-      {children}
+      <div className="relative grow">{children}</div>
+    </div>
+  );
+};
+
+/**
+ * Creates visit information body
+ */
+const VisitInfo = ({ report }: { report: FullVisitReport }) => {
+  return (
+    <div className="grid h-full place-items-center bg-slate-100 text-center">
+      <div className="mx-auto flex w-fit flex-col">
+        <h1 className="border-b-2 border-gray-200 text-center text-lg font-semibold">
+          Doctor
+        </h1>
+        <span>{report.author?.name}</span>
+      </div>
+      <div className="mx-auto flex w-fit flex-col">
+        <h1 className="border-b-2 border-gray-200 text-center text-lg font-semibold">
+          Visit Date
+        </h1>
+        <span>{dateToString(report.date)}</span>
+      </div>
     </div>
   );
 };
@@ -77,10 +99,7 @@ const FullVisitReportSummary = ({ report }: { report: FullVisitReport }) => {
           {report.vitals ? <VitalsWidget vitals={report.vitals} /> : undefined}
         </SectionContainer>
         <SectionContainer label="Visit Information">
-          <div className="h-full bg-slate-100">
-            <h2>Authored by:</h2>
-            <span>{report.author?.name}</span>
-          </div>
+          <VisitInfo report={report} />
         </SectionContainer>
       </div>
 
