@@ -3,6 +3,7 @@ import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
 import Alert from "../../components/Alert";
+import { FullVisitReportSummary } from "../../components/reports/common";
 import { api } from "../../lib/api";
 
 /**
@@ -38,7 +39,6 @@ export const getServerSideProps = async (
  * Single invoice page
  */
 const PostVisitReportPage = ({
-  user,
   reportId,
 }: {
   user: Session["user"];
@@ -70,7 +70,11 @@ const PostVisitReportPage = ({
     return <div></div>;
   }
 
-  return <div></div>;
+  return (
+    <div className="mx-auto max-w-3xl">
+      <FullVisitReportSummary report={data} />
+    </div>
+  );
 };
 
 export default PostVisitReportPage;
