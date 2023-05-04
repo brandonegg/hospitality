@@ -136,14 +136,10 @@ export const visitReportRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.visitReport.deleteMany({
-        where: {
-          AND: {
-            id: input.id,
-            doctorId: ctx.session.user.id,
-          },
-        },
-      });
+      await ctx.prisma.$executeRaw`
+                    DELETE FROM VisitReport 
+                    WHERE id = ${input.id}
+                    AND doctorId = ${ctx.session.user.id}`;
     }),
   getAll: protectedProcedure
     .input(
