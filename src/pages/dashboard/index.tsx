@@ -72,7 +72,11 @@ const Dashboard = ({ user }: DashboardPageProps) => {
             <SquareWidget width={2} title="Vitals">
               {recentVitals ? (
                 <VitalsWidget vitals={recentVitals} />
-              ) : undefined}
+              ) : (
+                <div className="grid h-32 place-items-center bg-slate-100">
+                  <span className="text-xl">No past vitals records</span>
+                </div>
+              )}
             </SquareWidget>
           </div>
         </div>
