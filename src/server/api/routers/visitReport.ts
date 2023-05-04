@@ -129,6 +129,22 @@ export const visitReportRouter = createTRPCRouter({
         message: "You do not have access to this page",
       });
     }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.visitReport.deleteMany({
+        where: {
+          AND: {
+            id: input.id,
+            doctorId: ctx.session.user.id,
+          },
+        },
+      });
+    }),
   getAll: protectedProcedure
     .input(
       z.object({

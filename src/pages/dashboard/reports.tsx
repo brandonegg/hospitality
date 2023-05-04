@@ -16,14 +16,10 @@ interface ReportPageProps {
  * Report dashboard page
  */
 const DashboardReportsPage = ({ user }: ReportPageProps) => {
-  const { data: reports } = api.visitReport.getAll.useQuery({
-    doctorId: user.id,
-  });
-
   if (["DOCTOR"].includes(user.role)) {
     return (
       <Layout>
-        <DoctorReportDashboard reports={reports} />
+        <DoctorReportDashboard doctorId={user.id} />
       </Layout>
     );
   }

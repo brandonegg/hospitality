@@ -1,8 +1,11 @@
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useState } from "react";
 
+import { api } from "../../lib/api";
 import { dateToString } from "../../lib/text";
 import type { VisitReportSummary } from "../../server/api/routers/visitReport";
+import Alert from "../Alert";
 
 /**
  * Button for linking to create report form
@@ -18,14 +21,29 @@ const CreateReportButton = () => {
   );
 };
 
+type DeleteCallback = ({ id }: { id: string }) => void;
+
 /**
  * Single report summary line
  */
-const ReportLine = ({ report }: { report: VisitReportSummary }) => {
+const ReportLine = ({
+  report,
+  deleteReport,
+}: {
+  report: VisitReportSummary;
+  deleteReport: DeleteCallback;
+}) => {
   const shortName =
     report.patient_name?.split(" ").map((value) => {
       return value.at(0)?.toUpperCase();
     }) ?? "";
+
+  /**
+   * Deletes the row item
+   */
+  const onClick = () => {
+    deleteReport({ id: report.id });
+  };
 
   return (
     <div className="flex flex-row justify-between rounded-xl border border-neutral-200 bg-neutral-100 py-2 px-4 shadow-lg">
@@ -49,7 +67,10 @@ const ReportLine = ({ report }: { report: VisitReportSummary }) => {
         >
           View Report
         </Link>
-        <button className="group my-auto grid h-12 w-12 place-items-center rounded-lg border border-red-300 bg-red-200 hover:bg-red-400">
+        <button
+          onClick={onClick}
+          className="group my-auto grid h-12 w-12 place-items-center rounded-lg border border-red-300 bg-red-200 hover:bg-red-400"
+        >
           <TrashIcon className="w-8 text-neutral-600 group-hover:text-black" />
         </button>
       </div>
@@ -60,16 +81,29 @@ const ReportLine = ({ report }: { report: VisitReportSummary }) => {
 /**
  * Main doctor report dashboard view
  */
-const DoctorReportDashboard = ({
-  reports,
-}: {
-  reports: VisitReportSummary[] | undefined;
-}) => {
+const DoctorReportDashboard = ({ doctorId }: { doctorId: string }) => {
+  const [error, setError] = useState<string | undefined>();
+  const { data: reports, refetch } = api.visitReport.getAll.useQuery({
+    doctorId,
+  });
+
+  const { mutate: deleteReport } = api.visitReport.delete.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+    onError: (error) => setError(error.message),
+  });
+
   return (
     <div className="mx-auto max-w-2xl">
       <div className="mx-auto w-fit">
         <CreateReportButton />
       </div>
+      {error ? (
+        <div className="mx-auto mt-8 max-w-lg">
+          <Alert type="error">{error}</Alert>
+        </div>
+      ) : undefined}
       <div className="space-y-4 py-4 px-8">
         {!reports || reports.length == 0 ? (
           <h1 className="text-center text-xl font-bold text-neutral-600">
@@ -83,7 +117,13 @@ const DoctorReportDashboard = ({
         {/** Display reports created by doctor */}
         <div className="">
           {reports?.map((report, index) => {
-            return <ReportLine key={index} report={report} />;
+            return (
+              <ReportLine
+                deleteReport={deleteReport}
+                key={index}
+                report={report}
+              />
+            );
           })}
         </div>
       </div>
