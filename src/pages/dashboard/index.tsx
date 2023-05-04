@@ -5,8 +5,8 @@ import type { Session } from "next-auth";
 import { getSession } from "next-auth/react";
 
 import Layout from "../../components/dashboard/layout";
-import VitalsWidget from "../../components/dashboard/vitals";
 import { SquareWidget } from "../../components/dashboard/widget";
+import { VitalsWidget } from "../../components/vitals";
 import { api } from "../../lib/api";
 import { timeSort } from "../appointment";
 
@@ -19,6 +19,8 @@ interface DashboardPageProps {
  * @returns
  */
 const Dashboard = ({ user }: DashboardPageProps) => {
+  const { data: recentVitals } = api.vitals.getMostRecent.useQuery();
+
   //appointment stuff
   let appoints: Appointment[] = [];
   if (user.role === "DOCTOR") {
@@ -68,7 +70,13 @@ const Dashboard = ({ user }: DashboardPageProps) => {
               </div>
             </SquareWidget>
             <SquareWidget width={2} title="Vitals">
-              <VitalsWidget />
+              {recentVitals ? (
+                <VitalsWidget vitals={recentVitals} />
+              ) : (
+                <div className="grid h-32 place-items-center bg-slate-100">
+                  <span className="text-xl">No past vitals records</span>
+                </div>
+              )}
             </SquareWidget>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import type { ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -9,13 +9,14 @@ import { api } from "../../lib/api";
 import type { BedRowData } from "../../pages/beds";
 import Alert from "../Alert";
 import ErrorMessage from "../ErrorMessage";
+import type { UserSearchOutput } from "../forms/input";
+import { UserSearch } from "../forms/input";
 import type { TablePopup } from "../tables/input";
 
 import type { BedPopupTypes } from "./BedPopup";
 
 type BedAssignInput = RouterInputs["bed"]["assign"];
 type BedAssignOutput = RouterOutputs["bed"]["assign"];
-type UserSearchOutput = RouterOutputs["user"]["search"];
 
 interface BedAssignProps {
   refetch: () => Promise<void>;
@@ -25,155 +26,21 @@ interface BedAssignProps {
 }
 
 /**
- * Single row of the patient results
- */
-const SelectPatientButton = ({
-  patient,
-  setPatientID,
-  selectedPatientID,
-}: {
-  selectedPatientID: string | undefined;
-  setPatientID: Dispatch<SetStateAction<string | undefined>>;
-  patient: UserSearchOutput[number];
-}) => {
-  /**
-   * Handle patient button on click event.
-   */
-  const handleClick = () => {
-    setPatientID(patient.id);
-  };
-
-  /**
-   * Handle patient button on click event when it is selected
-   */
-  const unsetPatient = () => {
-    setPatientID(undefined);
-  };
-
-  if (selectedPatientID === patient.id) {
-    return (
-      <button
-        data-testid="assigned"
-        onClick={unsetPatient}
-        type="button"
-        className="bg-gray-800 p-2 text-left text-white"
-      >
-        {patient.name}
-      </button>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="p-2 text-left hover:bg-gray-800 hover:text-white"
-    >
-      {patient.name}
-    </button>
-  );
-};
-
-/**
- * Search results component shown below
- */
-const SearchResults = ({
-  bed,
-  results,
-  setPatientID,
-  selectedPatientID,
-}: {
-  bed?: BedRowData;
-  selectedPatientID: string | undefined;
-  results: UserSearchOutput | undefined;
-  setPatientID: Dispatch<SetStateAction<string | undefined>>;
-}) => {
-  const filteredResults = results?.filter((value) => {
-    return value.id !== bed?.occupant?.id;
-  });
-
-  return (
-    <div className="mx-2 mt-2 flex flex-col divide-y-[1px] divide-neutral-300 overflow-hidden rounded-xl border border-neutral-500 bg-white">
-      {bed?.occupant ? (
-        <SelectPatientButton
-          selectedPatientID={selectedPatientID}
-          setPatientID={setPatientID}
-          patient={{
-            id: bed.occupant.id,
-            name: bed.occupant.name,
-            dateOfBirth: null,
-          }}
-        />
-      ) : undefined}
-      {filteredResults?.map((item, id) => {
-        return (
-          <SelectPatientButton
-            key={id}
-            selectedPatientID={selectedPatientID}
-            setPatientID={setPatientID}
-            patient={item}
-          />
-        );
-      })}
-    </div>
-  );
-};
-
-/**
- * Component for searching patients
- */
-const UserSearch = ({
-  bed,
-  setPatientID,
-  patientID,
-}: {
-  bed?: BedRowData;
-  setPatientID: Dispatch<SetStateAction<string | undefined>>;
-  patientID: string | undefined;
-}) => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const matchedPatients = api.user.search.useQuery({
-    count: 10,
-    name: searchQuery,
-  });
-
-  /**
-   * Handles the change event for search input field.
-   * @returns
-   */
-  const searchUpdate: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  return (
-    <div className="flex flex-1 flex-col">
-      <label htmlFor="user-search">Search for patient</label>
-      <input
-        onChange={searchUpdate}
-        type="text"
-        id="user-search"
-        placeholder="patient name"
-        className="rounded border border-gray-300 p-2"
-      />
-      <SearchResults
-        bed={bed}
-        selectedPatientID={patientID}
-        results={matchedPatients.data}
-        setPatientID={setPatientID}
-      />
-    </div>
-  );
-};
-
-/**
  * UserEdit component
  * @param param0
  * @returns JSX
  */
 const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
-  const [patientID, setPatientID] = useState<string | undefined>(
-    bed?.userId ?? undefined
+  const [selectedPatient, setPatient] = useState<
+    UserSearchOutput[number] | undefined
+  >(
+    bed?.occupant
+      ? {
+          id: bed.occupant.id,
+          name: bed.occupant.name,
+          dateOfBirth: bed.occupant.dateOfBirth,
+        }
+      : undefined
   );
   const [serverError, setServerError] = useState<string | undefined>(undefined);
   const [serverResult, setServerResult] = useState<BedAssignOutput | undefined>(
@@ -199,8 +66,8 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
   useEffect(() => {
     // update the patientID state with the watched patientId field
     setValue("bedId", bed?.id ?? "");
-    setValue("patientId", patientID ?? "");
-  }, [bed, patientID, setValue]);
+    setValue("patientId", selectedPatient?.id ?? "");
+  }, [bed, selectedPatient, setValue]);
 
   /**
    * Form submit handler.
@@ -231,9 +98,8 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
       <div className="flex flex-col items-stretch gap-2 sm:flex-row">
         <div className="flex flex-grow flex-col">
           <UserSearch
-            bed={bed}
-            setPatientID={setPatientID}
-            patientID={patientID}
+            selectedPatient={selectedPatient}
+            setPatient={setPatient}
           />
           {errors.patientId?.message && (
             <ErrorMessage id={`$patient-id-error`}>
@@ -272,7 +138,7 @@ const BedAssign = ({ refetch, bed, setPopup }: BedAssignProps) => {
           type="submit"
           className="inline-flex cursor-pointer items-center gap-2 rounded bg-blue-600 py-2 px-3 font-semibold text-white hover:bg-blue-700"
         >
-          {bed?.userId && !patientID ? "Unassign" : "Assign"}
+          {bed?.userId && !selectedPatient?.id ? "Unassign" : "Assign"}
         </button>
         <button
           type="button"

@@ -21,23 +21,27 @@ model Example {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String
-  dateOfBirth   DateTime?      @db.Date
-  addressId     String?
-  username      String?        @unique
-  email         String         @unique
-  password      String
-  phoneNumber   String?
-  role          Role           @default(PATIENT)
-  emailVerified DateTime?
-  image         String?
-  address       Address?       @relation(fields: [addressId], references: [id], onDelete: Cascade)
-  beds          Bed[]
-  invoices      Invoice[]
-  payments      Payment[]
-  labtests      LabTest[]
-  prescriptions Prescription[]
+  id                   String         @id @default(cuid())
+  name                 String
+  dateOfBirth          DateTime?      @db.Date
+  addressId            String?
+  username             String?        @unique
+  email                String         @unique
+  password             String
+  phoneNumber          String?
+  role                 Role           @default(PATIENT)
+  emailVerified        DateTime?
+  image                String?
+  address              Address?       @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  beds                 Bed[]
+  invoices             Invoice[]
+  payments             Payment[]
+  prescriptions        Prescription[]
+  labtests             LabTest[]
+  vitals               VitalsReport[]
+  authoredSoapNotes    SoapNote[]
+  visitReports         VisitReport[]  @relation("VisitReport")
+  authoredVisitReports VisitReport[]  @relation("AuthoredVisitReport")
 }
 
 model Bed {
@@ -187,6 +191,43 @@ model Payment {
   invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   userId    String?
   user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model SoapNote {
+  id                String      @id @default(cuid())
+  subjective        String
+  objective         String
+  assessment        String
+  plan              String
+  doctorId          String?
+  author            User?       @relation(fields: [doctorId], references: [id], onDelete: SetNull)
+  postVisitReportId String      @unique
+  postVisitReport   VisitReport @relation(fields: [postVisitReportId], references: [id], onDelete: Cascade)
+}
+
+model VitalsReport {
+  id                String      @id @default(cuid())
+  date              DateTime    @db.Date
+  pulse             Float
+  temperature       Float
+  weight            Float
+  respiration       Float
+  oxygenSaturation  Float
+  patientId         String
+  patient           User?       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  postVisitReportId String      @unique
+  postVisitReport   VisitReport @relation(fields: [postVisitReportId], references: [id], onDelete: Cascade)
+}
+
+model VisitReport {
+  id        String        @id @default(cuid())
+  date      DateTime      @db.Date
+  doctorId  String?
+  author    User?         @relation("AuthoredVisitReport", fields: [doctorId], references: [id], onDelete: SetNull)
+  patientId String
+  patient   User?         @relation("VisitReport", fields: [patientId], references: [id], onDelete: Cascade)
+  vitals    VitalsReport?
+  soapNotes SoapNote?
 }
 
 model Test {
