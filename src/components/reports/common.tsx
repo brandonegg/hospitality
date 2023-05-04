@@ -1,4 +1,5 @@
 import type { RouterOutputs } from "../../lib/api";
+import { dateToString } from "../../lib/text";
 import { VitalsWidget } from "../vitals";
 
 type FullVisitReport = RouterOutputs["visitReport"]["get"];
@@ -29,11 +30,16 @@ const SectionContainer = ({
 const FullVisitReportSummary = ({ report }: { report: FullVisitReport }) => {
   return (
     <div className="space-y-8">
-      <div className="border-b border-neutral-600 pb-2">
-        <h1 className="text-4xl font-bold">Report Summary</h1>
-        <h2 className="text-xl font-semibold text-neutral-400">
-          Report written for {report.patient?.name}
-        </h2>
+      <div className="flex flex-row justify-between border-b border-neutral-600 pb-2">
+        <div>
+          <h1 className="text-4xl font-bold">Report Summary</h1>
+          <h2 className="text-xl text-neutral-600">
+            Report written for {report.patient?.name}
+          </h2>
+        </div>
+        <div className="text-md mt-auto px-2 italic text-neutral-400">
+          <span>{dateToString(report.date)}</span>
+        </div>
       </div>
 
       <div className="flex flex-row space-x-8">
