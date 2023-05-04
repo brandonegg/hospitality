@@ -6,7 +6,6 @@ import { getSession } from "next-auth/react";
 import Layout from "../../components/dashboard/layout";
 import { DoctorReportDashboard } from "../../components/reports/doctor";
 import { PatientReportDashboard } from "../../components/reports/patient";
-import { api } from "../../lib/api";
 
 interface ReportPageProps {
   user: Session["user"];

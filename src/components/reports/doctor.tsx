@@ -1,10 +1,7 @@
-import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useState } from "react";
 
 import { api } from "../../lib/api";
-import { dateToString } from "../../lib/text";
-import type { VisitReportSummary } from "../../server/api/routers/visitReport";
 import Alert from "../Alert";
 
 import { ReportLine } from "./common";
