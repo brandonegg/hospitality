@@ -271,11 +271,11 @@ const InvoiceTable = ({
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">User</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">Total</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/6">Balance</th>
-            <th className="w-[125px] px-6 py-3">Due Date</th>
-            <th className="w-[220px] px-6 py-3 text-right">Actions</th>
+            <th className="w-[200px] px-6 py-3">User</th>
+            <th className="w-[150px] px-6 py-3 ">Total</th>
+            <th className="w-[150px] px-6 py-3 ">Balance</th>
+            <th className="w-[200px] px-6 py-3">Due Date</th>
+            <th className="w-[600px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>

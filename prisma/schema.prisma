@@ -21,21 +21,22 @@ model Example {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
-  dateOfBirth   DateTime? @db.Date
+  dateOfBirth   DateTime?      @db.Date
   addressId     String?
-  username      String?   @unique
-  email         String    @unique
+  username      String?        @unique
+  email         String         @unique
   password      String
   phoneNumber   String?
-  role          Role      @default(PATIENT)
+  role          Role           @default(PATIENT)
   emailVerified DateTime?
   image         String?
-  address       Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  address       Address?       @relation(fields: [addressId], references: [id], onDelete: Cascade)
   beds          Bed[]
   invoices      Invoice[]
   payments      Payment[]
+  labtests      LabTest[]
   prescriptions Prescription[]
 }
 
@@ -112,18 +113,18 @@ model Hours {
 model Rate {
   id          String     @id @default(cuid())
   name        String
-  description String
+  description String     @db.Text
   price       String
   lineItems   LineItem[]
 }
 
 model Meds {
-  id            String     @id @default(cuid())
-  name          String
-  dosageMin     String
-  dosageMax     String
-  unit          String
-  meds          MedItem[]
+  id        String    @id @default(cuid())
+  name      String
+  dosageMin String
+  dosageMax String
+  unit      String
+  meds      MedItem[]
 }
 
 model LineItem {
@@ -148,20 +149,20 @@ model Invoice {
 }
 
 model Prescription {
-  id         String     @id @default(cuid())
-  userId     String?
-  User       User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
-  meds       MedItem[]
+  id     String    @id @default(cuid())
+  userId String?
+  User   User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  meds   MedItem[]
 }
 
 model MedItem {
-  id             String  @id @default(cuid())
+  id             String       @id @default(cuid())
   dosage         String
   dosageFreq     String
   prescriptionId String
   medsId         String
   prescription   Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
-  med            Meds?   @relation(fields: [medsId], references: [id], onDelete: Cascade)
+  med            Meds?        @relation(fields: [medsId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentSourceType {
@@ -186,4 +187,20 @@ model Payment {
   invoice   Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   userId    String?
   user      User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Test {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @db.Text
+  LabTest     LabTest[]
+}
+
+model LabTest {
+  id     String  @id @default(cuid())
+  result String?
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  test   Test?   @relation(fields: [testId], references: [id])
+  testId String?
 }

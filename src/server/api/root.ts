@@ -1,8 +1,10 @@
+import { testRouter } from "./routers/admin-test";
 import { bedRouter } from "./routers/bed";
 import { exampleRouter } from "./routers/example";
 import { getAppointRouter } from "./routers/getAppoint";
 import { hoursRouter } from "./routers/hours";
 import { invoiceRouter } from "./routers/invoice";
+import { labTestRouter } from "./routers/lab-test";
 import { medsRouter } from "./routers/meds";
 import { removeAppointRouter } from "./routers/myAppoint";
 import { paymentRouter } from "./routers/payment";
@@ -30,6 +32,8 @@ export const appRouter = createTRPCRouter({
   myAppoint: removeAppointRouter,
   hours: hoursRouter,
   payment: paymentRouter,
+  test: testRouter,
+  labTest: labTestRouter,
 });
 
 // export type definition of API

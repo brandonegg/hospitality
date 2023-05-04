@@ -21,7 +21,7 @@ export default function PageSelector({
   items,
 }: PageSelectorProps) {
   return (
-    <div className="mx-auto mb-2 flex flex-row place-items-center justify-center space-x-4">
+    <div className="mx-auto mb-2 flex h-10 flex-row place-items-center justify-center space-x-4">
       <div className="flex">
         {page !== 0 ? (
           <button

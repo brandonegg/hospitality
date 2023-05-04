@@ -263,8 +263,8 @@ const PrescribeTable = ({
       <table className="w-full table-fixed text-left text-sm text-gray-500 dark:text-gray-400">
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
-            <th className="w-[200px] px-6 py-3 lg:w-1/2">User</th>
-            <th className="w-[220px] px-6 py-3 text-right">Actions</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/4">User</th>
+            <th className="w-[700px] px-6 py-3 text-right lg:w-3/4">Actions</th>
           </tr>
         </thead>
         <tbody>
