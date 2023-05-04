@@ -37,6 +37,7 @@ model User {
   invoices             Invoice[]
   payments             Payment[]
   prescriptions        Prescription[]
+  labtests             LabTest[]
   vitals               VitalsReport[]
   authoredSoapNotes    SoapNote[]
   visitReports         VisitReport[]  @relation("VisitReport")
@@ -116,7 +117,7 @@ model Hours {
 model Rate {
   id          String     @id @default(cuid())
   name        String
-  description String
+  description String     @db.Text
   price       String
   lineItems   LineItem[]
 }
@@ -227,4 +228,20 @@ model VisitReport {
   patient   User?         @relation("VisitReport", fields: [patientId], references: [id], onDelete: Cascade)
   vitals    VitalsReport?
   soapNotes SoapNote?
+}
+
+model Test {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @db.Text
+  LabTest     LabTest[]
+}
+
+model LabTest {
+  id     String  @id @default(cuid())
+  result String?
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  test   Test?   @relation(fields: [testId], references: [id])
+  testId String?
 }

@@ -5,29 +5,29 @@ import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 
 import PageSelector from "../../components/PageSelector";
-import MedsPopup from "../../components/meds/MedsPopup";
-import type { MedsPopupTypes } from "../../components/meds/MedsPopup";
 import type { ButtonDetails } from "../../components/tables/buttons";
 import { AddButton } from "../../components/tables/buttons";
 import type { TablePopup } from "../../components/tables/input";
 import { TablePageHeader } from "../../components/tables/labels";
 import { ActionsEntry } from "../../components/tables/rows";
+import type { TestPopupTypes } from "../../components/tests/TestPopup";
+import TestPopup from "../../components/tests/TestPopup";
 import type { UserPopupTypes } from "../../components/users/UserPopup";
 import type { RouterOutputs } from "../../lib/api";
 import { api } from "../../lib/api";
 
-export type MedsRowData = RouterOutputs["meds"]["getAllPaged"]["items"][number];
+export type TestRowData = RouterOutputs["test"]["getAllPaged"]["items"][number];
 
 /**
- * Med table row.
+ * Test table row.
  * @returns
  */
-const MedsTableRow = ({
+const TestTableRow = ({
   item,
   setPopup,
 }: {
-  item: MedsRowData;
-  setPopup: Dispatch<SetStateAction<TablePopup<MedsRowData, MedsPopupTypes>>>;
+  item: TestRowData;
+  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, TestPopupTypes>>>;
 }) => {
   const editDetails: ButtonDetails = {
     onClick: () => setPopup({ show: true, type: "edit", data: item }),
@@ -40,28 +40,26 @@ const MedsTableRow = ({
   return (
     <tr className="border-b-2 border-gray-200 bg-slate-100 text-base text-gray-700 hover:bg-slate-200">
       <td className="px-6 py-2">{item.name}</td>
-      <td className="px-6 py-2">{item.dosageMin}</td>
-      <td className="px-6 py-2">{item.dosageMax}</td>
-      <td className="px-6 py-2">{item.unit}</td>
+      <td className="px-6 py-2">{item.description}</td>
       <ActionsEntry
         editDetails={editDetails}
         deleteDetails={deleteDetails}
-        label="Medication"
+        label="Test"
       />
     </tr>
   );
 };
 
 /**
- * Meds table.
+ * Test table.
  * @returns
  */
-const MedsTable = ({
+const TestTable = ({
   items,
   setPopup,
 }: {
-  items: MedsRowData[] | undefined;
-  setPopup: Dispatch<SetStateAction<TablePopup<MedsRowData, MedsPopupTypes>>>;
+  items: TestRowData[] | undefined;
+  setPopup: Dispatch<SetStateAction<TablePopup<TestRowData, TestPopupTypes>>>;
 }) => {
   return (
     <div className="mx-6 overflow-x-auto rounded-xl border border-gray-600 drop-shadow-lg">
@@ -69,15 +67,13 @@ const MedsTable = ({
         <thead className="bg-slate-800 text-sm uppercase text-gray-300">
           <tr>
             <th className="w-[200px] px-6 py-3 lg:w-1/3">Name</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/4">Minimum Dosage</th>
-            <th className="w-[200px] px-6 py-3 lg:w-1/4">Maximum Dosage</th>
-            <th className="w-[100px] px-6 py-3">Unit</th>
+            <th className="w-[200px] px-6 py-3 lg:w-1/3">Description</th>
             <th className="w-[220px] px-6 py-3 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {items?.map((med, i) => (
-            <MedsTableRow key={i} item={med} setPopup={setPopup} />
+          {items?.map((test, i) => (
+            <TestTableRow key={i} item={test} setPopup={setPopup} />
           ))}
         </tbody>
       </table>
@@ -86,18 +82,18 @@ const MedsTable = ({
 };
 
 /**
- * Meds page.
+ * Tests page.
  * @returns
  */
-const MedsPage = () => {
+const TestsPage = () => {
   const [page, setPage] = useState<number>(0);
   const [limit] = useState<number>(10);
-  const [popup, setPopup] = useState<TablePopup<MedsRowData, UserPopupTypes>>({
+  const [popup, setPopup] = useState<TablePopup<TestRowData, UserPopupTypes>>({
     show: false,
   });
 
   const { data, refetch, fetchNextPage } =
-    api.meds.getAllPaged.useInfiniteQuery(
+    api.test.getAllPaged.useInfiniteQuery(
       {
         limit,
       },
@@ -123,17 +119,17 @@ const MedsPage = () => {
     setPage((prev) => prev - 1);
   };
 
-  const medsLength = data?.pages[page]?.count;
-  const meds = data?.pages[page]?.items;
+  const testsLength = data?.pages[page]?.count;
+  const tests = data?.pages[page]?.items;
 
   return (
     <main className="mx-auto mb-4 max-w-[1400px]">
       <div className="m-6 gap-4 space-y-2">
         <div className="flex items-center justify-between">
-          <TablePageHeader label="Medications" count={medsLength} />
+          <TablePageHeader label="Tests" count={testsLength} />
           <div>
             <AddButton
-              label="Medication"
+              label="Test"
               onClick={() => setPopup({ show: true, type: "create" })}
             />
           </div>
@@ -142,7 +138,7 @@ const MedsPage = () => {
 
       {/* popup */}
       {popup.show && (
-        <MedsPopup
+        <TestPopup
           refetch={refetch as unknown as () => Promise<void>}
           popup={popup}
           setPopup={setPopup}
@@ -155,11 +151,11 @@ const MedsPage = () => {
         limit={limit}
         handleFetchNextPage={handleFetchNextPage}
         handleFetchPreviousPage={handleFetchPreviousPage}
-        items={meds}
+        items={tests}
       />
 
       {/* main table */}
-      <MedsTable items={meds} setPopup={setPopup} />
+      <TestTable items={tests} setPopup={setPopup} />
     </main>
   );
 };
@@ -204,4 +200,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default MedsPage;
+export default TestsPage;
